@@ -27,7 +27,9 @@ Wine Quality Prediction/
 │   ├── Day1_Data_Inspection_and_Distribution.ipynb  # Executed data inspection & class distribution notebook
 │   ├── generate_day1_notebook.py                    # Day 1 reproducible notebook generator
 │   ├── Day2_Exploratory_Data_Analysis.ipynb         # Executed EDA, statistical profiling & correlation notebook
-│   └── generate_day2_notebook.py                    # Day 2 reproducible notebook generator
+│   ├── generate_day2_notebook.py                    # Day 2 reproducible notebook generator
+│   ├── Day3_Target_Engineering_and_Baseline_Models.ipynb # Executed target engineering & baseline model notebook
+│   └── generate_day3_notebook.py                    # Day 3 reproducible notebook generator
 ├── reports/
 │   └── figures/
 │       ├── day1_class_distribution.png              # Quality class distribution plot
@@ -36,11 +38,17 @@ Wine Quality Prediction/
 │       ├── day2_feature_boxplots.png                # Boxplots with Tukey IQR outlier detection
 │       ├── day2_features_vs_quality.png             # Bivariate boxplots across quality scores (3–8)
 │       ├── day2_correlation_heatmap.png             # Full annotated correlation matrix heatmap
-│       └── day2_top_correlations.png                # Ranked feature correlations with wine quality
+│       ├── day2_top_correlations.png                # Ranked feature correlations with wine quality
+│       ├── day3_target_distribution_comparison.png  # Raw vs 3-class vs binary target distributions
+│       ├── day3_confusion_matrices.png              # Heatmaps of RF, SGD, and SVC test confusion matrices
+│       ├── day3_baseline_model_comparison.png       # Grouped bar chart comparing baseline classifier metrics
+│       └── day3_roc_curves.png                      # Overlaid ROC curves with test AUC benchmarks
 ├── src/
 │   ├── __init__.py                  # Package initializer
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
-│   └── eda_profiling.py             # Univariate profiling, outlier detection, and correlation visualization
+│   ├── eda_profiling.py             # Univariate profiling, outlier detection, and correlation visualization
+│   ├── feature_engineering.py       # Target binning, domain chemical feature synthesis, stratified splitting
+│   └── baseline_models.py           # Classifier pipelines, evaluation diagnostics, and benchmark visualization
 ├── download_data.py                 # UCI dataset automated download script
 ├── requirements.txt                 # Project dependencies
 └── README.md                        # Documentation
@@ -52,7 +60,7 @@ Wine Quality Prediction/
 
 - [x] **Day 1: Data Ingestion, Structural Inspection & Class Imbalance Analysis**
 - [x] **Day 2: Exploratory Data Analysis, Outlier Profiling & Multicollinearity Analysis**
-- [ ] **Day 3: Target Engineering, Preprocessing Pipelines & Baseline Classification Models**
+- [x] **Day 3: Target Engineering, Preprocessing Pipelines & Baseline Classification Models**
 - [ ] **Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation**
 - [ ] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
 
@@ -164,6 +172,83 @@ All high-resolution figures are persisted in `reports/figures/`:
 
 ---
 
+## 🧪 Day 3: Target Engineering, Preprocessing & Baseline Models
+
+### 1. Target Formulation & Class Imbalance Analysis
+
+Raw sensory scores span 3 to 8, with scores 5 and 6 accounting for **82.49%** of observations. Directly predicting 6 imbalanced ordinal classes causes severe failure on underrepresented classes (score 3 has only 10 samples; score 8 has 18 samples).
+
+| Formulation Scheme | Categories | Class Mapping | Sample Count | Class Ratio (%) | Practical Application & Modeling Rationale |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| **Raw Discrete** | 6 Classes | Scores 3, 4, 5, 6, 7, 8 | 10, 53, 681, 638, 199, 18 | 0.6%, 3.3%, 42.6%, 39.9%, 12.5%, 1.1% | High label noise between 5 and 6; extreme sample sparsity at tails. |
+| **3-Class Grouping** | Low / Med / High | Low (≤4), Med (5–6), High (≥7) | 63, 1,319, 217 | 3.94%, 82.49%, 13.57% | 'Low' class remains severely underrepresented (<4%), biasing classifiers. |
+| **Binary (Selected)** | Normal vs. Good | **Normal / Low (<7)** (0)<br>**Good / Premium (≥7)** (1) | **1,382** (0)<br>**217** (1) | **86.43%** (0)<br>**13.57%** (1) | **Cortez et al. (2009) Benchmark Standard:** Reflects the industrial bottling decision for premium single-vineyard vs standard commercial wine. |
+
+---
+
+### 2. Domain-Specific Feature Engineering
+
+Based on chemical relationships identified during Day 2 EDA, 5 new interaction features were synthesized:
+
+1. **`total_acidity`** ($g/dm^3$): `fixed acidity` + `volatile acidity` — Quantifies total acidic strength and palate freshness.
+2. **`bound_sulfur_dioxide`** ($mg/dm^3$): `total sulfur dioxide` - `free sulfur dioxide` — Measures the preservative fraction chemically bound to wine compounds.
+3. **`free_to_total_so2_ratio`**: `free SO2` / `total SO2` — Indicator of molecular antioxidant efficacy against aerobic microbial spoilage.
+4. **`alcohol_to_density_ratio`**: `alcohol` / `density` — Captures wine body and mouthfeel balance between light ethanol and dense residual solids.
+5. **`sulphate_to_chloride_ratio`**: `sulphates` / `chlorides` — Ratios desirable preservation salts against undesirable mineral salinity.
+
+---
+
+### 3. Stratified Partitioning & Pipeline Architecture
+
+To guarantee the 13.57% minority premium class is equally represented across splits, an 80/20 train/test split was performed using **stratified sampling** (`random_state=42`):
+
+| Partition | Total Samples | Normal Wine (< 7) | Good Wine (≥ 7) | Premium Class Ratio (%) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Train Set** | 1,279 | 1,105 | 174 | **13.60%** |
+| **Test Set** | 320 | 277 | 43 | **13.44%** |
+| **Full Dataset** | 1,599 | 1,382 | 217 | **13.57%** |
+
+> **Data Leakage Prevention:** Feature scalers (`StandardScaler`, `RobustScaler`) and classification estimators are strictly encapsulated inside scikit-learn `Pipeline` objects, ensuring test and validation partitions remain completely unexposed during feature normalization.
+
+---
+
+### 4. Baseline Classification Performance Benchmark
+
+All three required classifiers were evaluated on the held-out test set ($N=320$):
+
+| Model Architecture | Preprocessor | Accuracy | Balanced Acc | Weighted F1 | Good Wine Precision | Good Wine Recall | Good Wine F1 | ROC-AUC | Primary Trait |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Random Forest** | `StandardScaler` | **93.44%** | **0.7951** | **0.9293** | **86.67%** | **60.47%** | **0.7123** | **0.9318** | **Top Performer:** High non-linear separation; robust to outliers |
+| **Support Vector Classifier (SVC)** | `StandardScaler` | **90.31%** | 0.6690 | 0.8854 | 83.33% | 34.88% | 0.4918 | **0.8698** | High precision (83.3%); conservative decision boundary |
+| **SGD Classifier (log_loss)** | `StandardScaler` | 85.00% | 0.5204 | 0.8097 | 27.27% | 6.98% | 0.1111 | 0.7501 | Baseline linear margin classifier; requires loss/weight tuning |
+
+---
+
+### 5. Confusion Matrix & Diagnostic Insights
+
+| Classifier | True Negatives (Normal) | False Positives (Normal as Good) | False Negatives (Good as Normal) | True Positives (Good) | Good Wine Recall (%) | Good Wine Precision (%) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Random Forest** | **273** / 277 (98.6%) | 4 / 277 (1.4%) | 17 / 43 (39.5%) | **26** / 43 | **60.5%** | **86.7%** |
+| **SVC** | **274** / 277 (98.9%) | 3 / 277 (1.1%) | 28 / 43 (65.1%) | 15 / 43 | 34.9% | 83.3% |
+| **SGD Classifier** | 269 / 277 (97.1%) | 8 / 277 (2.9%) | 40 / 43 (93.0%) | 3 / 43 | 7.0% | 27.3% |
+
+#### Key Diagnostic Findings:
+1. **Ensemble Non-Linearity Wins:** Random Forest achieved near-perfect negative class specificity (98.6%) while capturing over 60% of premium wines with **86.7% precision** out-of-the-box.
+2. **The Imbalance Challenge in Linear/Margin Models:** While SVC and SGD achieved high raw accuracy (>85%), their default decision boundaries are pulled heavily toward the majority class, leading to high false negatives on premium wines.
+3. **Foundation for Day 4:** To unlock higher minority recall without sacrificing precision, Day 4 will focus on `class_weight='balanced'`, cross-validated threshold optimization, and hyperparameter tuning.
+
+---
+
+### 6. Generated Day 3 Figures
+
+All diagnostic figures are saved in `reports/figures/`:
+* [day3_target_distribution_comparison.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day3_target_distribution_comparison.png) — Visual comparison of Raw (3–8), 3-Class (Low, Medium, High), and Binary target distributions.
+* [day3_confusion_matrices.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day3_confusion_matrices.png) — Annotated test confusion matrix heatmaps for Random Forest, SGD, and SVC.
+* [day3_baseline_model_comparison.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day3_baseline_model_comparison.png) — Grouped performance bar chart comparing all 3 classifiers across key metrics.
+* [day3_roc_curves.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day3_roc_curves.png) — Overlaid Receiver Operating Characteristic (ROC) curves with computed AUC scores.
+
+---
+
 ## ⚙️ Setup and Usage
 
 1. **Install dependencies:**
@@ -171,19 +256,33 @@ All high-resolution figures are persisted in `reports/figures/`:
    pip install -r requirements.txt
    ```
 
-2. **Run data inspection and EDA routines:**
+2. **Run data inspection and modeling routines:**
    ```python
    from src.data_loader import load_wine_data
-   from src.eda_profiling import (
-       compute_univariate_stats,
-       detect_outliers_iqr,
-       compute_target_correlations
+   from src.feature_engineering import (
+       create_binned_targets,
+       create_engineered_features,
+       get_stratified_train_test_split
+   )
+   from src.baseline_models import (
+       get_baseline_classifiers,
+       train_and_evaluate_baselines,
+       compile_comparison_dataframe
    )
 
+   # Load and prepare features
    df = load_wine_data("red")
-   print(compute_univariate_stats(df))
-   print(detect_outliers_iqr(df))
-   print(compute_target_correlations(df))
+   df_binned = create_binned_targets(df)
+   df_feat = create_engineered_features(df_binned)
+
+   X = df_feat.drop(columns=["quality", "binary_quality", "three_class_quality"])
+   y = df_feat["binary_quality"]
+   X_train, X_test, y_train, y_test = get_stratified_train_test_split(X, y)
+
+   # Benchmark baseline classifiers
+   models = get_baseline_classifiers()
+   results = train_and_evaluate_baselines(models, X_train, y_train, X_test, y_test)
+   print(compile_comparison_dataframe(results))
    ```
 
 3. **Launch Jupyter Notebooks:**
@@ -193,4 +292,7 @@ All high-resolution figures are persisted in `reports/figures/`:
 
    # Day 2: Exploratory Data Analysis & Physicochemical Profiling
    jupyter notebook notebooks/Day2_Exploratory_Data_Analysis.ipynb
+
+   # Day 3: Target Engineering & Baseline Classification Models
+   jupyter notebook notebooks/Day3_Target_Engineering_and_Baseline_Models.ipynb
    ```
