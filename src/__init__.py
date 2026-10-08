@@ -7,6 +7,7 @@ Modules:
 - feature_engineering: Target binning, domain chemical feature synthesis, and stratified splits.
 - baseline_models: Scikit-learn classification pipelines (RF, SGD, SVC) and diagnostic evaluation.
 - model_tuning: Hyperparameter optimization, Stratified 5-Fold CV, threshold calibration, and evaluation.
+- model_interpretation: Feature importance (MDI & Permutation), directional weights, PDP profiles, enological rules, and serialization.
 """
 
 from src.data_loader import load_wine_data, inspect_data, get_class_distribution
@@ -47,6 +48,24 @@ from src.model_tuning import (
     plot_tuned_confusion_matrices,
     plot_tuned_vs_baseline_comparison
 )
+from src.model_interpretation import (
+    compute_rf_feature_importances,
+    compute_permutation_importances,
+    compute_all_models_permutation_importance,
+    compute_linear_coefficients,
+    compute_partial_dependence_profiles,
+    compute_2d_partial_dependence,
+    compute_enological_rules_profile,
+    save_champion_model_pipeline,
+    load_champion_model_pipeline,
+    predict_wine_quality_sample,
+    plot_rf_feature_importance,
+    plot_permutation_importance_comparison,
+    plot_linear_coefficients,
+    plot_partial_dependence_grid,
+    plot_pdp_2d_interactions,
+    plot_champion_model_summary
+)
 
 __all__ = [
     "load_wine_data",
@@ -80,5 +99,21 @@ __all__ = [
     "plot_hyperparameter_tuning_results",
     "plot_precision_recall_curves",
     "plot_tuned_confusion_matrices",
-    "plot_tuned_vs_baseline_comparison"
+    "plot_tuned_vs_baseline_comparison",
+    "compute_rf_feature_importances",
+    "compute_permutation_importances",
+    "compute_all_models_permutation_importance",
+    "compute_linear_coefficients",
+    "compute_partial_dependence_profiles",
+    "compute_2d_partial_dependence",
+    "compute_enological_rules_profile",
+    "save_champion_model_pipeline",
+    "load_champion_model_pipeline",
+    "predict_wine_quality_sample",
+    "plot_rf_feature_importance",
+    "plot_permutation_importance_comparison",
+    "plot_linear_coefficients",
+    "plot_partial_dependence_grid",
+    "plot_pdp_2d_interactions",
+    "plot_champion_model_summary"
 ]

@@ -23,6 +23,9 @@ Wine Quality Prediction/
 │   ├── winequality-red.csv          # Red wine physicochemical & sensory dataset (1599 x 12)
 │   ├── winequality-white.csv        # White wine physicochemical & sensory dataset (4898 x 12)
 │   └── winequality.names            # UCI dataset citation & documentation
+├── models/
+│   ├── champion_rf_pipeline.joblib  # Serialized production Random Forest pipeline
+│   └── champion_rf_pipeline.json    # Pipeline architecture, parameters & test benchmarks metadata
 ├── notebooks/
 │   ├── Day1_Data_Inspection_and_Distribution.ipynb  # Executed data inspection & class distribution notebook
 │   ├── generate_day1_notebook.py                    # Day 1 reproducible notebook generator
@@ -31,7 +34,9 @@ Wine Quality Prediction/
 │   ├── Day3_Target_Engineering_and_Baseline_Models.ipynb # Executed target engineering & baseline model notebook
 │   ├── generate_day3_notebook.py                    # Day 3 reproducible notebook generator
 │   ├── Day4_Hyperparameter_Optimization_and_Evaluation.ipynb # Executed tuning & cross-validation notebook
-│   └── generate_day4_notebook.py                    # Day 4 reproducible notebook generator
+│   ├── generate_day4_notebook.py                    # Day 4 reproducible notebook generator
+│   ├── Day5_Model_Interpretation_and_Final_Documentation.ipynb # Executed interpretability & champion model notebook
+│   └── generate_day5_notebook.py                    # Day 5 reproducible notebook generator
 ├── reports/
 │   └── figures/
 │       ├── day1_class_distribution.png              # Quality class distribution plot
@@ -49,14 +54,21 @@ Wine Quality Prediction/
 │       ├── day4_hyperparameter_tuning_results.png   # Parameter search response surface heatmaps
 │       ├── day4_precision_recall_curves.png         # Precision-Recall curves with PR-AUC benchmarks
 │       ├── day4_tuned_confusion_matrices.png        # Heatmaps of tuned classifier test confusion matrices
-│       └── day4_tuned_vs_baseline_comparison.png    # Multi-metric grouped benchmark comparing baseline vs tuned
+│       ├── day4_tuned_vs_baseline_comparison.png    # Multi-metric grouped benchmark comparing baseline vs tuned
+│       ├── day5_rf_feature_importance.png           # RF MDI (Gini) vs Test Permutation Importance with error bars
+│       ├── day5_permutation_importance_comparison.png # Cross-model permutation importance (RF vs SVC vs SGD)
+│       ├── day5_linear_coefficients.png             # Directional standardized weights & odds ratios (SGD)
+│       ├── day5_partial_dependence_plots.png        # 1D PDP response curves & rug plots for top chemical drivers
+│       ├── day5_pdp_2d_interactions.png             # Bivariate 2D contour maps for key enological trade-offs
+│       └── day5_champion_model_summary.png          # Executive champion model scorecard & chemical contrast
 ├── src/
-│   ├── __init__.py                  # Package initializer
+│   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
 │   ├── eda_profiling.py             # Univariate profiling, outlier detection, and correlation visualization
 │   ├── feature_engineering.py       # Target binning, domain chemical feature synthesis, stratified splitting
 │   ├── baseline_models.py           # Classifier pipelines, evaluation diagnostics, and benchmark visualization
-│   └── model_tuning.py              # Hyperparameter grids, Stratified 5-Fold CV, and threshold tuning
+│   ├── model_tuning.py              # Hyperparameter grids, Stratified 5-Fold CV, and threshold tuning
+│   └── model_interpretation.py      # Feature importance, PDP profiling, enological rules, and model serialization
 ├── download_data.py                 # UCI dataset automated download script
 ├── requirements.txt                 # Project dependencies
 └── README.md                        # Documentation
@@ -70,7 +82,7 @@ Wine Quality Prediction/
 - [x] **Day 2: Exploratory Data Analysis, Outlier Profiling & Multicollinearity Analysis**
 - [x] **Day 3: Target Engineering, Preprocessing Pipelines & Baseline Classification Models**
 - [x] **Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation**
-- [ ] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
+- [x] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
 
 ---
 
@@ -361,6 +373,161 @@ All generated diagnostic figures are saved in `reports/figures/`:
 
 ---
 
+## 🔬 Day 5: Model Interpretation, Feature Importance & Final Documentation
+
+### 1. Tree-Based Feature Importance (MDI / Gini Impurity Reduction)
+
+Feature importances were computed across the 200 estimators of the tuned champion Random Forest ensemble. The table below presents the ranked Mean Decrease in Impurity (MDI), standard deviation across trees, and relative percentage contribution across all 16 physicochemical features:
+
+| Rank | Feature | Feature Type | Importance (Mean) | Tree Std ($\sigma$) | Relative Contribution (%) | Enological Role |
+| :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| 1 | `alcohol_to_density_ratio` | Engineered | **0.1718** | 0.1165 | **17.18%** | Mouthfeel balance; ethanol vs residual solid extract |
+| 2 | `alcohol` | Physicochemical | **0.1375** | 0.1166 | **13.75%** | Primary sensory warmth, aromatic volatility, body |
+| 3 | `sulphates` | Physicochemical | **0.0917** | 0.0609 | **9.17%** | Potassium sulphate antioxidant and preservative defense |
+| 4 | `volatile acidity` | Physicochemical | **0.0760** | 0.0473 | **7.60%** | Acetic acid spoilage marker; vinegar taint |
+| 5 | `sulphate_to_chloride_ratio` | Engineered | **0.0637** | 0.0435 | **6.37%** | Preservative salt balance vs undesirable mineral salinity |
+| 6 | `citric acid` | Physicochemical | **0.0614** | 0.0422 | **6.14%** | Palate freshness, crispness, natural acid buffer |
+| 7 | `bound_sulfur_dioxide` | Engineered | **0.0529** | 0.0330 | **5.29%** | Chemically bound antioxidant pool |
+| 8 | `free_to_total_so2_ratio` | Engineered | **0.0454** | 0.0225 | **4.54%** | Active molecular antimicrobial fraction |
+| 9 | `total sulfur dioxide` | Physicochemical | 0.0449 | 0.0305 | 4.49% | Total preservative load; indicator of must stress |
+| 10 | `density` | Physicochemical | 0.0436 | 0.0298 | 4.36% | Specific gravity influenced by sugar and alcohol |
+| 11 | `total_acidity` | Engineered | 0.0435 | 0.0310 | 4.35% | Sum of fixed tartaric and volatile acids |
+| 12 | `fixed acidity` | Physicochemical | 0.0416 | 0.0294 | 4.16% | Foundational tartaric acid structure |
+| 13 | `chlorides` | Physicochemical | 0.0402 | 0.0290 | 4.02% | Sodium chloride mineral saltiness |
+| 14 | `pH` | Physicochemical | 0.0396 | 0.0270 | 3.96% | Acid-base equilibrium and microbial susceptibility |
+| 15 | `residual sugar` | Physicochemical | 0.0395 | 0.0267 | 3.95% | Residual sweetness; dry wine style baseline |
+| 16 | `free sulfur dioxide` | Physicochemical | 0.0387 | 0.0245 | 3.87% | Active antimicrobial free preservative gas |
+
+> **Key Observation:** The 5 domain-engineered features account for **39.73%** of total ensemble decision weight, demonstrating substantial value over raw baseline features alone.
+
+---
+
+### 2. Unbiased Test Set Permutation Feature Importance ($N=320$)
+
+Because MDI can exhibit bias towards continuous attributes with many split candidates, **Permutation Feature Importance** was evaluated on the held-out test partition ($N=320$) using 10 shuffle repeats scored on ROC-AUC:
+
+| Rank | Feature | Mean ROC-AUC Drop ($\Delta$) | Shuffle Std ($\sigma$) | Evaluation Context |
+| :---: | :--- | :---: | :---: | :--- |
+| 1 | `sulphates` | **+0.0344** | 0.0067 | Most critical generalization anchor on unseen wine test samples |
+| 2 | `alcohol_to_density_ratio` | **+0.0172** | 0.0115 | Primary generalizable body and dryness discriminator |
+| 3 | `sulphate_to_chloride_ratio` | **+0.0109** | 0.0018 | Robust salt harmony discriminator |
+| 4 | `volatile acidity` | **+0.0107** | 0.0037 | Critical penalty factor for flawed batches |
+| 5 | `total_acidity` | **+0.0072** | 0.0013 | Structural acidic backbone |
+| 6 | `fixed acidity` | **+0.0066** | 0.0013 | Natural tartaric acid concentration |
+| 7 | `total sulfur dioxide` | **+0.0057** | 0.0043 | General preservative antioxidant ceiling |
+| 8 | `free sulfur dioxide` | **+0.0036** | 0.0021 | Active microbial barrier |
+
+---
+
+### 3. Directional Decision Weights: SGD Classifier Linear Coefficients
+
+Standardized linear regression coefficients ($\beta_i$) and odds multipliers ($e^{\beta_i}$) reveal the explicit positive vs. negative push exerted by each chemical component on wine quality:
+
+| Rank | Feature | Standardized Weight ($\beta$) | Odds Ratio ($e^\beta$) | Direction | Enological Rationale |
+| :---: | :--- | :---: | :---: | :---: | :--- |
+| 1 | `alcohol` | **+0.4410** | **1.5543** | **Positive (+)** | +1 std alcohol increases odds of premium rating by **55.4%** |
+| 2 | `alcohol_to_density_ratio` | **+0.4379** | **1.5495** | **Positive (+)** | Reflects complete fermentation and low residual heaviness |
+| 3 | `sulphate_to_chloride_ratio` | **+0.3050** | **1.3566** | **Positive (+)** | Favorable mineral balance without salty flaw |
+| 4 | `volatile acidity` | **-0.3042** | **0.7377** | **Negative (-)** | +1 std acetic acid cuts odds of premium rating by **26.2%** |
+| 5 | `sulphates` | **+0.2979** | **1.3470** | **Positive (+)** | Antioxidant stability and phenolic preservation |
+| 6 | `free_to_total_so2_ratio` | **+0.2353** | **1.2653** | **Positive (+)** | Ensures active preservative fraction is available |
+| 7 | `bound_sulfur_dioxide` | **-0.2022** | **0.8169** | **Negative (-)** | High bound SO2 indicates prior oxidative stress in must |
+| 8 | `total sulfur dioxide` | **-0.1934** | **0.8242** | **Negative (-)** | Masks fruit aromatics and creates pungent chemical odor |
+| 9 | `residual sugar` | **+0.1604** | 1.1739 | Positive (+) | Trace sugar rounds harsh tannins in robust red wines |
+| 10 | `citric acid` | **+0.1319** | 1.1410 | Positive (+) | Imparts crispness and lively sensory brightness |
+| 11 | `fixed acidity` | **+0.1307** | 1.1396 | Positive (+) | Foundation for fresh tartaric palate structure |
+| 12 | `total_acidity` | **+0.1016** | 1.1070 | Positive (+) | Structural palate firmness |
+| 13 | `density` | **-0.0962** | 0.9083 | Negative (-) | Heavy density reflects lower ethanol concentration |
+| 14 | `pH` | **-0.0886** | 0.9152 | Negative (-) | Higher pH increases bacterial spoilage risk |
+| 15 | `free sulfur dioxide` | **-0.0868** | 0.9169 | Negative (-) | Slight negative when unbound in excess without context |
+| 16 | `chlorides` | **-0.0511** | 0.9502 | Negative (-) | Saline mineral salts detract from phenolic harmony |
+
+---
+
+### 4. Non-Linear Partial Dependence Profiles & Tipping Points (1D PDP)
+
+Partial dependence analysis traces non-linear marginal predictions of the champion Random Forest:
+
+1. **`alcohol` (Threshold: $\ge 11.5\%$ vol):**
+   - Predicted probability of premium quality remains flat ($\sim 0.10$) below $10.0\%$ vol, surges steeply between $10.5\%$ and $12.0\%$, and reaches maximum plateau above $12.5\%$ vol ($\sim 0.45+$).
+2. **`volatile acidity` (Tipping Point: $\le 0.40$ g/dm$^3$):**
+   - Shows a steep monotonic drop. Probability falls precipitously once acetic acid exceeds $0.40$ g/dm$^3$, dropping to near zero above $0.65$ g/dm$^3$.
+3. **`sulphates` (Optimal Window: $0.70 - 0.90$ g/dm$^3$):**
+   - Sharp rise from $0.50$ to $0.75$ g/dm$^3$ where antioxidant efficacy peaks; saturates above $0.95$ g/dm$^3$.
+4. **`free_to_total_so2_ratio` (Target: $\ge 0.25$):**
+   - Wines with active free SO2 ratio above $25\%$ show a consistent positive shift in predicted premium likelihood.
+
+---
+
+### 5. Actionable Viticultural & Enological Decision Guidelines
+
+By benchmarking the chemical distributions of Normal (<7) vs. Good (≥7) wines, quantitative targets were synthesized for winemakers:
+
+| Physicochemical Attribute | Normal Median | Good Median | Mean Shift (%) | Viticultural & Cellar Guideline |
+| :--- | :---: | :---: | :---: | :--- |
+| **`citric acid`** | 0.24 g/dm$^3$ | **0.40 g/dm$^3$** | **+48.0%** | Target $\ge 0.40$ g/dm$^3$ to maintain palate freshness and acid balance |
+| **`sulphate_to_chloride_ratio`** | 7.56 | **10.20** | **+34.9%** | Target $\ge 10.2$ to optimize preservation salts over mineral salinity |
+| **`bound_sulfur_dioxide`** | 23.0 mg/dm$^3$ | **14.0 mg/dm$^3$** | **-34.9%** | Suppress $\le 18.0$ mg/dm$^3$ by preventing early-stage must oxidation |
+| **`total sulfur dioxide`** | 39.5 mg/dm$^3$ | **27.0 mg/dm$^3$** | **-27.7%** | Keep $\le 30.0$ mg/dm$^3$ to avoid masking natural fruit aromas |
+| **`volatile acidity`** | 0.54 g/dm$^3$ | **0.37 g/dm$^3$** | **-25.9%** | Restrict $\le 0.40$ g/dm$^3$ via strict temperature and acetobacter control |
+| **`free_to_total_so2_ratio`** | 0.36 | **0.44** | **+15.9%** | Maintain $\ge 0.25$ active free preservative fraction |
+| **`sulphates`** | 0.60 g/dm$^3$ | **0.74 g/dm$^3$** | **+15.3%** | Target $0.70 - 0.85$ g/dm$^3$ for long-term bottle oxidation defense |
+| **`alcohol`** | 10.0% vol | **11.5% vol** | **+11.8%** | Harvest at full physiological maturity targeting $\ge 11.5\%$ vol |
+| **`chlorides`** | 0.080 g/dm$^3$ | **0.073 g/dm$^3$** | **-15.0%** | Restrict $\le 0.075$ g/dm$^3$ by managing vineyard soil salinity |
+
+---
+
+### 6. Champion Model Packaging & Production Inference API
+
+The finalized champion model is persisted as a production artifact in `models/`:
+* **Artifact Path:** [`models/champion_rf_pipeline.joblib`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/champion_rf_pipeline.joblib)
+* **Metadata Record:** [`models/champion_rf_pipeline.json`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/champion_rf_pipeline.json)
+* **Architecture:** Scikit-learn Pipeline with `StandardScaler` + `RandomForestClassifier` (200 trees, `max_depth=18`, `class_weight='balanced'`)
+* **Test Performance:** ROC-AUC = **0.9368**, PR-AUC = **0.8095**, Balanced Accuracy ($\tau=0.35$) = **0.8520**, Minority Recall = **79.07%**
+
+#### Live Inference Demonstration:
+```python
+from src.model_interpretation import load_champion_model_pipeline, predict_wine_quality_sample
+
+# Load serialized champion pipeline
+pipeline = load_champion_model_pipeline("models/champion_rf_pipeline.joblib")
+
+# Example: Premium reserve candidate batch
+sample_lab_data = {
+    "fixed acidity": 8.5,
+    "volatile acidity": 0.32,
+    "citric acid": 0.45,
+    "residual sugar": 2.1,
+    "chlorides": 0.065,
+    "free sulfur dioxide": 18.0,
+    "total sulfur dioxide": 36.0,
+    "density": 0.9955,
+    "pH": 3.30,
+    "sulphates": 0.82,
+    "alcohol": 12.4
+}
+
+prediction = predict_wine_quality_sample(pipeline, sample_lab_data, threshold=0.35)
+print(prediction["predicted_label"])
+# -> "Good / Premium Wine (Score >= 7)"
+print(f"Confidence: {prediction['probability_good']:.1%}")
+# -> "Confidence: 81.3%"
+```
+
+---
+
+### 7. Generated Day 5 Figures
+
+All diagnostic and interpretability figures are saved in `reports/figures/`:
+* [day5_rf_feature_importance.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_rf_feature_importance.png) — Random Forest MDI (Gini) vs. Test Permutation Importance with tree-level standard error bars.
+* [day5_permutation_importance_comparison.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_permutation_importance_comparison.png) — Cross-model test set permutation importance comparison across Random Forest, SVC, and SGDClassifier.
+* [day5_linear_coefficients.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_linear_coefficients.png) — Standardized directional linear weights ($\beta$) and odds ratios indicating positive vs. negative drivers.
+* [day5_partial_dependence_plots.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_partial_dependence_plots.png) — 6-panel 1D Partial Dependence Profiles with empirical sample rug distributions.
+* [day5_pdp_2d_interactions.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_pdp_2d_interactions.png) — Bivariate 2D contour interaction maps (Alcohol vs. Volatile Acidity and Sulphates vs. Chlorides).
+* [day5_champion_model_summary.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day5_champion_model_summary.png) — Executive dashboard comparing chemical profiles of Normal vs. Good wines alongside champion model specification.
+
+---
+
 ## ⚙️ Setup and Usage
 
 1. **Install dependencies:**
@@ -368,7 +535,7 @@ All generated diagnostic figures are saved in `reports/figures/`:
    pip install -r requirements.txt
    ```
 
-2. **Run data inspection, baseline, and hyperparameter tuning routines:**
+2. **Run end-to-end training, interpretation, and inference routines:**
    ```python
    from src.data_loader import load_wine_data
    from src.feature_engineering import (
@@ -386,6 +553,12 @@ All generated diagnostic figures are saved in `reports/figures/`:
        run_hyperparameter_search,
        evaluate_tuned_models_on_test,
        compile_tuned_comparison_dataframe
+   )
+   from src.model_interpretation import (
+       load_champion_model_pipeline,
+       predict_wine_quality_sample,
+       compute_rf_feature_importances,
+       compute_permutation_importances
    )
 
    # Load and prepare features
@@ -406,13 +579,16 @@ All generated diagnostic figures are saved in `reports/figures/`:
    param_grids = get_hyperparameter_grids()
    search_results = run_hyperparameter_search(tuning_pipelines, param_grids, X_train, y_train, n_splits=5)
 
-   # 3. Evaluate Tuned Models on Held-out Test Set
-   tuned_models = {name: res["best_estimator"] for name, res in search_results.items()}
-   tuned_results = evaluate_tuned_models_on_test(tuned_models, X_test, y_test)
-
-   # 4. Side-by-Side Comparison
-   comp_df = compile_tuned_comparison_dataframe(base_results, tuned_results)
-   print(comp_df)
+   # 3. Load Champion Serialized Model & Run Production Inference (Day 5)
+   champion_pipeline = load_champion_model_pipeline("models/champion_rf_pipeline.joblib")
+   sample = {
+       "fixed acidity": 8.5, "volatile acidity": 0.32, "citric acid": 0.45,
+       "residual sugar": 2.1, "chlorides": 0.065, "free sulfur dioxide": 18.0,
+       "total sulfur dioxide": 36.0, "density": 0.9955, "pH": 3.30,
+       "sulphates": 0.82, "alcohol": 12.4
+   }
+   result = predict_wine_quality_sample(champion_pipeline, sample, threshold=0.35)
+   print("Predicted:", result["predicted_label"], "| Probability:", result["probability_good"])
    ```
 
 3. **Launch Jupyter Notebooks:**
@@ -428,4 +604,7 @@ All generated diagnostic figures are saved in `reports/figures/`:
 
    # Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation
    jupyter notebook notebooks/Day4_Hyperparameter_Optimization_and_Evaluation.ipynb
+
+   # Day 5: Model Interpretation, Feature Importance & Final Documentation
+   jupyter notebook notebooks/Day5_Model_Interpretation_and_Final_Documentation.ipynb
    ```
