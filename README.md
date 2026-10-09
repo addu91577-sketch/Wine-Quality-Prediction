@@ -27,6 +27,8 @@ Wine Quality Prediction/
 │   ├── champion_rf_pipeline.joblib  # Serialized production Random Forest pipeline
 │   └── champion_rf_pipeline.json    # Pipeline architecture, parameters & test benchmarks metadata
 ├── notebooks/
+│   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end 6-day project pipeline
+│   ├── generate_master_notebook.py          # Day 6 reproducible master notebook generator
 │   ├── Day1_Data_Inspection_and_Distribution.ipynb  # Executed data inspection & class distribution notebook
 │   ├── generate_day1_notebook.py                    # Day 1 reproducible notebook generator
 │   ├── Day2_Exploratory_Data_Analysis.ipynb         # Executed EDA, statistical profiling & correlation notebook
@@ -38,6 +40,7 @@ Wine Quality Prediction/
 │   ├── Day5_Model_Interpretation_and_Final_Documentation.ipynb # Executed interpretability & champion model notebook
 │   └── generate_day5_notebook.py                    # Day 5 reproducible notebook generator
 ├── reports/
+│   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
 │       ├── day1_class_distribution.png              # Quality class distribution plot
 │       ├── day1_quality_distribution.png            # Annotated frequency bar plot
@@ -60,7 +63,11 @@ Wine Quality Prediction/
 │       ├── day5_linear_coefficients.png             # Directional standardized weights & odds ratios (SGD)
 │       ├── day5_partial_dependence_plots.png        # 1D PDP response curves & rug plots for top chemical drivers
 │       ├── day5_pdp_2d_interactions.png             # Bivariate 2D contour maps for key enological trade-offs
-│       └── day5_champion_model_summary.png          # Executive champion model scorecard & chemical contrast
+│       ├── day5_champion_model_summary.png          # Executive champion model scorecard & chemical contrast
+│       ├── day6_comprehensive_model_comparison.png  # Master multi-metric comparison across baseline & tuned models
+│       ├── day6_latency_vs_performance_tradeoff.png # Bubble plot of throughput vs ROC-AUC with artifact footprints
+│       ├── day6_deployment_decision_radar.png       # Multi-criteria spider radar chart across operational dimensions
+│       └── day6_executive_scorecard.png             # Final executive scorecard & deployment handover dashboard
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -68,7 +75,8 @@ Wine Quality Prediction/
 │   ├── feature_engineering.py       # Target binning, domain chemical feature synthesis, stratified splitting
 │   ├── baseline_models.py           # Classifier pipelines, evaluation diagnostics, and benchmark visualization
 │   ├── model_tuning.py              # Hyperparameter grids, Stratified 5-Fold CV, and threshold tuning
-│   └── model_interpretation.py      # Feature importance, PDP profiling, enological rules, and model serialization
+│   ├── model_interpretation.py      # Feature importance, PDP profiling, enological rules, and model serialization
+│   └── deployment_synthesis.py      # Latency benchmarking, master comparison table, MCDA scoring, and deployment
 ├── download_data.py                 # UCI dataset automated download script
 ├── requirements.txt                 # Project dependencies
 └── README.md                        # Documentation
@@ -83,6 +91,7 @@ Wine Quality Prediction/
 - [x] **Day 3: Target Engineering, Preprocessing Pipelines & Baseline Classification Models**
 - [x] **Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation**
 - [x] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
+- [x] **Day 6: Model Comparison Table, Hardware Latency Benchmarking & Production Deployment Synthesis**
 
 ---
 
@@ -528,6 +537,84 @@ All diagnostic and interpretability figures are saved in `reports/figures/`:
 
 ---
 
+## 🚀 Day 6: Master Model Comparison, Latency Benchmarks & Production Deployment Synthesis
+
+On Day 6, the entire 6-day project lifecycle was consolidated, synthesized, and benchmarked for real-world winery deployment. We conducted empirical latency profiling across CPU architectures, constructed an exhaustive master comparison matrix, performed Multi-Criteria Decision Analysis (MCDA), assembled a reproducible Master Jupyter Notebook, and formulated production deployment blueprints.
+
+### 1. Master Side-by-Side Model Comparison Table
+
+The following comprehensive benchmark matrix summarizes test set performance ($N=320$ held-out samples: 43 Good, 277 Normal), runtime latency, throughput, and disk footprints across Baseline (Day 3) and Tuned (Day 4/5) configurations:
+
+| Model Stage | Classifier | Test Accuracy | Balanced Accuracy | Precision (Good) | Recall (Good) | F1-Score (Good) | ROC-AUC | PR-AUC | Interpretability | Single Latency (µs) | Batch Throughput (samples/s) | Model Size (KB) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: | :---: | :---: |
+| **Baseline (Day 3)** | Random Forest | **93.44%** | 0.7951 | **86.67%** | 60.47% | 0.7123 | 0.9318 | 0.8120 | High (Tree Gini) | ~93,800 µs | 2,830 | 778.5 KB |
+| **Baseline (Day 3)** | SGD Classifier | 85.00% | 0.5204 | 27.27% | 6.98% | 0.1111 | 0.7501 | 0.2840 | High (Linear) | **~2,470 µs** | **129,345** | **1.7 KB** |
+| **Baseline (Day 3)** | Support Vector Classifier | 90.31% | 0.6690 | 83.33% | 34.88% | 0.4918 | 0.8698 | 0.6540 | Moderate (RBF) | ~2,600 µs | 14,080 | 35.6 KB |
+| **Tuned (Day 4/5)** | **Random Forest (Champion)** | **93.13%** | **0.8424** | 75.61% | **72.09%** | **0.7381** | **0.9324** | **0.8204** | **High (MDI + PDP)** | ~93,800 µs | 2,830 | 778.5 KB |
+| **Tuned (Day 4/5)** | **SVC** | 87.50% | 0.8001 | 52.63% | 69.77% | 0.6000 | 0.8943 | 0.7103 | Moderate (Support Vectors) | ~2,600 µs | 14,080 | 35.6 KB |
+| **Tuned (Day 4/5)** | **SGD Classifier** | 81.25% | 0.8229 | 40.45% | **83.72%** | 0.5455 | 0.8972 | 0.5823 | High (Standardized $\beta$) | **~2,470 µs** | **129,345** | **1.7 KB** |
+| **Tuned + Calibrated** | **Random Forest ($\tau=0.35$)** | 88.12% | **0.8520** | 60.71% | **79.07%** | 0.6869 | **0.9368** | **0.8095** | **Peak Operational Balanced Accuracy & Recall** |
+
+---
+
+### 2. Empirical Latency & Hardware Efficiency Benchmarks
+
+Evaluated on standardized x86-64 runtime (100 single-sample inference runs, 20 full-batch passes):
+
+| Classification Pipeline | Fit Latency (ms) | Single-Sample Latency (µs) | Batch Execution (ms) | Throughput (samples/sec) | Serialized Footprint (KB) | Memory Working Set (RAM) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **SGD Classifier** | **13.8 ms** | **~2,475 µs** | **2.47 ms** | **~129,345 samples/s** | **1.73 KB** | < 1 MB |
+| **Support Vector Classifier** | 332.3 ms | ~2,599 µs | 22.73 ms | ~14,078 samples/s | 35.60 KB | ~3 MB |
+| **Random Forest (Champion)** | 822.8 ms | ~93,800 µs | 113.09 ms | ~2,830 samples/s | 778.53 KB (3.4 MB uncompressed) | ~12 MB |
+
+---
+
+### 3. Multi-Criteria Decision Analysis (MCDA) & Scenario Suitability
+
+To select the right architecture for different deployment contexts, models were scored across three operational profiles (0–100 scale):
+
+| Classifier | Scenario A: Cellar Reserve QA (Weight: Recall & Explainability) | Scenario B: Inline Sensor IoT (Weight: Latency & Memory) | Scenario C: Cloud Microservice REST (Weight: Generalizability & Throughput) | Overall Readiness Index | Deployment Recommendation |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **Random Forest** | **86.4 / 100** | 22.8 / 100 | **88.2 / 100** | **77.7 / 100** | 🏆 **Primary Production Champion** (Cloud REST & Lab QA) |
+| **SGD Classifier** | 81.1 / 100 | **96.0 / 100** | 84.6 / 100 | **86.0 / 100** | ⚡ **Edge Specialist** (Inline Vat Fermentation Sensors) |
+| **SVC** | 72.5 / 100 | 38.3 / 100 | 49.3 / 100 | 55.8 / 100 | ⚠️ High Memory / Scaling Bottleneck with support vectors |
+
+---
+
+### 4. Definitive Champion Architecture & Production Verdict
+
+* **Designated Champion:** **Tuned Random Forest Pipeline** ([`models/champion_rf_pipeline.joblib`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/champion_rf_pipeline.joblib))
+* **Decision Threshold:** $\tau^* = 0.35$ (Captures 34 of 43 premium wines; Balanced Accuracy: 85.20%, ROC-AUC: 0.9368)
+* **Core Enological Levers:**
+  1. **Alcohol Content:** Strongest positive driver ($\ge 11.5\%$ vol).
+  2. **Volatile Acidity:** Strongest negative sensory defect ($\le 0.40$ g/dm$^3$).
+  3. **Sulphates:** Vital antioxidant preservative ($0.70 - 0.85$ g/dm$^3$).
+  4. **Active Free SO2 Fraction:** Must exceed $\ge 25\%$ of total SO2 to prevent aerobic oxidation.
+
+---
+
+### 5. Production Microservice & Monitoring Blueprint
+
+* **Turnkey REST API:** Production FastAPI microservice available in [`src/deployment_synthesis.py`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/src/deployment_synthesis.py) with Pydantic validation, health probes, and calibrated threshold support.
+* **Continuous Monitoring Protocol:**
+  - Annual Kolmogorov-Smirnov (K-S) distribution tests on incoming harvest chemistry to detect climatic vintage drift ($p < 0.01$ alert).
+  - Blind sommelier sensory evaluation audits to detect concept drift.
+  - Automated continuous retraining via GitHub Actions executing [`notebooks/Wine_Quality_Prediction_Master.ipynb`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/notebooks/Wine_Quality_Prediction_Master.ipynb).
+
+---
+
+### 6. Generated Day 6 Figures
+
+All synthesis figures are published in `reports/figures/`:
+* [day6_comprehensive_model_comparison.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day6_comprehensive_model_comparison.png) — Grouped multi-metric comparison across baseline and tuned models.
+* [day6_latency_vs_performance_tradeoff.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day6_latency_vs_performance_tradeoff.png) — Pareto bubble chart illustrating throughput vs. ROC-AUC and disk footprint.
+* [day6_deployment_decision_radar.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day6_deployment_decision_radar.png) — Multi-criteria radar chart assessing operational trade-offs across all architectures.
+* [day6_executive_scorecard.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day6_executive_scorecard.png) — Executive project scorecard and production handover dashboard.
+
+* 📑 **Full Technical Report:** [`reports/final_model_comparison.md`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/final_model_comparison.md)
+
+---
+
 ## ⚙️ Setup and Usage
 
 1. **Install dependencies:**
@@ -535,7 +622,7 @@ All diagnostic and interpretability figures are saved in `reports/figures/`:
    pip install -r requirements.txt
    ```
 
-2. **Run end-to-end training, interpretation, and inference routines:**
+2. **Run end-to-end training, interpretation, and synthesis routines:**
    ```python
    from src.data_loader import load_wine_data
    from src.feature_engineering import (
@@ -559,6 +646,12 @@ All diagnostic and interpretability figures are saved in `reports/figures/`:
        predict_wine_quality_sample,
        compute_rf_feature_importances,
        compute_permutation_importances
+   )
+   from src.deployment_synthesis import (
+       benchmark_model_latencies,
+       compile_master_comparison_table,
+       compute_deployment_suitability_matrix,
+       export_final_comparison_markdown
    )
 
    # Load and prepare features
@@ -589,22 +682,24 @@ All diagnostic and interpretability figures are saved in `reports/figures/`:
    }
    result = predict_wine_quality_sample(champion_pipeline, sample, threshold=0.35)
    print("Predicted:", result["predicted_label"], "| Probability:", result["probability_good"])
+
+   # 4. Run Day 6 Latency & Deployment Benchmarking
+   tuned_models = {name: res["best_estimator"] for name, res in search_results.items()}
+   bench_df = benchmark_model_latencies(tuned_models, X_train, y_train, X_test, y_test)
+   master_comp = compile_master_comparison_table(base_results, search_results, bench_df)
+   suitability = compute_deployment_suitability_matrix(master_comp)
+   export_final_comparison_markdown(master_comp, suitability, bench_df)
    ```
 
 3. **Launch Jupyter Notebooks:**
    ```bash
-   # Day 1: Data Ingestion & Structure Inspection
+   # Master Pipeline (All 6 Days Consolidated & Executable):
+   jupyter notebook notebooks/Wine_Quality_Prediction_Master.ipynb
+
+   # Individual Daily Milestone Notebooks:
    jupyter notebook notebooks/Day1_Data_Inspection_and_Distribution.ipynb
-
-   # Day 2: Exploratory Data Analysis & Physicochemical Profiling
    jupyter notebook notebooks/Day2_Exploratory_Data_Analysis.ipynb
-
-   # Day 3: Target Engineering & Baseline Classification Models
    jupyter notebook notebooks/Day3_Target_Engineering_and_Baseline_Models.ipynb
-
-   # Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation
    jupyter notebook notebooks/Day4_Hyperparameter_Optimization_and_Evaluation.ipynb
-
-   # Day 5: Model Interpretation, Feature Importance & Final Documentation
    jupyter notebook notebooks/Day5_Model_Interpretation_and_Final_Documentation.ipynb
    ```

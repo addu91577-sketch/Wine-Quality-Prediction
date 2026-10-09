@@ -66,6 +66,17 @@ from src.model_interpretation import (
     plot_pdp_2d_interactions,
     plot_champion_model_summary
 )
+from src.deployment_synthesis import (
+    benchmark_model_latencies,
+    compile_master_comparison_table,
+    compute_deployment_suitability_matrix,
+    plot_comprehensive_model_comparison,
+    plot_latency_vs_performance_tradeoff,
+    plot_deployment_decision_radar,
+    plot_executive_scorecard,
+    generate_production_fastapi_snippet,
+    export_final_comparison_markdown
+)
 
 __all__ = [
     "load_wine_data",
@@ -115,5 +126,15 @@ __all__ = [
     "plot_linear_coefficients",
     "plot_partial_dependence_grid",
     "plot_pdp_2d_interactions",
-    "plot_champion_model_summary"
+    "plot_champion_model_summary",
+    "benchmark_model_latencies",
+    "compile_master_comparison_table",
+    "compute_deployment_suitability_matrix",
+    "plot_comprehensive_model_comparison",
+    "plot_latency_vs_performance_tradeoff",
+    "plot_deployment_decision_radar",
+    "plot_executive_scorecard",
+    "generate_production_fastapi_snippet",
+    "export_final_comparison_markdown"
 ]
+
