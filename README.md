@@ -19,6 +19,9 @@ An end-to-end machine learning project to train and compare classification model
 
 ```plaintext
 Wine Quality Prediction/
+├── .github/
+│   └── workflows/
+│       └── mlops_pipeline.yml       # Automated GitHub Actions CI/CD pipeline
 ├── Data/
 │   ├── winequality-red.csv          # Red wine physicochemical & sensory dataset (1599 x 12)
 │   ├── winequality-white.csv        # White wine physicochemical & sensory dataset (4898 x 12)
@@ -27,8 +30,8 @@ Wine Quality Prediction/
 │   ├── champion_rf_pipeline.joblib  # Serialized production Random Forest pipeline
 │   └── champion_rf_pipeline.json    # Pipeline architecture, parameters & test benchmarks metadata
 ├── notebooks/
-│   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end 6-day project pipeline
-│   ├── generate_master_notebook.py          # Day 6 reproducible master notebook generator
+│   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
+│   ├── generate_master_notebook.py          # Reproducible master notebook generator
 │   ├── Day1_Data_Inspection_and_Distribution.ipynb  # Executed data inspection & class distribution notebook
 │   ├── generate_day1_notebook.py                    # Day 1 reproducible notebook generator
 │   ├── Day2_Exploratory_Data_Analysis.ipynb         # Executed EDA, statistical profiling & correlation notebook
@@ -38,7 +41,9 @@ Wine Quality Prediction/
 │   ├── Day4_Hyperparameter_Optimization_and_Evaluation.ipynb # Executed tuning & cross-validation notebook
 │   ├── generate_day4_notebook.py                    # Day 4 reproducible notebook generator
 │   ├── Day5_Model_Interpretation_and_Final_Documentation.ipynb # Executed interpretability & champion model notebook
-│   └── generate_day5_notebook.py                    # Day 5 reproducible notebook generator
+│   ├── generate_day5_notebook.py                    # Day 5 reproducible notebook generator
+│   ├── Day7_Production_API_and_Deployment.ipynb     # Executed production API, dashboard & testing notebook
+│   └── generate_day7_notebook.py                    # Day 7 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -67,7 +72,11 @@ Wine Quality Prediction/
 │       ├── day6_comprehensive_model_comparison.png  # Master multi-metric comparison across baseline & tuned models
 │       ├── day6_latency_vs_performance_tradeoff.png # Bubble plot of throughput vs ROC-AUC with artifact footprints
 │       ├── day6_deployment_decision_radar.png       # Multi-criteria spider radar chart across operational dimensions
-│       └── day6_executive_scorecard.png             # Final executive scorecard & deployment handover dashboard
+│       ├── day6_executive_scorecard.png             # Final executive scorecard & deployment handover dashboard
+│       ├── day7_api_latency_distribution.png        # Single-sample REST API latency distribution (P50/P90/P95/P99)
+│       ├── day7_batch_inference_scaling.png         # Vectorized batch throughput scaling curve (1 to 500 samples)
+│       ├── day7_production_architecture.png         # End-to-end MLOps serving architecture & request pipeline
+│       └── day7_sommelier_profile_radar.png         # Radar alignment comparing specimen against standard & reserve
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -76,7 +85,18 @@ Wine Quality Prediction/
 │   ├── baseline_models.py           # Classifier pipelines, evaluation diagnostics, and benchmark visualization
 │   ├── model_tuning.py              # Hyperparameter grids, Stratified 5-Fold CV, and threshold tuning
 │   ├── model_interpretation.py      # Feature importance, PDP profiling, enological rules, and model serialization
-│   └── deployment_synthesis.py      # Latency benchmarking, master comparison table, MCDA scoring, and deployment
+│   ├── deployment_synthesis.py      # Latency benchmarking, master comparison table, MCDA scoring, and deployment
+│   ├── production_service.py        # Production FastAPI REST microservice & Pydantic v2 data contract
+│   ├── interactive_dashboard.py     # Streamlit sommelier decision support & batch laboratory dashboard
+│   └── day7_figures.py              # Day 7 publication figures generator
+├── tests/
+│   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
+│   └── test_production_service.py   # REST API, schema validation, threshold override & latency tests
+├── conftest.py                      # Pytest sys.path setup fixture
+├── pytest.ini                       # Pytest test execution configuration
+├── Dockerfile                       # Multi-stage production container specification
+├── docker-compose.yml               # Multi-service composition (FastAPI + Streamlit Dashboard)
+├── .dockerignore                    # Build context exclusions
 ├── download_data.py                 # UCI dataset automated download script
 ├── requirements.txt                 # Project dependencies
 └── README.md                        # Documentation
@@ -92,6 +112,7 @@ Wine Quality Prediction/
 - [x] **Day 4: Hyperparameter Optimization, Cross-Validation & Model Evaluation**
 - [x] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
 - [x] **Day 6: Model Comparison Table, Hardware Latency Benchmarking & Production Deployment Synthesis**
+- [x] **Day 7: Production Inference Engine, Real-Time REST API, Interactive Web Dashboard, Docker Containerization & CI/CD Automated Testing Framework**
 
 ---
 
@@ -693,7 +714,7 @@ All synthesis figures are published in `reports/figures/`:
 
 3. **Launch Jupyter Notebooks:**
    ```bash
-   # Master Pipeline (All 6 Days Consolidated & Executable):
+   # Master Pipeline (All Consolidated & Executable):
    jupyter notebook notebooks/Wine_Quality_Prediction_Master.ipynb
 
    # Individual Daily Milestone Notebooks:
@@ -702,4 +723,130 @@ All synthesis figures are published in `reports/figures/`:
    jupyter notebook notebooks/Day3_Target_Engineering_and_Baseline_Models.ipynb
    jupyter notebook notebooks/Day4_Hyperparameter_Optimization_and_Evaluation.ipynb
    jupyter notebook notebooks/Day5_Model_Interpretation_and_Final_Documentation.ipynb
+   jupyter notebook notebooks/Day7_Production_API_and_Deployment.ipynb
    ```
+
+4. **Launch Production Services & Automated Testing (Day 7):**
+   ```bash
+   # 1. Start FastAPI REST API Production Server (Port 8000)
+   uvicorn src.production_service:app --host 0.0.0.0 --port 8000 --reload
+   # Interactive Swagger Documentation: http://localhost:8000/docs
+   # Alternative ReDoc Documentation:  http://localhost:8000/redoc
+
+   # 2. Start Interactive Sommelier Streamlit Web Platform (Port 8501)
+   streamlit run src/interactive_dashboard.py
+
+   # 3. Execute Automated Pytest Suite (22 Unit & Integration Tests)
+   pytest -v
+
+   # 4. Deploy via Docker Compose (Multi-Container REST API + Dashboard)
+   docker compose up --build
+   ```
+
+---
+
+## 🚀 Day 7: Production Inference Engine, Real-Time REST API, Interactive Web Dashboard, Docker Containerization & CI/CD Automated Testing Framework
+
+On Day 7, the project transitioned from offline model analysis to a production-grade, hardened Machine Learning serving architecture and interactive decision support platform.
+
+```
+  +-----------------------------------------------------------------------+
+  |                          Client Ingestion Layer                       |
+  |     (Winery Laboratory LIMS / Streamlit Dashboard / REST Clients)      |
+  +-----------------------------------+-----------------------------------+
+                                      | HTTP POST /predict
+                                      v
+  +-----------------------------------------------------------------------+
+  |                      FastAPI Microservice Gateway                     |
+  |         (Pydantic v2 Schema Bounds & Biological Sanity Checks)        |
+  +-----------------------------------+-----------------------------------+
+                                      | Validated Attributes
+                                      v
+  +-----------------------------------------------------------------------+
+  |                   Domain Feature Synthesis Engine                     |
+  |    (5 Biochemical Ratios: SO2, Alc/Density, Acidity, SO4/Chloride)    |
+  +-----------------------------------+-----------------------------------+
+                                      | 16-Feature Vector
+                                      v
+  +-----------------------------------------------------------------------+
+  |                 Champion Random Forest Ensemble Core                  |
+  |        (200 Trees, Depth 18, Class-Weight Balanced, Joblib Loaded)    |
+  +-----------------------------------+-----------------------------------+
+                                      | Posterior Probability (P_good)
+                                      v
+  +-----------------------------------------------------------------------+
+  |                   Sensory Grading & Guidance Engine                   |
+  |    (Optimal Screening Cutoff tau=0.35 + Enological Alert Rules)       |
+  +-----------------------------------+-----------------------------------+
+                                      |
+                                      v
+             🏆 Sensory Tier (Grand Reserve / Reserve / Table)
+                      + Cellar Operational Directives
+```
+
+### 1. Production REST API Endpoints (`src/production_service.py`)
+
+A production FastAPI microservice was constructed with high-throughput inference endpoints, automated biochemical ratio computation, and interactive Swagger documentation:
+
+| HTTP Method | Route | Description | Request / Query Schema | Response Model |
+| :---: | :--- | :--- | :--- | :--- |
+| `GET` | `/` | Root service welcome banner & endpoint index | None | `dict` (links, status) |
+| `GET` | `/health` | Uptime probe, system health & model readiness | None | `HealthResponse` |
+| `GET` | `/metadata` | Champion model provenance, metrics & parameters | None | `MetadataResponse` |
+| `GET` | `/rules` | Quantitative enological targets & benchmarks | None | `dict` (thresholds) |
+| `POST` | `/predict` | Real-time single-sample inference & cellar advice | `WinePhysicochemicalInput` | `PredictionResult` |
+| `POST` | `/predict/batch` | Vectorized multi-sample laboratory batch scoring | `BatchPredictionRequest` | `BatchPredictionResponse` |
+
+### 2. Pydantic v2 Data Contract & Schema Boundary Enforcement
+
+Strict physical validation bounds prevent biologically impossible, aberrant, or corrupted laboratory inputs from reaching the estimator:
+
+- `fixed acidity`: $[3.0, 20.0]$ $\text{g/dm}^3$ tartaric
+- `volatile acidity`: $[0.05, 2.50]$ $\text{g/dm}^3$ acetic
+- `citric acid`: $[0.0, 1.50]$ $\text{g/dm}^3$
+- `residual sugar`: $[0.4, 30.0]$ $\text{g/dm}^3$
+- `chlorides`: $[0.005, 1.000]$ $\text{g/dm}^3$ sodium chloride
+- `free sulfur dioxide`: $[1.0, 120.0]$ $\text{mg/dm}^3$
+- `total sulfur dioxide`: $[5.0, 350.0]$ $\text{mg/dm}^3$ (Asserted: $\ge \text{free SO}_2$)
+- `density`: $[0.970, 1.050]$ $\text{g/cm}^3$
+- `pH`: $[2.60, 4.60]$
+- `sulphates`: $[0.20, 2.50]$ $\text{g/dm}^3$ potassium sulphate
+- `alcohol`: $[7.0, 17.5]$ $\%$ vol
+
+### 3. Commercial Sensory Grading & Enological Cellar Directives
+
+Every prediction is contextualized into commercial winery tiers and cellar guidance:
+- **🏆 Grand Reserve ($P \ge 0.75$):** Exceptional enological balance. Candidate for premium oak barrel maturation and top-tier reserve labeling.
+- **🍷 Reserve Grade ($P \ge 0.35$):** Solid candidate for reserve or vintage bottling. Cleared industrial screening threshold ($\tau = 0.35$).
+- **🍇 Table Standard ($0.20 \le P < 0.35$):** Standard commercial quality. Suitable for immediate table wine bottling, early release, or volume blending.
+- **📦 Commercial Bulk ($P < 0.20$):** Low reserve probability. Recommended for secondary blending, dealcoholization, or value commercial lines.
+
+### 4. Interactive Streamlit Web Platform (`src/interactive_dashboard.py`)
+
+A full-featured Streamlit application provides:
+- **Laboratory Specimen Profiler:** 11 interactive physicochemical sliders grouped by chemical category (Organic Acids, Fermentation Dynamics, Preservatives & Mineral Salinity).
+- **Enological Radar Chart:** Real-time visual alignment comparing the specimen's chemical profile against empirical benchmarks for Normal ($<7$) and Reserve ($\ge 7$) wines.
+- **Commercial Winery Batch Scorer:** Drag-and-drop CSV upload supporting thousands of wine vats, instant vectorized prediction scoring, KPI scorecards, and downloadable CSV audit reports.
+- **Architecture & Governance:** Model cards, hyperparameters, cross-validation metrics, and vintage drift monitoring protocols.
+
+### 5. Automated Test Suite (`tests/`, 22 Tests)
+
+A comprehensive automated test suite executed via `pytest`:
+- **`tests/test_production_service.py`:** Tests artifact loading, Pydantic schema validation, out-of-bounds rejection, SO₂ consistency assertions, `/health`, `/metadata`, `/rules`, `/predict`, `/predict/batch`, threshold overrides, and latency budgets.
+- **`tests/test_pipeline.py`:** Tests raw UCI dataset structure (1599x12, 0 nulls), Cortez class distribution, target binarization parity, engineered feature creation, stratified splitting, and pipeline prediction shapes.
+- **Test Results:** **22 passed, 100% pass rate.**
+
+### 6. Containerization & CI/CD Pipeline
+
+- **Multi-Stage `Dockerfile`:** Optimized Python 3.11-slim container with non-root security compliance (`appuser`), internal healthchecks (`curl -f http://localhost:8000/health`), and production Uvicorn server.
+- **`docker-compose.yml`:** Orchestrates the FastAPI REST service (Port 8000) alongside the Streamlit Dashboard (Port 8501) with automatic restarts and container dependency management.
+- **GitHub Actions (`.github/workflows/mlops_pipeline.yml`):** Automated CI/CD pipeline running multi-version matrix testing (Python 3.10 and 3.11), artifact integrity verification, full pytest suite execution, and REST API smoke tests.
+
+### 7. Generated Day 7 Figures
+
+All production serving figures are published in `reports/figures/`:
+* [day7_api_latency_distribution.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_api_latency_distribution.png) - Single-sample REST API inference latency distribution under ASGI serving, highlighting median, P90, P95 budget target, and P99.
+* [day7_batch_inference_scaling.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_batch_inference_scaling.png) - Vectorized batch throughput scaling curve illustrating processing time and throughput (samples/sec) across batch sizes from 1 to 500.
+* [day7_production_architecture.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_production_architecture.png) - Executive architecture infographic showing the Client Layer, Pydantic Validation Gateway, Feature Synthesis Engine, Champion Model Core, and Enological Decision Engine.
+* [day7_sommelier_profile_radar.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_sommelier_profile_radar.png) - 6-axis enological radar alignment profile comparing tested wine specimens against Standard ($<7$) and Reserve ($\ge 7$) benchmarks.
+

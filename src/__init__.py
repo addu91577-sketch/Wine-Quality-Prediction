@@ -77,6 +77,20 @@ from src.deployment_synthesis import (
     generate_production_fastapi_snippet,
     export_final_comparison_markdown
 )
+from src.production_service import (
+    WinePhysicochemicalInput,
+    PredictionResult,
+    BatchPredictionRequest,
+    BatchPredictionResponse,
+    HealthResponse,
+    MetadataResponse,
+    WineQualityInferenceService,
+    derive_interaction_features,
+    evaluate_enological_rules,
+    create_app,
+    get_test_client,
+    RECOMMENDED_SCREENING_THRESHOLD
+)
 
 __all__ = [
     "load_wine_data",
@@ -135,6 +149,18 @@ __all__ = [
     "plot_deployment_decision_radar",
     "plot_executive_scorecard",
     "generate_production_fastapi_snippet",
-    "export_final_comparison_markdown"
+    "export_final_comparison_markdown",
+    "WinePhysicochemicalInput",
+    "PredictionResult",
+    "BatchPredictionRequest",
+    "BatchPredictionResponse",
+    "HealthResponse",
+    "MetadataResponse",
+    "WineQualityInferenceService",
+    "derive_interaction_features",
+    "evaluate_enological_rules",
+    "create_app",
+    "get_test_client",
+    "RECOMMENDED_SCREENING_THRESHOLD"
 ]
 

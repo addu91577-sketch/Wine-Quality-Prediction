@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Wine Quality REST API Service (FastAPI)
+  wine-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wine-quality-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    command: uvicorn src.production_service:app --host 0.0.0.0 --port 8000 --workers 2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # Interactive Wine Sommelier Dashboard (Streamlit)
+  wine-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wine-quality-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: streamlit run src/interactive_dashboard.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - wine-api
+    restart: unless-stopped

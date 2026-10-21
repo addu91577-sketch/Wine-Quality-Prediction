@@ -1,0 +1,43 @@
+name: Wine Quality MLOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test-and-validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify Model Artifact Integrity
+        run: |
+          python -c "import joblib, json; p = joblib.load('models/champion_rf_pipeline.joblib'); m = json.load(open('models/champion_rf_pipeline.json')); assert p is not None; print('Champion Model Artifact Verified. Holdout ROC-AUC:', m.get('test_roc_auc'))"
+
+      - name: Execute Automated Test Suite (Pytest)
+        run: |
+          pytest -v --durations=10
+
+      - name: Execute REST API Smoke Test
+        run: |
+          python -c "from src.production_service import get_test_client; c = get_test_client(); r = c.get('/health'); assert r.status_code == 200; assert r.json()['model_loaded'] is True; print('Health check verified successfully:', r.json())"
+          python -c "from src.production_service import get_test_client; c = get_test_client(); sample = {'fixed acidity': 8.5, 'volatile acidity': 0.32, 'citric acid': 0.45, 'residual sugar': 2.2, 'chlorides': 0.068, 'free sulfur dioxide': 18.0, 'total sulfur dioxide': 36.0, 'density': 0.9958, 'pH': 3.32, 'sulphates': 0.82, 'alcohol': 12.4}; r = c.post('/predict', json=sample); assert r.status_code == 200; print('Sample prediction verified:', r.json()['prediction_label'], 'Grade:', r.json()['sommelier_grade'])"
