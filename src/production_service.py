@@ -258,6 +258,41 @@ class MetadataResponse(BaseModel):
     loaded_artifact_path: str
 
 
+class FeatureDriftItem(BaseModel):
+    """Statistical drift evaluation for an individual feature."""
+    feature: str
+    psi: float
+    ks_statistic: float
+    ks_p_value: float
+    wasserstein_distance: float
+    drift_status: str
+    alert_level: str
+
+
+class DriftAuditResponse(BaseModel):
+    """Consolidated drift audit response across an incoming laboratory batch."""
+    total_features_evaluated: int
+    features_red_alert: int
+    features_amber_alert: int
+    features_green: int
+    overall_drift_status: str
+    retraining_recommended: bool
+    triggered_reasons: List[str]
+    feature_drift_scorecard: List[FeatureDriftItem]
+    timestamp: str
+
+
+class DriftMetricsResponse(BaseModel):
+    """System drift monitoring parameters and PSI alerting thresholds."""
+    status: str
+    baseline_dataset_size: int
+    baseline_features: List[str]
+    psi_thresholds: Dict[str, float]
+    monitoring_mode: str
+    server_time: str
+
+
+
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
 # ============================================================================
@@ -703,6 +738,95 @@ def create_app(
             return service.predict_batch(
                 batch_request.samples,
                 threshold=batch_request.threshold
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get(
+        "/metrics/drift",
+        response_model=DriftMetricsResponse,
+        tags=["Monitoring"]
+    )
+    def get_drift_monitoring_metrics():
+        """
+        Baseline statistical monitoring parameters and PSI alerting thresholds.
+        """
+        from src.drift_monitoring import PSI_THRESHOLD_GREEN, PSI_THRESHOLD_AMBER, RAW_PHYSICOCHEMICAL_FEATURES
+        return DriftMetricsResponse(
+            status="ACTIVE",
+            baseline_dataset_size=1599,
+            baseline_features=RAW_PHYSICOCHEMICAL_FEATURES,
+            psi_thresholds={
+                "green_max": PSI_THRESHOLD_GREEN,
+                "amber_max": PSI_THRESHOLD_AMBER,
+                "red_min": PSI_THRESHOLD_AMBER
+            },
+            monitoring_mode="QUANTILE_PSI_AND_KS_2SAMP",
+            server_time=datetime.utcnow().isoformat()
+        )
+
+    @app.post(
+        "/audit/evaluate",
+        response_model=DriftAuditResponse,
+        tags=["Monitoring"]
+    )
+    def evaluate_incoming_batch_drift(batch_request: BatchPredictionRequest):
+        """
+        Evaluate covariate shift and statistical drift on an incoming laboratory batch
+        relative to the baseline reference dataset.
+        """
+        from src.data_loader import load_wine_data
+        from src.drift_monitoring import compute_dataset_drift_summary, RAW_PHYSICOCHEMICAL_FEATURES
+
+        try:
+            samples_dicts = [s.to_raw_dict() for s in batch_request.samples]
+            batch_df = pd.DataFrame(samples_dicts)
+
+            ref_df = load_wine_data("red")
+            drift_summary = compute_dataset_drift_summary(ref_df, batch_df, feature_cols=RAW_PHYSICOCHEMICAL_FEATURES)
+
+            red_count = int((drift_summary["Alert_Level"] == "RED").sum())
+            amber_count = int((drift_summary["Alert_Level"] == "AMBER").sum())
+            green_count = int((drift_summary["Alert_Level"] == "GREEN").sum())
+
+            critical_levers = ["alcohol", "volatile acidity", "sulphates"]
+            critical_reds = [
+                row["Feature"] for _, row in drift_summary.iterrows()
+                if row["Alert_Level"] == "RED" and row["Feature"] in critical_levers
+            ]
+
+            reasons: List[str] = []
+            if red_count >= 2:
+                reasons.append(f"{red_count} features exceeded Red PSI threshold (>= 0.25)")
+            if critical_reds:
+                reasons.append(f"Critical enological quality driver(s) severely drifted: {critical_reds}")
+
+            retraining_rec = (red_count >= 2) or bool(critical_reds)
+            overall_status = "RED" if red_count > 0 else ("AMBER" if amber_count > 0 else "GREEN")
+
+            scorecard = [
+                FeatureDriftItem(
+                    feature=row["Feature"],
+                    psi=float(row["PSI"]),
+                    ks_statistic=float(row["KS_Statistic"]),
+                    ks_p_value=float(row["KS_P_Value"]),
+                    wasserstein_distance=float(row["Wasserstein_Dist"]),
+                    drift_status=row["Drift_Status"],
+                    alert_level=row["Alert_Level"]
+                )
+                for _, row in drift_summary.iterrows()
+            ]
+
+            return DriftAuditResponse(
+                total_features_evaluated=len(scorecard),
+                features_red_alert=red_count,
+                features_amber_alert=amber_count,
+                features_green=green_count,
+                overall_drift_status=overall_status,
+                retraining_recommended=retraining_rec,
+                triggered_reasons=reasons,
+                feature_drift_scorecard=scorecard,
+                timestamp=datetime.utcnow().isoformat()
             )
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))

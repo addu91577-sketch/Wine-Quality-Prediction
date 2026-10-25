@@ -8,6 +8,9 @@ Modules:
 - baseline_models: Scikit-learn classification pipelines (RF, SGD, SVC) and diagnostic evaluation.
 - model_tuning: Hyperparameter optimization, Stratified 5-Fold CV, threshold calibration, and evaluation.
 - model_interpretation: Feature importance (MDI & Permutation), directional weights, PDP profiles, enological rules, and serialization.
+- deployment_synthesis: Hardware latency benchmarking, multi-criteria trade-off scoring, and handover synthesis.
+- production_service: Production FastAPI REST microservice, Pydantic v2 schemas, and health endpoints.
+- drift_monitoring: Covariate shift analysis (PSI, K-S), anomaly detection, sommelier concept drift tracking, and automated champion-challenger retraining.
 """
 
 from src.data_loader import load_wine_data, inspect_data, get_class_distribution
@@ -89,7 +92,25 @@ from src.production_service import (
     evaluate_enological_rules,
     create_app,
     get_test_client,
-    RECOMMENDED_SCREENING_THRESHOLD
+    RECOMMENDED_SCREENING_THRESHOLD,
+    FeatureDriftItem,
+    DriftAuditResponse,
+    DriftMetricsResponse
+)
+from src.drift_monitoring import (
+    calculate_psi,
+    compute_kolmogorov_smirnov,
+    compute_wasserstein_distance,
+    compute_feature_drift,
+    compute_dataset_drift_summary,
+    simulate_vintage_drift,
+    MultivariateAnomalyDetector,
+    AuditPerformanceTracker,
+    DriftRetrainingPipeline,
+    RAW_PHYSICOCHEMICAL_FEATURES,
+    ALL_MODEL_FEATURES,
+    PSI_THRESHOLD_GREEN,
+    PSI_THRESHOLD_AMBER
 )
 
 __all__ = [
@@ -161,6 +182,22 @@ __all__ = [
     "evaluate_enological_rules",
     "create_app",
     "get_test_client",
-    "RECOMMENDED_SCREENING_THRESHOLD"
+    "RECOMMENDED_SCREENING_THRESHOLD",
+    "FeatureDriftItem",
+    "DriftAuditResponse",
+    "DriftMetricsResponse",
+    "calculate_psi",
+    "compute_kolmogorov_smirnov",
+    "compute_wasserstein_distance",
+    "compute_feature_drift",
+    "compute_dataset_drift_summary",
+    "simulate_vintage_drift",
+    "MultivariateAnomalyDetector",
+    "AuditPerformanceTracker",
+    "DriftRetrainingPipeline",
+    "RAW_PHYSICOCHEMICAL_FEATURES",
+    "ALL_MODEL_FEATURES",
+    "PSI_THRESHOLD_GREEN",
+    "PSI_THRESHOLD_AMBER"
 ]
 

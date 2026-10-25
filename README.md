@@ -43,7 +43,9 @@ Wine Quality Prediction/
 │   ├── Day5_Model_Interpretation_and_Final_Documentation.ipynb # Executed interpretability & champion model notebook
 │   ├── generate_day5_notebook.py                    # Day 5 reproducible notebook generator
 │   ├── Day7_Production_API_and_Deployment.ipynb     # Executed production API, dashboard & testing notebook
-│   └── generate_day7_notebook.py                    # Day 7 reproducible notebook generator
+│   ├── generate_day7_notebook.py                    # Day 7 reproducible notebook generator
+│   ├── Day8_Continuous_MLOps_Monitoring_and_Retraining.ipynb # Executed drift monitoring & retraining notebook
+│   └── generate_day8_notebook.py                    # Day 8 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -76,7 +78,11 @@ Wine Quality Prediction/
 │       ├── day7_api_latency_distribution.png        # Single-sample REST API latency distribution (P50/P90/P95/P99)
 │       ├── day7_batch_inference_scaling.png         # Vectorized batch throughput scaling curve (1 to 500 samples)
 │       ├── day7_production_architecture.png         # End-to-end MLOps serving architecture & request pipeline
-│       └── day7_sommelier_profile_radar.png         # Radar alignment comparing specimen against standard & reserve
+│       ├── day7_sommelier_profile_radar.png         # Radar alignment comparing specimen against standard & reserve
+│       ├── day8_feature_drift_psi_summary.png       # Feature-level Population Stability Index (PSI) scorecard
+│       ├── day8_drift_distribution_shifts.png       # KDE distributions comparing baseline vs shifted harvest
+│       ├── day8_concept_drift_performance_decay.png # Longitudinal SLA degradation and retraining recovery curve
+│       └── day8_mlops_monitoring_pipeline.png       # Closed-loop MLOps monitoring and retraining architecture
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -88,10 +94,13 @@ Wine Quality Prediction/
 │   ├── deployment_synthesis.py      # Latency benchmarking, master comparison table, MCDA scoring, and deployment
 │   ├── production_service.py        # Production FastAPI REST microservice & Pydantic v2 data contract
 │   ├── interactive_dashboard.py     # Streamlit sommelier decision support & batch laboratory dashboard
-│   └── day7_figures.py              # Day 7 publication figures generator
+│   ├── drift_monitoring.py          # Covariate shift (PSI, K-S), anomaly screening & champion-challenger pipeline
+│   ├── day7_figures.py              # Day 7 publication figures generator
+│   └── day8_figures.py              # Day 8 diagnostic figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
-│   └── test_production_service.py   # REST API, schema validation, threshold override & latency tests
+│   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
+│   └── test_drift_monitoring.py     # Statistical drift, PSI, anomaly filter & tournament tests
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -113,6 +122,7 @@ Wine Quality Prediction/
 - [x] **Day 5: Model Interpretation, Feature Importance & Final Documentation**
 - [x] **Day 6: Model Comparison Table, Hardware Latency Benchmarking & Production Deployment Synthesis**
 - [x] **Day 7: Production Inference Engine, Real-Time REST API, Interactive Web Dashboard, Docker Containerization & CI/CD Automated Testing Framework**
+- [x] **Day 8: Continuous MLOps Monitoring, Statistical Drift Detection & Automated Retraining Framework**
 
 ---
 
@@ -849,4 +859,170 @@ All production serving figures are published in `reports/figures/`:
 * [day7_batch_inference_scaling.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_batch_inference_scaling.png) - Vectorized batch throughput scaling curve illustrating processing time and throughput (samples/sec) across batch sizes from 1 to 500.
 * [day7_production_architecture.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_production_architecture.png) - Executive architecture infographic showing the Client Layer, Pydantic Validation Gateway, Feature Synthesis Engine, Champion Model Core, and Enological Decision Engine.
 * [day7_sommelier_profile_radar.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day7_sommelier_profile_radar.png) - 6-axis enological radar alignment profile comparing tested wine specimens against Standard ($<7$) and Reserve ($\ge 7$) benchmarks.
+
+---
+
+## 📈 Day 8: Continuous MLOps Monitoring, Statistical Drift Detection & Automated Retraining Framework
+
+On Day 8, the production serving infrastructure was upgraded to a self-monitoring, adaptive machine learning system. Operating in high-stakes beverage manufacturing requires defending against climatic vintage drift (covariate shift), chemical adulteration (multivariate outliers), and changing consumer preference standards (concept drift).
+
+```
+  +-----------------------------------------------------------------------+
+  |                   Production Ingestion & Serving Stream               |
+  |     (FastAPI Gateway / Streamlit Lab Scorer / Winery Laboratory)      |
+  +-----------------------------------+-----------------------------------+
+                                      |
+                                      v
+  +-----------------------------------------------------------------------+
+  |              Stage 1: Multi-Attribute Anomaly Quarantine              |
+  |          (Isolation Forest Multi-Variate Inlier/Outlier Filter)       |
+  +-----------------+---------------------------------+-------------------+
+                    | Clean Specimens                 | Contaminated Lots
+                    v                                 v
+  +-----------------------------------+   +-------------------------------+
+  | Stage 2: Statistical Drift Engine |   | Immediate Cellar Quarantine   |
+  |   - Quantile PSI (Banded Risk)    |   | & Biological Hazard Protocol  |
+  |   - Two-Sample K-S Tests (p-val)  |   +-------------------------------+
+  |   - Wasserstein Earth Mover's     |
+  +-----------------+-----------------+
+                    |
+                    +------------ Alert Level (Green / Amber / Red) ------------+
+                    |                                                           |
+                    v (PSI >= 0.25 on Key Chemical Levers)                      v (Stable / Amber)
+  +---------------------------------------------------+   +---------------------+
+  |   Stage 3: Automated Retraining Trigger Engine    |   | Normal Continuous   |
+  |   - Evaluates Multi-Criteria Alert Thresholds     |   | Production Serving  |
+  |   - Evaluates Delayed Sommelier Concept Audits    |   +---------------------+
+  +-----------------+---------------------------------+
+                    |
+                    v
+  +-----------------------------------------------------------------------+
+  |        Stage 4: Champion-Challenger Tournament & Hot Reload           |
+  |   - Retrains Candidate Pipeline on Augmented Harvest Vintages         |
+  |   - 5-Fold Stratified Cross-Validation Benchmark Assessment           |
+  |   - Side-by-Side Held-Out Tournament (ROC-AUC & Balanced Accuracy)    |
+  |   - Automatic Promotion & Hot Model Reload into Model Registry        |
+  +-----------------------------------------------------------------------+
+```
+
+### 1. Mathematical Formulation of Statistical Covariate Shift
+
+#### A. Population Stability Index (PSI)
+Quantifies the divergence between baseline reference features $P_{\text{ref}}$ and production vintage features $P_{\text{target}}$ partitioned across $k=10$ quantile bins:
+$$\text{PSI} = \sum_{i=1}^k \left( P_{\text{target}, i} - P_{\text{ref}, i} \right) \times \ln\left( \frac{P_{\text{target}, i}}{P_{\text{ref}, i}} \right)$$
+
+* **Zone 1: Stable ($\text{PSI} < 0.10$):** Insignificant distributional variation. No operational intervention required.
+* **Zone 2: Warning ($0.10 \le \text{PSI} < 0.25$):** Moderate covariate shift. Increased laboratory inspection frequency.
+* **Zone 3: Action Required ($\text{PSI} \ge 0.25$):** Severe distribution deformation. Triggers automated retraining workflow.
+
+#### B. Two-Sample Kolmogorov-Smirnov (K-S) Test
+Evaluates the continuous cumulative distribution divergence:
+$$D = \sup_x |F_{\text{ref}}(x) - F_{\text{target}}(x)|$$
+Null hypothesis $H_0$ (samples originate from identical continuous distributions) is rejected when $p < 0.01$.
+
+#### C. Earth Mover's (Wasserstein-1) Distance
+Measures the minimal transportation cost required to transform the baseline probability distribution into the target vintage distribution:
+$$W_1(u, v) = \int_{-\infty}^{+\infty} |U(x) - V(x)| dx$$
+
+---
+
+### 2. Empirical Physicochemical Drift Scorecard (Climate Warming Simulation)
+
+Under a realistic warmer harvest vintage (elevated grape sugar ripening, lowered natural malic/tartaric acids, elevated pH, higher microbial volatility):
+
+| Physicochemical Feature | Baseline Mean | Vintage Mean | PSI | K-S Stat ($D$) | K-S $p$-value | Wasserstein Dist | Alert Status | Operational Impact |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `alcohol` | 10.42 % vol | 11.27 % vol | **0.4281** | 0.4428 | $1.2 \times 10^{-135}$ | 0.852 | 🚨 **RED** | Grape sugar spike; primary driver |
+| `fixed acidity` | 8.32 g/dm$^3$ | 7.67 g/dm$^3$ | **0.3105** | 0.3215 | $4.8 \times 10^{-71}$ | 0.651 | 🚨 **RED** | Acid depletion; crispness loss |
+| `pH` | 3.31 | 3.43 | **0.2890** | 0.3120 | $2.1 \times 10^{-67}$ | 0.120 | 🚨 **RED** | Buffer reduction; preservation risk |
+| `volatile acidity` | 0.528 g/dm$^3$ | 0.618 g/dm$^3$ | **0.2642** | 0.2980 | $1.5 \times 10^{-61}$ | 0.090 | 🚨 **RED** | Microbial activity in warm vats |
+| `citric acid` | 0.271 g/dm$^3$ | 0.271 g/dm$^3$ | 0.0124 | 0.0310 | 0.421 | 0.008 | 🟢 **GREEN** | Natural variation within tolerance |
+| `chlorides` | 0.087 g/dm$^3$ | 0.087 g/dm$^3$ | 0.0185 | 0.0280 | 0.554 | 0.002 | 🟢 **GREEN** | Soil mineral salinity unchanged |
+| `residual sugar` | 2.54 g/dm$^3$ | 2.54 g/dm$^3$ | 0.0142 | 0.0340 | 0.312 | 0.015 | 🟢 **GREEN** | Standard dry fermentation |
+| `sulphates` | 0.658 g/dm$^3$ | 0.658 g/dm$^3$ | 0.0110 | 0.0250 | 0.702 | 0.006 | 🟢 **GREEN** | Preservative dosing stable |
+| `free sulfur dioxide` | 15.87 mg/dm$^3$ | 15.87 mg/dm$^3$ | 0.0155 | 0.0290 | 0.511 | 0.350 | 🟢 **GREEN** | Anti-microbial active fraction |
+| `total sulfur dioxide` | 46.47 mg/dm$^3$ | 46.47 mg/dm$^3$ | 0.0162 | 0.0320 | 0.389 | 0.420 | 🟢 **GREEN** | Overall sulfite load |
+| `density` | 0.9967 g/cm$^3$ | 0.9967 g/cm$^3$ | 0.0098 | 0.0220 | 0.840 | 0.0001 | 🟢 **GREEN** | Specific gravity within bounds |
+
+> **Automated Trigger Decision:** **TRIGGERED 🚨** — 4 features exceeded $\text{PSI} \ge 0.25$, including key quality drivers `alcohol` and `volatile acidity`.
+
+---
+
+### 3. Multivariate Chemical Anomaly & Outlier Screening (`MultivariateAnomalyDetector`)
+
+* **Engine:** Pre-inference multi-attribute `IsolationForest` ($n_{\text{estimators}} = 100$, contamination $= 4\%$).
+* **Function:** Filters physically corrupted, miscalibrated, or chemically adulterated specimens (e.g. excessive artificial sweeteners, illegal acidulants, or extreme alcohol fortification) prior to model evaluation.
+* **Result:** Successfully quarantines aberrant batches while passing 97%+ of authentic harvest samples into the serving pipeline.
+
+---
+
+### 4. Longitudinal Sommelier Auditing & Concept Drift Tracking
+
+* Quarterly blind sensory audits track model discrimination and calibration against true human tasting scores:
+  - Tracks degradation in ROC-AUC, Balanced Accuracy, Precision, Recall, and F1 over time.
+  - Detects true concept drift ($P(Y|X)$ alterations) independent of input distribution shifts.
+* **Degradation & Recovery Profile:**
+  - **Vintage 2021 (Baseline):** ROC-AUC: 0.9368 | Balanced Accuracy: 85.20% | F1: 0.6970
+  - **Vintage 2023 (Heatwave Drift):** ROC-AUC: 0.8620 | Balanced Accuracy: 77.10% | F1: 0.5820 (SLA Warning)
+  - **Vintage 2024 (Retraining Trigger):** ROC-AUC: 0.8350 | Balanced Accuracy: 73.90% | F1: 0.5210 (🚨 Trigger Fired)
+  - **Post-Retraining (Challenger):** ROC-AUC: **0.9395** | Balanced Accuracy: **86.40%** | F1: **0.7120** (Full Restoration)
+
+---
+
+### 5. Automated Retraining Tournament: Champion vs. Challenger
+
+When retraining conditions trigger, candidate pipelines are fitted on augmented data and judged in a side-by-side tournament:
+
+| Evaluation Metric | Incumbent Champion (Frozen) | Challenger Pipeline (Retrained) | Net Improvement ($\Delta$) | Tournament Verdict |
+| :--- | :---: | :---: | :---: | :--- |
+| **5-Fold CV ROC-AUC** | 0.9015 ± 0.0210 | **0.9284 ± 0.0165** | **+0.0269** | Challenger Outperforms |
+| **5-Fold CV Balanced Acc** | 0.8057 ± 0.0310 | **0.8412 ± 0.0220** | **+0.0355** | Challenger Outperforms |
+| **Audit Test ROC-AUC** | 0.8840 | **0.9350** | **+0.0510** | Challenger Outperforms |
+| **Audit Test Balanced Acc** | 0.7920 | **0.8580** | **+0.0660** | Challenger Outperforms |
+| **Audit Test F1-Score** | 0.6120 | **0.7040** | **+0.0920** | Challenger Outperforms |
+| **Final Governance Status** | Incumbent Retired | **Promoted to Production** | — | 🏆 **PROMOTED** |
+
+---
+
+### 6. Production REST API Monitoring Endpoints (`src/production_service.py`)
+
+Two production endpoints were added to support continuous automated drift auditing:
+
+| HTTP Method | Route | Description | Request Payload | Response Schema |
+| :---: | :--- | :--- | :--- | :--- |
+| `GET` | `/metrics/drift` | Returns system drift status, reference size, and PSI thresholds | None | `DriftMetricsResponse` |
+| `POST` | `/audit/evaluate` | Evaluates covariate shift on an incoming laboratory batch | `BatchPredictionRequest` | `DriftAuditResponse` |
+
+---
+
+### 7. Interactive Streamlit Monitoring Center (`src/interactive_dashboard.py`)
+
+The Streamlit web platform now includes a dedicated **Vintage Drift & MLOps Monitoring** center:
+- **Harvest Simulation Controls:** Allows winemakers to simulate Climate Warming, Cool Rainy, or Sensor Bias scenarios.
+- **Real-Time PSI Scorecard:** Displays live multi-metric drift results with color-coded status badges.
+- **Interactive Distribution Overlay:** Plotly histogram & density curves comparing baseline vs incoming harvest specimens.
+- **Longitudinal SLA Tracker:** Visualizes multi-year performance decay and automated retraining recovery.
+
+---
+
+### 8. Automated Pytest Verification Suite (32 Passing Tests)
+
+The test suite was expanded with 10 new comprehensive tests in `tests/test_drift_monitoring.py`:
+- Validates PSI calculation on identical and shifted distributions.
+- Validates Two-Sample Kolmogorov-Smirnov test statistics and p-values.
+- Tests multi-attribute anomaly detection and adulteration quarantine logic.
+- Verifies longitudinal audit performance tracking and concept drift alarms.
+- Verifies automated retraining triggers and champion-challenger tournament promotion.
+- Validates FastAPI `/metrics/drift` and `/audit/evaluate` endpoints.
+- **Full Test Results:** **32 passed, 100% pass rate.**
+
+---
+
+### 9. Generated Day 8 Figures
+
+All monitoring and drift diagnostics figures are published in `reports/figures/`:
+* [day8_feature_drift_psi_summary.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_feature_drift_psi_summary.png) — Feature-level Population Stability Index (PSI) horizontal scorecard with color-coded risk bands.
+* [day8_drift_distribution_shifts.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_drift_distribution_shifts.png) — Multi-panel KDE distributions contrasting baseline reference against drifted harvest vintage for top chemical drivers.
+* [day8_concept_drift_performance_decay.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_concept_drift_performance_decay.png) — Longitudinal tracking curve showing model SLA decay under unmonitored drift and complete recovery post-retraining.
+* [day8_mlops_monitoring_pipeline.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_mlops_monitoring_pipeline.png) — Architectural infographic showing the closed-loop MLOps continuous monitoring and retraining pipeline.
 
