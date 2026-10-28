@@ -216,6 +216,16 @@ def main():
 
     st.sidebar.divider()
 
+    # Cultivar Selector
+    st.sidebar.subheader("🍇 Cultivar Domain")
+    cultivar_mode = st.sidebar.selectbox(
+        "Wine Cultivar Domain",
+        ["Auto-Detect Cultivar", "Red Wine (Champion RF)", "White Wine (Champion RF)"],
+        index=0
+    )
+
+    st.sidebar.divider()
+
     # Preset Selector
     selected_preset = st.sidebar.selectbox("📋 Load Specimen Preset", list(PRESETS.keys()))
     active_preset = PRESETS[selected_preset]
@@ -228,9 +238,10 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
+        "🧪 Prescriptive Cellar Recourse Studio",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -507,7 +518,97 @@ def main():
                 )
 
     # ------------------------------------------------------------------------
-    # TAB 3: Vintage Drift & Continuous MLOps Monitoring
+    # TAB 3: Prescriptive Cellar Recourse Studio
+    # ------------------------------------------------------------------------
+    with tab_recourse:
+        st.subheader("🧪 Prescriptive Cellar Recourse & What-If Studio")
+        st.caption(
+            "Computes minimal, biochemically feasible counterfactual interventions to elevate sub-premium "
+            "wine lots to Reserve Grade status without sacrificing cultivar integrity."
+        )
+
+        col_r1, col_r2 = st.columns([1, 1])
+
+        with col_r1:
+            st.markdown("##### ⚙️ Cellar Specimen Input")
+            rec_cultivar = st.selectbox("Specimen Cultivar", ["red", "white"], index=0, key="rec_cultivar")
+            rec_target_prob = st.slider("Target Reserve Probability", min_value=0.35, max_value=0.75, value=0.45, step=0.05, key="rec_target")
+
+            r_alc = st.slider("Alcohol (% vol)", 8.0, 15.0, float(active_preset["alcohol"]), 0.1, key="r_alc")
+            r_va = st.slider("Volatile Acidity (g/dm³)", 0.10, 1.20, float(active_preset["volatile acidity"]), 0.02, key="r_va")
+            r_sulph = st.slider("Sulphates (g/dm³)", 0.25, 1.30, float(active_preset["sulphates"]), 0.02, key="r_sulph")
+            r_fso2 = st.slider("Free SO₂ (mg/dm³)", 4.0, 60.0, float(active_preset["free sulfur dioxide"]), 1.0, key="r_fso2")
+            r_tso2 = st.slider("Total SO₂ (mg/dm³)", 10.0, 200.0, float(active_preset["total sulfur dioxide"]), 2.0, key="r_tso2")
+
+            run_recourse_btn = st.button("🔮 Compute Optimal Cellar Recourse", type="primary")
+
+        with col_r2:
+            st.markdown("##### 📋 Actionable Winemaking Recourse Plan")
+            sample_for_rec = {
+                "fixed acidity": float(active_preset["fixed acidity"]),
+                "volatile acidity": r_va,
+                "citric acid": float(active_preset["citric acid"]),
+                "residual sugar": float(active_preset["residual sugar"]),
+                "chlorides": float(active_preset["chlorides"]),
+                "free sulfur dioxide": r_fso2,
+                "total sulfur dioxide": r_tso2,
+                "density": float(active_preset["density"]),
+                "pH": float(active_preset["pH"]),
+                "sulphates": r_sulph,
+                "alcohol": r_alc
+            }
+
+            from src.cross_cultivar_and_recourse import CellarRecourseOptimizer
+            try:
+                opt = CellarRecourseOptimizer()
+                rec_res = opt.optimize_recourse(
+                    sample=sample_for_rec,
+                    cultivar=rec_cultivar,
+                    target_prob=rec_target_prob,
+                    operating_threshold=operating_threshold
+                )
+
+                kpi1, kpi2, kpi3 = st.columns(3)
+                kpi1.metric("Current P(Good)", f"{rec_res['initial_prob']:.1%}")
+                kpi2.metric("Target P(Good)", f"{rec_res['target_prob']:.1%}")
+                kpi3.metric("Projected P(Good)", f"{rec_res['projected_prob']:.1%}", delta=f"+{rec_res['probability_gain']:.1%}")
+
+                if rec_res["upgraded_to_premium"]:
+                    st.success(f"🏆 **Status: {rec_res['feasibility']}** — Specimen successfully crosses reserve threshold (τ* = {operating_threshold})!")
+                else:
+                    st.warning(f"⚠️ **Status: {rec_res['feasibility']}**")
+
+                if rec_res["interventions"]:
+                    st.markdown("###### Recommended Cellar Interventions:")
+                    inv_df = pd.DataFrame([
+                        {
+                            "Chemical Attribute": inv["feature"].title(),
+                            "Current Value": inv["original_value"],
+                            "Target Value": inv["target_value"],
+                            "Adjustment": f"{inv['percentage_change']:+.1f}%",
+                            "Enological Recommendation": inv["recommendation"]
+                        }
+                        for inv in rec_res["interventions"]
+                    ])
+                    st.dataframe(inv_df, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No chemical adjustments required. Specimen already satisfies reserve criteria.")
+            except Exception as e:
+                st.error(f"Recourse optimization error: {e}")
+
+        st.divider()
+        st.markdown("#### 🍇 Cross-Cultivar Statistical Divergence Scorecard")
+        st.caption("Quantifies the domain gap between Red and White wine populations across all 11 physicochemical attributes.")
+        from src.cross_cultivar_and_recourse import CultivarDomainAnalyzer
+        try:
+            analyzer = CultivarDomainAnalyzer()
+            div_df = analyzer.compute_cross_cultivar_divergence()
+            st.dataframe(div_df, use_container_width=True, hide_index=True)
+        except Exception as e:
+            st.error(f"Error loading divergence scorecard: {e}")
+
+    # ------------------------------------------------------------------------
+    # TAB 4: Vintage Drift & Continuous MLOps Monitoring
     # ------------------------------------------------------------------------
     with tab_monitoring:
         st.subheader("Continuous MLOps Monitoring & Statistical Drift Detection")

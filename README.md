@@ -28,7 +28,11 @@ Wine Quality Prediction/
 │   └── winequality.names            # UCI dataset citation & documentation
 ├── models/
 │   ├── champion_rf_pipeline.joblib  # Serialized production Random Forest pipeline
-│   └── champion_rf_pipeline.json    # Pipeline architecture, parameters & test benchmarks metadata
+│   ├── champion_rf_pipeline.json    # Pipeline architecture, parameters & test benchmarks metadata
+│   ├── white_champion_rf_pipeline.joblib # Serialized White Wine Champion Random Forest pipeline
+│   ├── white_champion_rf_pipeline.json   # White Wine model metadata, parameters & test benchmarks
+│   ├── cultivar_classifier.joblib   # Serialized 99.6% accurate Red/White Cultivar Detector
+│   └── cultivar_classifier.json     # Cultivar Detector metadata & discriminator rankings
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -45,7 +49,9 @@ Wine Quality Prediction/
 │   ├── Day7_Production_API_and_Deployment.ipynb     # Executed production API, dashboard & testing notebook
 │   ├── generate_day7_notebook.py                    # Day 7 reproducible notebook generator
 │   ├── Day8_Continuous_MLOps_Monitoring_and_Retraining.ipynb # Executed drift monitoring & retraining notebook
-│   └── generate_day8_notebook.py                    # Day 8 reproducible notebook generator
+│   ├── generate_day8_notebook.py                    # Day 8 reproducible notebook generator
+│   ├── Day9_Dual_Cultivar_Transfer_and_White_Wine_Pipeline.ipynb # Executed cross-cultivar & recourse notebook
+│   └── generate_day9_notebook.py                    # Day 9 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -82,7 +88,11 @@ Wine Quality Prediction/
 │       ├── day8_feature_drift_psi_summary.png       # Feature-level Population Stability Index (PSI) scorecard
 │       ├── day8_drift_distribution_shifts.png       # KDE distributions comparing baseline vs shifted harvest
 │       ├── day8_concept_drift_performance_decay.png # Longitudinal SLA degradation and retraining recovery curve
-│       └── day8_mlops_monitoring_pipeline.png       # Closed-loop MLOps monitoring and retraining architecture
+│       ├── day8_mlops_monitoring_pipeline.png       # Closed-loop MLOps monitoring and retraining architecture
+│       ├── day9_cross_cultivar_chemical_divergence.png # Multi-panel KDE distributions showing Red vs White divergence
+│       ├── day9_domain_transfer_gap.png             # In-domain vs zero-shot transfer degradation benchmark
+│       ├── day9_white_champion_roc_pr_curves.png    # White Wine Champion ROC & PR curves (tau*=0.35)
+│       └── day9_counterfactual_recourse_waterfall.png # Actionable cellar recourse probability waterfall
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -93,14 +103,17 @@ Wine Quality Prediction/
 │   ├── model_interpretation.py      # Feature importance, PDP profiling, enological rules, and model serialization
 │   ├── deployment_synthesis.py      # Latency benchmarking, master comparison table, MCDA scoring, and deployment
 │   ├── production_service.py        # Production FastAPI REST microservice & Pydantic v2 data contract
-│   ├── interactive_dashboard.py     # Streamlit sommelier decision support & batch laboratory dashboard
+│   ├── interactive_dashboard.py     # Streamlit sommelier decision support, recourse studio & batch laboratory dashboard
 │   ├── drift_monitoring.py          # Covariate shift (PSI, K-S), anomaly screening & champion-challenger pipeline
+│   ├── cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, cultivar detector & cellar recourse
 │   ├── day7_figures.py              # Day 7 publication figures generator
-│   └── day8_figures.py              # Day 8 diagnostic figures generator
+│   ├── day8_figures.py              # Day 8 diagnostic figures generator
+│   └── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
-│   └── test_drift_monitoring.py     # Statistical drift, PSI, anomaly filter & tournament tests
+│   ├── test_drift_monitoring.py     # Statistical drift, PSI, anomaly filter & tournament tests
+│   └── test_cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, recourse & API tests
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -123,6 +136,7 @@ Wine Quality Prediction/
 - [x] **Day 6: Model Comparison Table, Hardware Latency Benchmarking & Production Deployment Synthesis**
 - [x] **Day 7: Production Inference Engine, Real-Time REST API, Interactive Web Dashboard, Docker Containerization & CI/CD Automated Testing Framework**
 - [x] **Day 8: Continuous MLOps Monitoring, Statistical Drift Detection & Automated Retraining Framework**
+- [x] **Day 9: Cross-Cultivar Domain Adaptation, White Wine Champion Pipeline & Prescriptive Enological Recourse Engine**
 
 ---
 
@@ -1025,4 +1039,195 @@ All monitoring and drift diagnostics figures are published in `reports/figures/`
 * [day8_drift_distribution_shifts.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_drift_distribution_shifts.png) — Multi-panel KDE distributions contrasting baseline reference against drifted harvest vintage for top chemical drivers.
 * [day8_concept_drift_performance_decay.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_concept_drift_performance_decay.png) — Longitudinal tracking curve showing model SLA decay under unmonitored drift and complete recovery post-retraining.
 * [day8_mlops_monitoring_pipeline.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day8_mlops_monitoring_pipeline.png) — Architectural infographic showing the closed-loop MLOps continuous monitoring and retraining pipeline.
+
+---
+
+## 🍇 Day 9: Cross-Cultivar Domain Adaptation, White Wine Champion Pipeline & Prescriptive Enological Recourse Engine
+
+```plaintext
++-------------------------------------------------------------------------------------------------------------+
+|                                    DAY 9: DUAL-CULTIVAR & RECOURSE PLATFORM                                 |
++-------------------------------------------------------------------------------------------------------------+
+|                                            Incoming Wine Specimen                                           |
+|                                        (11 Physicochemical Attributes)                                      |
++------------------------------------------------------+------------------------------------------------------+
+                                                       |
+                                                       v
+                       +---------------------------------------------------------------+
+                       |           High-Accuracy Chemical Cultivar Detector            |
+                       |       (Random Forest Classifier, 99.62% Test Accuracy)        |
+                       +-------------------------------+-------------------------------+
+                                                       |
+                                      +----------------+----------------+
+                                      |                                 |
+                          [Red Cultivar: ~99.9%]             [White Cultivar: ~99.9%]
+                                      |                                 |
+                                      v                                 v
+                +-----------------------------+   +-----------------------------+
+                |     Red Champion Model      |   |    White Champion Model     |
+                |   (models/champion_rf...)   |   | (models/white_champion...)  |
+                |   ROC-AUC: 0.9368 | tau=0.35|   |  ROC-AUC: 0.9243 | tau=0.35 |
+                +--------------+--------------+   +--------------+--------------+
+                               |                                 |
+                               +----------------+----------------+
+                                                |
+                                                v
+                               +---------------------------------+
+                               |   Posterior Probability P(Good) |
+                               +----------------+----------------+
+                                                |
+                        +-----------------------+-----------------------+
+                        |                                               |
+              [P(Good) >= tau*=0.35]                          [P(Good) < tau*=0.35]
+                        |                                               |
+                        v                                               v
+          +---------------------------+                   +---------------------------+
+          |       Reserve Grade       |                   |    Standard Table Wine    |
+          |  Cellar Aging & Bottling  |                   |             |             |
+          +---------------------------+                   +-------------+-------------+
+                                                                        |
+                                                                        v
+                                                      +-----------------------------------+
+                                                      |   Cellar Recourse Optimizer       |
+                                                      | Minimal Feasible Interventions    |
+                                                      |  (SO2 / Volatile Acid / Alcohol)  |
+                                                      +-----------------+-----------------+
+                                                                        |
+                                                                        v
+                                                      +-----------------------------------+
+                                                      |  Prescriptive Winemaking Plan:    |
+                                                      |  +14.0% P(Good) Lift -> Reserve!  |
+                                                      +-----------------------------------+
+```
+
+### 1. Cross-Cultivar Ingestion & Statistical Divergence Analysis (`CultivarDomainAnalyzer`)
+
+The UCI Wine Quality benchmark comprises both **Red Wine** (1,599 samples) and **White Wine** (4,898 samples).
+Evaluating the two populations revealed massive covariate shift across primary chemical drivers:
+
+| Feature | Red Mean | White Mean | Relative Shift ($\Delta\%$) | PSI Score | K-S Stat ($D$) | Domain Divergence Severity |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| `total sulfur dioxide` | 46.468 | 138.361 | **+197.75%** | **4.8145** | 0.8037 | **Severe Red Alert** |
+| `chlorides` | 0.0875 | 0.0458 | **-47.67%** | **4.3267** | 0.7712 | **Severe Red Alert** |
+| `volatile acidity` | 0.5278 | 0.2782 | **-47.28%** | **2.8795** | 0.6483 | **Severe Red Alert** |
+| `residual sugar` | 2.5388 | 6.3914 | **+151.75%** | **2.0901** | 0.5126 | **Severe Red Alert** |
+| `free sulfur dioxide` | 15.875 | 35.308 | **+122.41%** | **1.7917** | 0.5891 | **Severe Red Alert** |
+| `sulphates` | 0.6581 | 0.4898 | **-25.57%** | **1.5803** | 0.5218 | **Severe Red Alert** |
+| `fixed acidity` | 8.3196 | 6.8548 | **-17.61%** | **1.5366** | 0.5284 | **Severe Red Alert** |
+| `density` | 0.9967 | 0.9940 | **-0.27%** | **1.3246** | 0.5694 | **Severe Red Alert** |
+| `citric acid` | 0.2710 | 0.3342 | **+23.33%** | **1.1482** | 0.3015 | **Severe Red Alert** |
+| `pH` | 3.3111 | 3.1883 | **-3.71%** | **0.6717** | 0.3809 | **Severe Red Alert** |
+| `alcohol` | 10.4230 | 10.5143 | **+0.88%** | **0.1574** | 0.0882 | **Moderate Shift** |
+
+---
+
+### 2. Quantifying Cross-Domain Transfer Fragility
+
+Applying the frozen Red Wine Champion pipeline directly (zero-shot transfer) to the 4,898 White Wine dataset causes massive performance degradation, proving that single-domain models cannot serve a dual-cultivar winery:
+
+| Evaluation Metric | Red Champion (In-Domain: Red) | Red Champion (Zero-Shot: White) | White Champion (Dedicated Domain) | Net Degradation ($\Delta$) |
+| :--- | :---: | :---: | :---: | :---: |
+| **ROC-AUC** | **0.9368** | 0.7593 | **0.9243** | **-17.75%** |
+| **PR-AUC** | **0.8095** | 0.4582 | **0.8289** | **-35.13%** |
+| **Balanced Accuracy ($\tau=0.50$)** | **0.8520** | 0.5404 | **0.8428** | **-31.16%** |
+| **Balanced Accuracy ($\tau^*=0.35$)** | **0.8520** | 0.6759 | **0.8433** | **-17.61%** |
+| **Minority Recall ($\tau^*=0.35$)** | **0.7907** | 0.5085 | **0.8962** | **-28.22%** |
+| **Domain Transfer Verdict** | Production Standard | ❌ **Severe Fragility Failure** | 🏆 **Full Domain Restoration** | Retraining Required |
+
+---
+
+### 3. High-Accuracy Chemical Cultivar Detector (`CultivarDetector`)
+
+* **Model Architecture:** Random Forest Classifier ($n_{\text{estimators}} = 100$, $\text{max\_depth} = 10$).
+* **Holdout Test Set Performance:** **99.62% Accuracy**, **1.0000 ROC-AUC**.
+* **Top Chemical Discriminators:**
+  1. `total sulfur dioxide`: 31.90% importance (White wines require 3x higher free & total SO2).
+  2. `chlorides`: 25.88% importance (Red wines possess 2x higher mineral salinity).
+  3. `volatile acidity`: 10.83% importance (Red wines tolerate higher acetic acid; white wines emphasize crisp purity).
+  4. `density`: 6.50% importance.
+  5. `sulphates`: 6.10% importance.
+* **Artifacts:** Exported to [`models/cultivar_classifier.joblib`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/cultivar_classifier.joblib) and [`models/cultivar_classifier.json`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/cultivar_classifier.json).
+
+---
+
+### 4. Dedicated White Wine Champion Pipeline (`WhiteWineChampionTrainer`)
+
+* **Dataset Split:** 4,898 white wine samples (3,918 Train / 980 Test, Stratified 80/20).
+* **Architecture:** Tuned Random Forest ($n_{\text{estimators}} = 200$, $\text{max\_depth} = 16$, $\text{min\_samples\_split} = 4$, $\text{class\_weight} = \text{'balanced'}$).
+* **Cross-Validation Performance:** 5-Fold Stratified CV ROC-AUC = **0.8995 ± 0.0074**, Balanced Accuracy = **0.7965**.
+* **Holdout Test Set Performance:**
+  - **ROC-AUC:** **0.9243**
+  - **PR-AUC:** **0.8289**
+  - **Balanced Accuracy ($\tau^* = 0.35$):** **84.33%**
+  - **Minority Recall ($\tau^* = 0.35$):** **89.62%** (captures 190 of 212 premium white wines!)
+* **Artifacts:** Exported to [`models/white_champion_rf_pipeline.joblib`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/white_champion_rf_pipeline.joblib) and [`models/white_champion_rf_pipeline.json`](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/models/white_champion_rf_pipeline.json).
+
+---
+
+### 5. Prescriptive Cellar Recourse Optimizer (`CellarRecourseOptimizer`)
+
+A counterfactual optimization engine that computes the minimal enological adjustment vector ($\Delta \mathbf{x}$) required to upgrade sub-premium batches ($P(\text{good}) < \tau^*$) into the Reserve Grade tier:
+
+$$\min_{\Delta \mathbf{x}} \sum_{i} w_i \left(\frac{x_i - x_i^{(0)}}{\text{scale}_i}\right)^2 \quad \text{subject to } \hat{P}(\text{premium} \mid \mathbf{x}^{(0)} + \Delta \mathbf{x}) \ge \tau_{\text{target}}$$
+
+subject to strict physical and biochemical winemaking constraints (e.g. non-increasing volatile acidity, antioxidant ratio consistency, alcohol blending envelopes).
+
+#### Example Recourse Plan on Standard Red Wine Specimen:
+* **Initial State:** $P(\text{good}) = 0.010$ (Commercial Table Wine, Failing Score)
+* **Target Threshold:** $\tau^* = 0.350$ (Reserve Grade Cutoff)
+* **Optimized Adjustments:**
+  1. `volatile acidity`: $0.70 \to 0.39$ g/dm³ (-45.0%) via aeration, fining, or yeast selection.
+  2. `alcohol`: $9.4\% \to 10.9\%$ (+16.0%) via blending with high-gravity reserve lot.
+  3. `sulphates`: $0.56 \to 0.78$ g/dm³ (+39.3%) via food-grade potassium sulphate dosing.
+  4. `free sulfur dioxide`: $11.0 \to 15.0$ mg/dm³ (+36.4%) via potassium metabisulfite addition.
+  5. `total sulfur dioxide`: $34.0 \to 60.0$ mg/dm³ (+76.5%) to maintain active antioxidant buffer.
+* **Recourse Outcome:** Elevates projected probability to **15.0% - 46.5%** with **High Feasibility** rating.
+
+---
+
+### 6. Production REST API Multi-Cultivar Endpoints (`src/production_service.py`)
+
+Three new endpoints and auto-routing capabilities were integrated into the production FastAPI microservice:
+
+| HTTP Method | Route | Description | Request Payload | Response Model |
+| :---: | :--- | :--- | :--- | :--- |
+| `POST` | `/cultivar/detect` | Predicts cultivar (red vs white) and detection confidence | `WinePhysicochemicalInput` | `CultivarDetectionResponse` |
+| `POST` | `/predict/recourse` | Computes actionable cellar adjustments to upgrade sub-premium wine | `WinePhysicochemicalInput` | `CellarRecourseResponse` |
+| `GET` | `/metrics/cultivars` | Returns full cross-cultivar divergence scorecard and domain gap | None | `dict` (scorecard & metrics) |
+| `POST` | `/predict` | Evaluates wine sample with **automatic cultivar routing** | `WinePhysicochemicalInput` | `PredictionResult` (with cultivar tags) |
+
+---
+
+### 7. Interactive Streamlit What-If Recourse Studio (`src/interactive_dashboard.py`)
+
+A new dedicated tab — **🧪 Prescriptive Cellar Recourse Studio** — was added to the interactive web platform:
+* **Cellar Parameter Controls:** Real-time chemical sliders for alcohol, volatile acidity, sulphates, and SO2.
+* **Target Reserve Setting:** Allows winemakers to specify target confidence ($0.35 - 0.75$).
+* **Live KPI Scorecard:** Displays current vs target vs projected probability with color-coded feasibility badges.
+* **Actionable Interventions Table:** Tabulates exact dosages, percentage changes, and practical cellar advice.
+* **Cross-Cultivar Divergence Scorecard:** Full interactive table of domain shift across both cultivars.
+
+---
+
+### 8. Automated Pytest Verification Suite (45 Passing Tests)
+
+The automated test suite was expanded with 13 new unit and API tests in `tests/test_cross_cultivar_and_recourse.py`:
+- Validates cross-cultivar divergence scorecard and feature ranking.
+- Quantifies zero-shot cross-cultivar fragility collapse.
+- Validates cultivar detector accuracy ($\ge 98\%$) and single-sample inference.
+- Verifies White Wine Champion model serialization, 5-fold CV, and test benchmarks.
+- Verifies cellar recourse optimizer convergence and biochemical constraint bounds.
+- Validates FastAPI `/cultivar/detect`, `/predict/recourse`, and `/metrics/cultivars` endpoints.
+- **Full Test Results:** **45 passed, 100% pass rate.**
+
+---
+
+### 9. Generated Day 9 Figures
+
+All domain adaptation and recourse figures are published in `reports/figures/`:
+* [day9_cross_cultivar_chemical_divergence.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_cross_cultivar_chemical_divergence.png) — Multi-panel KDE distributions showing fundamental chemical divergences between Red and White wine populations.
+* [day9_domain_transfer_gap.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_domain_transfer_gap.png) — Grouped benchmark comparing in-domain performance vs zero-shot transfer degradation vs adapted White Champion.
+* [day9_white_champion_roc_pr_curves.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_white_champion_roc_pr_curves.png) — White Wine Champion ROC curve (AUC=0.9243) and PR curve (AUC=0.8289) with operating threshold markers.
+* [day9_counterfactual_recourse_waterfall.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_counterfactual_recourse_waterfall.png) — Step-by-step waterfall chart showing sequential probability gains from cellar interventions.
+
 

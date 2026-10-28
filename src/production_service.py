@@ -139,6 +139,11 @@ class WinePhysicochemicalInput(BaseModel):
         description="Ethanol percentage by volume (% vol)",
         examples=[12.4]
     )
+    cultivar: Optional[str] = Field(
+        default="auto",
+        description="Wine cultivar ('red', 'white', or 'auto' for automatic chemical classification)",
+        examples=["auto"]
+    )
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -191,6 +196,8 @@ class WinePhysicochemicalInput(BaseModel):
 class PredictionResult(BaseModel):
     """Structured response for single sample inference."""
     sample_id: Optional[str] = None
+    cultivar: Optional[str] = Field(default="red", description="Evaluated wine cultivar: 'red' or 'white'")
+    cultivar_confidence: Optional[float] = Field(default=1.0, description="Confidence of cultivar detection")
     is_premium_wine: bool = Field(description="True if probability >= threshold (Score >= 7)")
     prediction_label: str = Field(description="Classification label")
     sommelier_grade: str = Field(description="Commercial sensory tier: Grand Reserve, Reserve, Table Standard, Commercial Bulk")
@@ -290,6 +297,39 @@ class DriftMetricsResponse(BaseModel):
     psi_thresholds: Dict[str, float]
     monitoring_mode: str
     server_time: str
+
+
+class CultivarDetectionResponse(BaseModel):
+    """Detection result identifying whether sample is Red or White wine."""
+    cultivar: str = Field(description="Predicted cultivar: 'red' or 'white'")
+    confidence: float = Field(description="Detection probability confidence")
+    prob_red: float = Field(description="Probability of red cultivar")
+    prob_white: float = Field(description="Probability of white cultivar")
+
+
+class RecourseInterventionItem(BaseModel):
+    """Single recommended cellar chemical adjustment."""
+    feature: str
+    original_value: float
+    target_value: float
+    absolute_change: float
+    percentage_change: float
+    recommendation: str
+
+
+class CellarRecourseResponse(BaseModel):
+    """Actionable prescriptive cellar recourse plan to achieve premium quality."""
+    status: str
+    cultivar: str
+    initial_prob: float
+    target_prob: float
+    projected_prob: float
+    probability_gain: float
+    operating_threshold: float
+    upgraded_to_premium: bool
+    feasibility: str
+    interventions: List[RecourseInterventionItem]
+    adjusted_sample: Dict[str, float]
 
 
 
@@ -394,6 +434,9 @@ class WineQualityInferenceService:
         self.metadata_path = Path(metadata_path)
         self.default_threshold = float(default_threshold)
         self.pipeline: Optional[Pipeline] = None
+        self.white_pipeline: Optional[Any] = None
+        self.cultivar_detector: Optional[Any] = None
+        self.recourse_optimizer: Optional[Any] = None
         self.metadata: Dict[str, Any] = {}
         self.startup_time = time.time()
         self._load_artifacts()
@@ -404,6 +447,23 @@ class WineQualityInferenceService:
             raise FileNotFoundError(f"Model artifact not found at {self.model_path.resolve()}")
 
         self.pipeline = joblib.load(self.model_path)
+
+        white_model_path = Path("models/white_champion_rf_pipeline.joblib")
+        if white_model_path.exists():
+            try:
+                self.white_pipeline = joblib.load(white_model_path)
+            except Exception:
+                self.white_pipeline = None
+
+        cultivar_model_path = Path("models/cultivar_classifier.joblib")
+        if cultivar_model_path.exists():
+            try:
+                from src.cross_cultivar_and_recourse import CultivarDetector, CellarRecourseOptimizer
+                self.cultivar_detector = CultivarDetector(cultivar_model_path)
+                self.recourse_optimizer = CellarRecourseOptimizer()
+            except Exception:
+                self.cultivar_detector = None
+                self.recourse_optimizer = None
 
         if self.metadata_path.exists():
             with open(self.metadata_path, "r", encoding="utf-8") as f:
@@ -435,12 +495,29 @@ class WineQualityInferenceService:
         raw_dict = wine_input.to_raw_dict()
         full_dict = derive_interaction_features(raw_dict)
 
+        # Cultivar resolution
+        target_cult = (wine_input.cultivar or "auto").lower()
+        if target_cult == "auto":
+            if self.cultivar_detector is not None:
+                c_res = self.cultivar_detector.predict_cultivar(raw_dict)
+                resolved_cultivar = c_res["cultivar"]
+                c_conf = c_res["confidence"]
+            else:
+                resolved_cultivar = "red"
+                c_conf = 1.0
+        else:
+            resolved_cultivar = target_cult
+            c_conf = 1.0
+
+        # Select model pipeline
+        active_pipe = self.white_pipeline if (resolved_cultivar == "white" and self.white_pipeline is not None) else self.pipeline
+
         # Build single-row DataFrame strictly ordered
         ordered_data = {col: [full_dict[col]] for col in FULL_FEATURE_ORDER}
         df_input = pd.DataFrame(ordered_data)
 
         # Predict probabilities
-        probabilities = self.pipeline.predict_proba(df_input)[0]
+        probabilities = active_pipe.predict_proba(df_input)[0]
         prob_normal = float(probabilities[0])
         prob_good = float(probabilities[1])
 
@@ -460,6 +537,8 @@ class WineQualityInferenceService:
 
         return PredictionResult(
             sample_id=wine_input.sample_id,
+            cultivar=resolved_cultivar,
+            cultivar_confidence=round(c_conf, 4),
             is_premium_wine=is_premium,
             prediction_label="Good / Premium Wine (Score >= 7)" if is_premium else "Normal Wine (Score < 7)",
             sommelier_grade=tier,
@@ -828,6 +907,101 @@ def create_app(
                 feature_drift_scorecard=scorecard,
                 timestamp=datetime.utcnow().isoformat()
             )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/cultivar/detect",
+        response_model=CultivarDetectionResponse,
+        tags=["Cultivar & Recourse"]
+    )
+    def detect_wine_cultivar(wine_input: WinePhysicochemicalInput):
+        """
+        Classify whether an incoming wine specimen is Red or White cultivar
+        based on raw physicochemical properties.
+        """
+        try:
+            from src.cross_cultivar_and_recourse import CultivarDetector
+            detector = service.cultivar_detector or CultivarDetector()
+            res = detector.predict_cultivar(wine_input.to_raw_dict())
+            return CultivarDetectionResponse(
+                cultivar=res["cultivar"],
+                confidence=res["confidence"],
+                prob_red=res["prob_red"],
+                prob_white=res["prob_white"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/predict/recourse",
+        response_model=CellarRecourseResponse,
+        tags=["Cultivar & Recourse"]
+    )
+    def get_prescriptive_cellar_recourse(
+        wine_input: WinePhysicochemicalInput,
+        target_prob: float = Query(default=0.45, ge=0.20, le=0.90, description="Target probability for reserve upgrade"),
+        operating_threshold: float = Query(default=0.35, ge=0.10, le=0.90, description="Screening decision threshold")
+    ):
+        """
+        Compute minimal actionable enological interventions to elevate a sub-premium
+        wine lot to Reserve Grade status.
+        """
+        try:
+            from src.cross_cultivar_and_recourse import CellarRecourseOptimizer, CultivarDetector
+            raw_dict = wine_input.to_raw_dict()
+            cult = (wine_input.cultivar or "auto").lower()
+            if cult == "auto":
+                detector = service.cultivar_detector or CultivarDetector()
+                cult = detector.predict_cultivar(raw_dict)["cultivar"]
+
+            optimizer = service.recourse_optimizer or CellarRecourseOptimizer()
+            recourse_dict = optimizer.optimize_recourse(
+                sample=raw_dict,
+                cultivar=cult,
+                target_prob=target_prob,
+                operating_threshold=operating_threshold
+            )
+
+            interventions = [
+                RecourseInterventionItem(**item)
+                for item in recourse_dict.get("interventions", [])
+            ]
+
+            return CellarRecourseResponse(
+                status=recourse_dict["status"],
+                cultivar=recourse_dict["cultivar"],
+                initial_prob=recourse_dict["initial_prob"],
+                target_prob=recourse_dict["target_prob"],
+                projected_prob=recourse_dict["projected_prob"],
+                probability_gain=recourse_dict["probability_gain"],
+                operating_threshold=recourse_dict["operating_threshold"],
+                upgraded_to_premium=recourse_dict["upgraded_to_premium"],
+                feasibility=recourse_dict["feasibility"],
+                interventions=interventions,
+                adjusted_sample=recourse_dict.get("adjusted_sample", raw_dict)
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get(
+        "/metrics/cultivars",
+        tags=["Cultivar & Recourse"]
+    )
+    def get_cultivar_divergence_metrics():
+        """
+        Return statistical divergence metrics and covariate shift between Red and White datasets.
+        """
+        try:
+            from src.cross_cultivar_and_recourse import CultivarDomainAnalyzer
+            analyzer = CultivarDomainAnalyzer()
+            div_df = analyzer.compute_cross_cultivar_divergence()
+            frag = analyzer.evaluate_cross_domain_fragility()
+            return {
+                "cross_cultivar_divergence": div_df.to_dict(orient="records"),
+                "zero_shot_domain_gap": frag,
+                "server_time": datetime.utcnow().isoformat()
+            }
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

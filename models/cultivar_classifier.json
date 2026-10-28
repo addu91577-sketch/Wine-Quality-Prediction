@@ -1,0 +1,31 @@
+{
+  "model_type": "RandomForestClassifier",
+  "n_estimators": 100,
+  "max_depth": 10,
+  "training_samples": 5197,
+  "test_samples": 1300,
+  "test_accuracy": 0.9962,
+  "test_roc_auc": 1.0,
+  "top_cultivar_discriminators": [
+    [
+      "total sulfur dioxide",
+      0.319
+    ],
+    [
+      "chlorides",
+      0.2588
+    ],
+    [
+      "volatile acidity",
+      0.1083
+    ],
+    [
+      "density",
+      0.065
+    ],
+    [
+      "sulphates",
+      0.061
+    ]
+  ]
+}

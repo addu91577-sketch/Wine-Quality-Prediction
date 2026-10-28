@@ -112,6 +112,17 @@ from src.drift_monitoring import (
     PSI_THRESHOLD_GREEN,
     PSI_THRESHOLD_AMBER
 )
+from src.cross_cultivar_and_recourse import (
+    CultivarDomainAnalyzer,
+    CultivarDetector,
+    WhiteWineChampionTrainer,
+    CellarRecourseOptimizer,
+    UnifiedWinePredictor,
+    compute_derived_features_dict,
+    DEFAULT_WHITE_THRESHOLD,
+    WHITE_CHAMPION_MODEL_PATH,
+    CULTIVAR_DETECTOR_PATH
+)
 
 __all__ = [
     "load_wine_data",
@@ -198,6 +209,15 @@ __all__ = [
     "RAW_PHYSICOCHEMICAL_FEATURES",
     "ALL_MODEL_FEATURES",
     "PSI_THRESHOLD_GREEN",
-    "PSI_THRESHOLD_AMBER"
+    "PSI_THRESHOLD_AMBER",
+    "CultivarDomainAnalyzer",
+    "CultivarDetector",
+    "WhiteWineChampionTrainer",
+    "CellarRecourseOptimizer",
+    "UnifiedWinePredictor",
+    "compute_derived_features_dict",
+    "DEFAULT_WHITE_THRESHOLD",
+    "WHITE_CHAMPION_MODEL_PATH",
+    "CULTIVAR_DETECTOR_PATH"
 ]
 
