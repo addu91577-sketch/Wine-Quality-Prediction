@@ -1,0 +1,35 @@
+{
+  "model_type": "Heterogeneous Stacking Meta-Learner",
+  "base_models": [
+    "random_forest",
+    "gradient_boosting",
+    "extra_trees",
+    "logistic_regression"
+  ],
+  "meta_model": "LogisticRegression",
+  "meta_coefficients": {
+    "random_forest": 1.6483024803769386,
+    "gradient_boosting": 0.44063414100286424,
+    "extra_trees": 2.247119238923617,
+    "logistic_regression": 1.9594353670870295
+  },
+  "meta_intercept": -4.020348035159764,
+  "features": [
+    "fixed acidity",
+    "volatile acidity",
+    "citric acid",
+    "residual sugar",
+    "chlorides",
+    "free sulfur dioxide",
+    "total sulfur dioxide",
+    "density",
+    "pH",
+    "sulphates",
+    "alcohol",
+    "total_acidity",
+    "bound_sulfur_dioxide",
+    "free_to_total_so2_ratio",
+    "alcohol_to_density_ratio",
+    "sulphate_to_chloride_ratio"
+  ]
+}

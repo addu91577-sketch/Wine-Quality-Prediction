@@ -254,7 +254,7 @@ class MetadataResponse(BaseModel):
     project: str
     date_finalized: str
     n_estimators: int
-    max_depth: int
+    max_depth: Optional[int] = None
     class_weight: str
     features: List[str]
     num_features: int
@@ -330,6 +330,97 @@ class CellarRecourseResponse(BaseModel):
     feasibility: str
     interventions: List[RecourseInterventionItem]
     adjusted_sample: Dict[str, float]
+
+
+class LotItemInput(WinePhysicochemicalInput):
+    """Input specification for a candidate wine lot in coupage optimization."""
+    lot_name: Optional[str] = Field(default="Candidate Lot", alias="lot_name")
+    volume_liters: Optional[float] = Field(default=1000.0, alias="volume_liters")
+    cost_per_liter: Optional[float] = Field(default=3.50, alias="cost_per_liter")
+
+
+class EnologicalConstraintsInput(BaseModel):
+    """Configurable boundaries for enological coupage optimization."""
+    max_volatile_acidity: Optional[float] = 0.60
+    max_total_so2: Optional[float] = 160.0
+    min_free_so2: Optional[float] = 20.0
+    min_alcohol: Optional[float] = 11.5
+    min_ph: Optional[float] = 3.10
+    max_ph: Optional[float] = 3.65
+
+
+class AssemblageOptimizationRequest(BaseModel):
+    """Request payload for multi-lot wine coupage optimization."""
+    lots: List[LotItemInput] = Field(..., min_length=2, description="At least two candidate wine lots")
+    constraints: Optional[EnologicalConstraintsInput] = None
+    cost_penalty_weight: float = Field(default=0.0, ge=0.0, description="Cost weight lambda in optimization")
+
+
+class AssemblageOptimizationResponse(BaseModel):
+    """Response payload for multi-lot coupage optimization."""
+    status: str
+    optimal_weights: List[float]
+    weights_breakdown: List[Dict[str, Any]]
+    blended_chemistry: Dict[str, float]
+    predicted_premium_probability: float
+    operating_threshold: float
+    is_premium: bool
+    sommelier_grade: str
+    prob_lift_vs_mean_lot: float
+    prob_lift_vs_best_lot: float
+    individual_lot_evaluations: List[Dict[str, Any]]
+    constraints_compliant: bool
+    enological_compliance_report: Dict[str, Any]
+
+
+class ConformalPredictionResponse(BaseModel):
+    """Finite-sample distribution-free conformal prediction set and uncertainty report."""
+    prediction_set: List[int]
+    prediction_labels: List[str]
+    set_size: int
+    confidence_pct: str
+    prob_premium: float
+    prob_standard: float
+    conformal_quantile_threshold: float
+    probability_inclusion_cutoff: float
+    is_ambiguous: bool
+    is_empty: bool
+    verdict: str
+    sommelier_action: str
+
+
+class EconomicEvaluationRequest(BaseModel):
+    """Commercial winery financial payoff parameters."""
+    lot_size_bottles: int = Field(default=25000, ge=100)
+    tp_margin: float = Field(default=28.00)
+    fp_penalty: float = Field(default=-45.00)
+    fn_penalty: float = Field(default=-12.00)
+    tn_margin: float = Field(default=4.50)
+
+
+class EconomicEvaluationResponse(BaseModel):
+    """Financial optimization report identifying optimal commercial release threshold."""
+    optimal_financial_threshold: float
+    max_harvest_profit: float
+    max_profit_per_bottle: float
+    default_threshold_profit: float
+    f1_threshold_profit: float
+    dollar_uplift_vs_default: float
+    percent_uplift_vs_default: float
+    best_evaluation: Dict[str, Any]
+    default_threshold_evaluation: Dict[str, Any]
+
+
+class StackingBenchmarkResponse(BaseModel):
+    """Benchmarking metrics for multi-model stacking ensemble vs base learners."""
+    model_name: str
+    stacking_roc_auc: float
+    stacking_pr_auc: float
+    stacking_brier_score: float
+    stacking_balanced_accuracy: float
+    operating_threshold: float
+    meta_learner_coefficients: Dict[str, float]
+    base_models_benchmarks: Dict[str, Dict[str, float]]
 
 
 
@@ -727,7 +818,7 @@ def create_app(
             project=meta.get("project", "Wine Quality Prediction"),
             date_finalized=meta.get("date_finalized", "2026-10-08"),
             n_estimators=int(meta.get("n_estimators", 200)),
-            max_depth=int(meta.get("max_depth", 18)),
+            max_depth=int(meta["max_depth"]) if meta.get("max_depth") is not None else None,
             class_weight=str(meta.get("class_weight", "balanced")),
             features=meta.get("features", FULL_FEATURE_ORDER),
             num_features=int(meta.get("num_features", len(FULL_FEATURE_ORDER))),
@@ -1002,6 +1093,170 @@ def create_app(
                 "zero_shot_domain_gap": frag,
                 "server_time": datetime.utcnow().isoformat()
             }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/blend/optimize",
+        response_model=AssemblageOptimizationResponse,
+        tags=["Assemblage & Coupage"]
+    )
+    def optimize_wine_coupage(request: AssemblageOptimizationRequest):
+        """
+        Optimize blending proportions for multi-tank wine assemblage under enological constraints.
+        """
+        try:
+            from src.assemblage_and_conformal import WineAssemblageOptimizer
+            lots_raw = [lot.to_raw_dict() for lot in request.lots]
+            names = [lot.lot_name or f"Lot_{i+1}" for i, lot in enumerate(request.lots)]
+            costs = [lot.cost_per_liter or 0.0 for lot in request.lots]
+
+            constraints_dict = None
+            if request.constraints:
+                constraints_dict = {
+                    k: v for k, v in request.constraints.model_dump().items() if v is not None
+                }
+
+            optimizer = WineAssemblageOptimizer(model=service.pipeline)
+            res = optimizer.optimize_blend(
+                lots=lots_raw,
+                lot_names=names,
+                constraints=constraints_dict,
+                lot_costs=costs,
+                cost_penalty_weight=request.cost_penalty_weight
+            )
+            return AssemblageOptimizationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/predict/conformal",
+        response_model=ConformalPredictionResponse,
+        tags=["Conformal & Uncertainty"]
+    )
+    def predict_with_conformal_uncertainty(
+        wine_input: WinePhysicochemicalInput,
+        alpha: float = Query(default=0.10, ge=0.01, le=0.50, description="Significance level (error rate)")
+    ):
+        """
+        Predict wine quality with distribution-free conformal prediction sets and sommelier guidance.
+        """
+        try:
+            from src.assemblage_and_conformal import EnologicalConformalPredictor
+            conformal_path = Path("models/conformal_calibrator.json")
+            conformal = EnologicalConformalPredictor(model=service.pipeline)
+            if conformal_path.exists():
+                conformal.load(conformal_path)
+            else:
+                from src.data_loader import load_wine_data
+                from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+                df = load_wine_data("red")
+                df_tar = create_binned_targets(df)
+                df_f = create_engineered_features(df_tar)
+                X_tr, X_cal, y_tr, y_cal = get_stratified_train_test_split(df_f, df_f["binary_quality"], test_size=0.25, random_state=42)
+                conformal.fit_calibration(X_cal, y_cal)
+
+            raw_dict = wine_input.to_raw_dict()
+            res = conformal.predict_conformal_set(raw_dict, alpha=alpha)
+            return ConformalPredictionResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/economics/evaluate",
+        response_model=EconomicEvaluationResponse,
+        tags=["Winery Economics"]
+    )
+    def evaluate_winery_economics(request: EconomicEvaluationRequest):
+        """
+        Evaluate commercial winery profit matrix and identify financially optimal operating threshold.
+        """
+        try:
+            from src.assemblage_and_conformal import WineryEconomicEngine
+            from src.data_loader import load_wine_data
+            from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+            df = load_wine_data("red")
+            df_tar = create_binned_targets(df)
+            df_f = create_engineered_features(df_tar)
+            X = df_f[FULL_FEATURE_ORDER]
+            y = df_f["binary_quality"]
+            _, X_test, _, y_test = get_stratified_train_test_split(X, y, test_size=0.20, random_state=42)
+            probs = service.pipeline.predict_proba(X_test)[:, 1]
+
+            econ = WineryEconomicEngine(
+                tp_margin=request.tp_margin,
+                fp_penalty=request.fp_penalty,
+                fn_penalty=request.fn_penalty,
+                tn_margin=request.tn_margin
+            )
+            res = econ.optimize_financial_threshold(
+                y_true=y_test.values,
+                y_prob=probs,
+                lot_size_bottles=request.lot_size_bottles
+            )
+            return EconomicEvaluationResponse(
+                optimal_financial_threshold=res["optimal_financial_threshold"],
+                max_harvest_profit=res["max_harvest_profit"],
+                max_profit_per_bottle=res["max_profit_per_bottle"],
+                default_threshold_profit=res["default_threshold_evaluation"]["harvest_lot_profit"],
+                f1_threshold_profit=res["f1_threshold_evaluation"]["harvest_lot_profit"],
+                dollar_uplift_vs_default=res["dollar_uplift_vs_default"],
+                percent_uplift_vs_default=res["percent_uplift_vs_default"],
+                best_evaluation=res["best_evaluation"],
+                default_threshold_evaluation=res["default_threshold_evaluation"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get(
+        "/metrics/stacking",
+        response_model=StackingBenchmarkResponse,
+        tags=["Stacking Ensemble"]
+    )
+    def get_stacking_ensemble_metrics():
+        """
+        Return benchmark comparison metrics for multi-model stacking meta-learner.
+        """
+        try:
+            stack_json = Path("models/stacking_ensemble.json")
+            if not stack_json.exists():
+                from src.assemblage_and_conformal import WineStackingEnsemble
+                from src.data_loader import load_wine_data
+                from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+                df = load_wine_data("red")
+                df_tar = create_binned_targets(df)
+                df_f = create_engineered_features(df_tar)
+                X = df_f[FULL_FEATURE_ORDER]
+                y = df_f["binary_quality"]
+                X_train, X_test, y_train, y_test = get_stratified_train_test_split(X, y, test_size=0.20, random_state=42)
+                X_tr, _, y_tr, _ = get_stratified_train_test_split(X_train, y_train, test_size=0.25, random_state=42)
+                stacker = WineStackingEnsemble(random_state=42)
+                stacker.fit(X_tr, y_tr)
+                stacker.save("models/stacking_ensemble.joblib", stack_json)
+                eval_metrics = stacker.evaluate(X_test, y_test)
+            else:
+                from src.assemblage_and_conformal import WineStackingEnsemble
+                from src.data_loader import load_wine_data
+                from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+                stacker = WineStackingEnsemble.load("models/stacking_ensemble.joblib")
+                df = load_wine_data("red")
+                df_tar = create_binned_targets(df)
+                df_f = create_engineered_features(df_tar)
+                X = df_f[FULL_FEATURE_ORDER]
+                y = df_f["binary_quality"]
+                _, X_test, _, y_test = get_stratified_train_test_split(X, y, test_size=0.20, random_state=42)
+                eval_metrics = stacker.evaluate(X_test, y_test)
+
+            return StackingBenchmarkResponse(
+                model_name="Heterogeneous Stacking Meta-Learner (Day 10)",
+                stacking_roc_auc=eval_metrics["stacking_roc_auc"],
+                stacking_pr_auc=eval_metrics["stacking_pr_auc"],
+                stacking_brier_score=eval_metrics["stacking_brier_score"],
+                stacking_balanced_accuracy=eval_metrics["stacking_balanced_accuracy"],
+                operating_threshold=eval_metrics["operating_threshold"],
+                meta_learner_coefficients=eval_metrics["meta_learner_coefficients"],
+                base_models_benchmarks=eval_metrics["base_models_benchmarks"]
+            )
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

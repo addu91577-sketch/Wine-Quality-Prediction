@@ -32,7 +32,10 @@ Wine Quality Prediction/
 │   ├── white_champion_rf_pipeline.joblib # Serialized White Wine Champion Random Forest pipeline
 │   ├── white_champion_rf_pipeline.json   # White Wine model metadata, parameters & test benchmarks
 │   ├── cultivar_classifier.joblib   # Serialized 99.6% accurate Red/White Cultivar Detector
-│   └── cultivar_classifier.json     # Cultivar Detector metadata & discriminator rankings
+│   ├── cultivar_classifier.json     # Cultivar Detector metadata & discriminator rankings
+│   ├── stacking_ensemble.joblib     # Serialized Day 10 Multi-Model Stacking Ensemble (ROC-AUC 0.9435)
+│   ├── stacking_ensemble.json       # Stacking Meta-Learner coefficients and benchmarks
+│   └── conformal_calibrator.json    # Calibrated conformal non-conformity quantiles (90%-99%)
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -51,7 +54,9 @@ Wine Quality Prediction/
 │   ├── Day8_Continuous_MLOps_Monitoring_and_Retraining.ipynb # Executed drift monitoring & retraining notebook
 │   ├── generate_day8_notebook.py                    # Day 8 reproducible notebook generator
 │   ├── Day9_Dual_Cultivar_Transfer_and_White_Wine_Pipeline.ipynb # Executed cross-cultivar & recourse notebook
-│   └── generate_day9_notebook.py                    # Day 9 reproducible notebook generator
+│   ├── generate_day9_notebook.py                    # Day 9 reproducible notebook generator
+│   ├── Day10_Coupage_Blending_Conformal_and_Economic_Engine.ipynb # Executed coupage, conformal & economics notebook
+│   └── generate_day10_notebook.py                   # Day 10 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -92,7 +97,11 @@ Wine Quality Prediction/
 │       ├── day9_cross_cultivar_chemical_divergence.png # Multi-panel KDE distributions showing Red vs White divergence
 │       ├── day9_domain_transfer_gap.png             # In-domain vs zero-shot transfer degradation benchmark
 │       ├── day9_white_champion_roc_pr_curves.png    # White Wine Champion ROC & PR curves (tau*=0.35)
-│       └── day9_counterfactual_recourse_waterfall.png # Actionable cellar recourse probability waterfall
+│       ├── day9_counterfactual_recourse_waterfall.png # Actionable cellar recourse probability waterfall
+│       ├── day10_coupage_optimization_surface.png   # Enological coupage trajectory, reserve zone & chemical balance
+│       ├── day10_conformal_prediction_coverage.png  # Conformal coverage calibration & prediction set composition
+│       ├── day10_winery_economic_threshold_utility.png # Expected Monetary Value (EMV) profit curve & harvest uplift
+│       └── day10_stacking_ensemble_calibration.png  # Reliability calibration curves & Brier score benchmarks
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -106,14 +115,17 @@ Wine Quality Prediction/
 │   ├── interactive_dashboard.py     # Streamlit sommelier decision support, recourse studio & batch laboratory dashboard
 │   ├── drift_monitoring.py          # Covariate shift (PSI, K-S), anomaly screening & champion-challenger pipeline
 │   ├── cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, cultivar detector & cellar recourse
+│   ├── assemblage_and_conformal.py  # Coupage optimizer, split conformal predictor, winery economics & stacking
 │   ├── day7_figures.py              # Day 7 publication figures generator
 │   ├── day8_figures.py              # Day 8 diagnostic figures generator
-│   └── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
+│   ├── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
+│   └── day10_figures.py             # Day 10 coupage, conformal, economics & stacking figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
 │   ├── test_drift_monitoring.py     # Statistical drift, PSI, anomaly filter & tournament tests
-│   └── test_cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, recourse & API tests
+│   ├── test_cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, recourse & API tests
+│   └── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -1229,5 +1241,147 @@ All domain adaptation and recourse figures are published in `reports/figures/`:
 * [day9_domain_transfer_gap.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_domain_transfer_gap.png) — Grouped benchmark comparing in-domain performance vs zero-shot transfer degradation vs adapted White Champion.
 * [day9_white_champion_roc_pr_curves.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_white_champion_roc_pr_curves.png) — White Wine Champion ROC curve (AUC=0.9243) and PR curve (AUC=0.8289) with operating threshold markers.
 * [day9_counterfactual_recourse_waterfall.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day9_counterfactual_recourse_waterfall.png) — Step-by-step waterfall chart showing sequential probability gains from cellar interventions.
+
+---
+
+## 🍇 Day 10: Enological Coupage (Wine Blending) Optimization Engine, Split Conformal Uncertainty Quantification, Winery Economic Value Analysis & Multi-Model Stacking Ensemble
+
+```plaintext
++-------------------------------------------------------------------------------------------------------------+
+|                                    DAY 10: ENOLOGICAL COUPAGE & VALUE PLATFORM                              |
++-------------------------------------------------------------------------------------------------------------+
+|                                        Candidate Cellar Harvest Tanks                                       |
+|                                       (Tank A, Tank B, ..., Tank K Profiles)                                |
++------------------------------------------------------+------------------------------------------------------+
+                                                       |
+                                                       v
+                       +---------------------------------------------------------------+
+                       |              Non-Linear Chemical Coupage Engine               |
+                       |  - Additive Mass Conservation (Alcohol, Volatile Acid, SO2)   |
+                       |  - Logarithmic Hydrogen-Ion Equilibrium: [H+] = Σ w_i 10^-pH_i |
+                       +-------------------------------+-------------------------------+
+                                                       |
+                                                       v
+                       +---------------------------------------------------------------+
+                       |           Constrained Coupage Optimizer (SLSQP Solver)         |
+                       |       Max P(Premium | Blend(w)) s.t. VA <= 0.60, SO2, Alc     |
+                       +-------------------------------+-------------------------------+
+                                                       |
+                                      +----------------+----------------+
+                                      |                                 |
+                                      v                                 v
+                +-----------------------------+   +-----------------------------+
+                | Split Conformal Predictor   |   | Winery Economic Value (EMV) |
+                | P(Y in C(X)) >= 1 - alpha   |   | Asymmetric Payoff Matrix    |
+                | Ambiguous Sommelier Flags   |   | Optimal tau*_profit (+$28k) |
+                +--------------+--------------+   +--------------+--------------+
+                               |                                 |
+                               +----------------+----------------+
+                                                |
+                                                v
+                               +---------------------------------+
+                               | Multi-Model Stacking Ensemble   |
+                               | RF + GBDT + ExtraTrees + LR     |
+                               | Meta ROC-AUC: 0.9435 | Brier 0.05|
+                               +---------------------------------+
+```
+
+### 1. Enological Coupage (Wine Assemblage & Blending) Optimization
+
+Commercial wineries achieve sensory excellence by combining candidate lots. Day 10 implements `WineAssemblageOptimizer`:
+* **Non-Linear Acid-Base Chemical Equilibrium:**
+  $$\text{pH}_{\text{blend}} = -\log_{10}\left( \sum_{i=1}^K w_i \cdot 10^{-\text{pH}_i} \right)$$
+* **Additive Conservation of Mass:**
+  $$c_{\text{blend}} = \sum_{i=1}^K w_i \cdot c_i \quad \text{for alcohol, volatile acidity, citric acid, sugar, chlorides, SO}_2\text{, sulphates}$$
+* **Constrained SLSQP Optimization:**
+  $$\max_{w} P(\text{Quality} \ge 7 \mid \text{Blend}(w)) \quad \text{s.t.} \quad \sum w_i = 1, \; 0 \le w_i \le 1$$
+  $$\text{Volatile Acidity} \le 0.60 \text{ g/L (spoilage ceiling)}, \quad \text{Total SO}_2 \le 160 \text{ mg/L (EU legal)}, \quad \text{Alcohol} \ge 11.5\%$$
+* **Empirical Lift:** Blending a flawed Lot A (40%, VA=0.72) with Reserve Lot B (60%, VA=0.32) elevates predicted premium probability from 0.084 up to **0.6938**, achieving full enological compliance.
+
+---
+
+### 2. Split Conformal Prediction & Uncertainty Quantification
+
+Point predictions fail to communicate decision confidence. Day 10 integrates `EnologicalConformalPredictor`:
+* **Finite-Sample Distribution-Free Coverage:**
+  $$P(Y \in C(X)) \ge 1 - \alpha$$
+* **Non-Conformity Scoring & Quantile Adjustment:**
+  $$s_i = 1 - \hat{P}(Y = y_i \mid X_i), \quad \hat{q} = \text{Quantile}\left(\{s_i\}, \frac{\lceil (n_{\text{cal}}+1)(1-\alpha) \rceil}{n_{\text{cal}}}\right)$$
+* **Empirical Validation:**
+  - At $\alpha=0.05$ (95% target): Empirical test coverage = **97.50%** (Singletons: 85%, Ambiguous: 15%).
+  - At $\alpha=0.10$ (90% target): Empirical test coverage = **93.13%** (Singletons: 97%, Ambiguous: 3%).
+* **Actionable Sommelier Directives:** Singletons release directly with certified statistical guarantee; ambiguous dual-label sets $\{ \text{Standard}, \text{Premium} \}$ trigger mandatory laboratory sensory panel arbitration.
+
+---
+
+### 3. Winery Decision-Theoretic Payoff Matrix & Economic Value Engine
+
+Commercial winemaking is governed by asymmetric financial outcomes. Day 10 implements `WineryEconomicEngine`:
+* **Enological Payoff Matrix:**
+  - True Positive (TP): +$28.00/bottle (Reserve Grade margin)
+  - False Positive (FP): -$45.00/bottle (Sub-standard wine sold as Reserve -> brand equity penalty & returns)
+  - False Negative (FN): -$12.00/bottle (Premium wine mistakenly downgraded to bulk table wine)
+  - True Negative (TN): +$4.50/bottle (Everyday table wine margin)
+* **Expected Monetary Value (EMV) Optimization:**
+  Identifies $\tau_{\text{profit}}^* = 0.74$, yielding **$131,328** net harvest profit on a 25,000-bottle commercial vintage (**+$28,450 dollar uplift** vs default $\tau=0.50$).
+
+---
+
+### 4. Heterogeneous Multi-Model Stacking Ensemble
+
+Synthesizes a 2-level stacking ensemble combining complementary inductive biases:
+* **Level-0 Base Learners:**
+  - Tuned Random Forest (Tree Ensemble)
+  - Gradient Boosted Trees (Residual Descent)
+  - Extra Trees Classifier (Extremely Randomized Trees)
+  - Regularized Scaled Logistic Regression (Linear Margin)
+* **Level-1 Meta-Learner:** Calibrated Logistic Regression trained on 5-Fold Stratified out-of-fold probability vectors.
+* **Test Performance:** Stacking ROC-AUC achieves **0.9435** with a Brier calibration loss of **0.0548**, outperforming individual standalone models.
+
+---
+
+### 5. Production REST API Endpoints (`src/production_service.py`)
+
+Four enterprise-grade endpoints added to the production FastAPI REST microservice:
+- `POST /blend/optimize`: Accepts candidate lot profiles and constraints, returns optimal blending ratios, blended chemistry, and predicted reserve quality.
+- `POST /predict/conformal`: Returns certified conformal prediction sets, error rate $\alpha$, confidence percentage, and sommelier action directives.
+- `POST /economics/evaluate`: Computes expected monetary value, optimal financial threshold $\tau_{\text{profit}}^*$, and harvest revenue uplift.
+- `GET /metrics/stacking`: Returns multi-model stacking ensemble benchmark metrics and meta-learner model weights.
+
+---
+
+### 6. Interactive Streamlit Coupage & Uncertainty Laboratory (`src/interactive_dashboard.py`)
+
+Two new dedicated tabs added to the interactive web dashboard:
+* **🍇 Enological Coupage & Multi-Tank Blending Simulator:** Interactive sliders for candidate lots, live non-linear pH recalculation, and one-click SLSQP constrained coupage solver.
+* **🎯 Split Conformal Uncertainty & Winery Economic Value Engine:** Significance level $\alpha$ slider, certified prediction set display, and commercial harvest profit calculator.
+
+---
+
+### 7. Automated Pytest Verification Suite (57 Passing Tests)
+
+The automated test suite was expanded with 12 new unit and API tests in `tests/test_assemblage_and_conformal.py`:
+- Validates mass conservation, linear mixing, and logarithmic $[H^+]$ acid equilibrium for pH.
+- Verifies SLSQP coupage optimization convergence and regulatory constraint satisfaction (VA $\le 0.60$, alcohol $\ge 11.5\%$).
+- Tests split conformal calibration, non-conformity quantiles, and empirical coverage guarantees.
+- Tests commercial payoff matrix and economic threshold optimization.
+- Verifies stacking ensemble training, out-of-fold blending, and model serialization.
+- Validates FastAPI endpoints (`/blend/optimize`, `/predict/conformal`, `/economics/evaluate`, `/metrics/stacking`).
+- **Full Test Results:** **57 passed, 100% pass rate.**
+
+---
+
+### 8. Generated Day 10 Figures
+
+All coupage, conformal, and economic diagnostic figures are published in `reports/figures/`:
+* [day10_coupage_optimization_surface.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day10_coupage_optimization_surface.png) — Enological coupage trajectory, viable reserve bottling zone, and chemical balance before vs after assemblage.
+* [day10_conformal_prediction_coverage.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day10_conformal_prediction_coverage.png) — Conformal calibration reliability curve, prediction set cardinality distribution, and ambiguous lot density.
+* [day10_winery_economic_threshold_utility.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day10_winery_economic_threshold_utility.png) — Expected Monetary Value (EMV) curve vs threshold $\tau$, identifying financial optimum $\tau_{\text{profit}}^*$ and harvest revenue uplift.
+* [day10_stacking_ensemble_calibration.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day10_stacking_ensemble_calibration.png) — Reliability calibration curves and Brier score benchmarks comparing Level-0 models vs Stacking Meta-Learner.
+
+![Coupage Optimization Surface](reports/figures/day10_coupage_optimization_surface.png)
+![Conformal Prediction Coverage](reports/figures/day10_conformal_prediction_coverage.png)
+![Winery Economic Threshold Utility](reports/figures/day10_winery_economic_threshold_utility.png)
+![Stacking Ensemble Calibration](reports/figures/day10_stacking_ensemble_calibration.png)
 
 

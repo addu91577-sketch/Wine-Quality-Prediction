@@ -238,10 +238,12 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
+        "🍇 Enological Coupage & Blending Lab",
+        "🎯 Conformal Uncertainty & Winery Economics",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -606,6 +608,158 @@ def main():
             st.dataframe(div_df, use_container_width=True, hide_index=True)
         except Exception as e:
             st.error(f"Error loading divergence scorecard: {e}")
+
+    # ------------------------------------------------------------------------
+    # TAB 4: Enological Coupage & Multi-Tank Blending Simulator (Day 10)
+    # ------------------------------------------------------------------------
+    with tab_coupage:
+        st.subheader("🍇 Enological Coupage & Multi-Tank Blending Simulator")
+        st.caption(
+            "Model the biochemical assemblage of candidate harvest tanks. Calculates additive linear mixing "
+            "and logarithmic hydrogen-ion acid equilibrium for pH, while solving for optimal blend ratios using SLSQP."
+        )
+
+        from src.assemblage_and_conformal import (
+            calculate_blended_chemistry,
+            WineAssemblageOptimizer,
+            DEFAULT_SCREENING_THRESHOLD
+        )
+
+        c_col1, c_col2 = st.columns([1, 1])
+        with c_col1:
+            st.markdown("##### 🛢️ Tank Lot 1 Profile")
+            t1_va = st.slider("Lot 1 Volatile Acidity (g/L)", 0.20, 1.20, 0.72, 0.02, key="t1_va")
+            t1_alc = st.slider("Lot 1 Alcohol (% vol)", 8.5, 15.0, 9.6, 0.1, key="t1_alc")
+            t1_ph = st.slider("Lot 1 pH", 2.9, 4.0, 3.48, 0.01, key="t1_ph")
+            t1_so2 = st.slider("Lot 1 Total SO₂ (mg/L)", 10.0, 200.0, 38.0, 5.0, key="t1_so2")
+
+            lot1_profile = {
+                "fixed acidity": 7.2, "volatile acidity": t1_va, "citric acid": 0.05,
+                "residual sugar": 2.2, "chlorides": 0.082, "free sulfur dioxide": 12.0,
+                "total sulfur dioxide": t1_so2, "density": 0.9975, "pH": t1_ph,
+                "sulphates": 0.52, "alcohol": t1_alc
+            }
+
+        with c_col2:
+            st.markdown("##### 🛢️ Tank Lot 2 Profile (Reserve Lot)")
+            t2_va = st.slider("Lot 2 Volatile Acidity (g/L)", 0.20, 1.20, 0.32, 0.02, key="t2_va")
+            t2_alc = st.slider("Lot 2 Alcohol (% vol)", 8.5, 15.0, 12.8, 0.1, key="t2_alc")
+            t2_ph = st.slider("Lot 2 pH", 2.9, 4.0, 3.22, 0.01, key="t2_ph")
+            t2_so2 = st.slider("Lot 2 Total SO₂ (mg/L)", 10.0, 200.0, 58.0, 5.0, key="t2_so2")
+
+            lot2_profile = {
+                "fixed acidity": 10.4, "volatile acidity": t2_va, "citric acid": 0.48,
+                "residual sugar": 2.6, "chlorides": 0.064, "free sulfur dioxide": 24.0,
+                "total sulfur dioxide": t2_so2, "density": 0.9958, "pH": t2_ph,
+                "sulphates": 0.82, "alcohol": t2_alc
+            }
+
+        st.divider()
+        st.markdown("##### ⚖️ Coupage Simulation & Optimization")
+        opt_engine = WineAssemblageOptimizer(model=service.pipeline)
+
+        solve_col1, solve_col2 = st.columns([1, 2])
+        with solve_col1:
+            blend_prop_b = st.slider("Manual Lot 2 Blend Proportion (%)", 0.0, 100.0, 50.0, 1.0) / 100.0
+            auto_solve = st.button("⚡ Compute Optimal Coupage (SLSQP)", type="primary")
+
+        if auto_solve:
+            opt_res = opt_engine.optimize_blend([lot1_profile, lot2_profile], lot_names=["Tank 1", "Tank 2"])
+            opt_w_b = opt_res["weights_breakdown"][1]["ratio"]
+            st.success(f"Optimal Coupage identified: **{opt_res['weights_breakdown'][0]['percentage']:.1f}% Tank 1** + **{opt_res['weights_breakdown'][1]['percentage']:.1f}% Tank 2**")
+            active_weights = [1.0 - opt_w_b, opt_w_b]
+        else:
+            active_weights = [1.0 - blend_prop_b, blend_prop_b]
+
+        # Calculate live blend
+        current_blend = calculate_blended_chemistry([lot1_profile, lot2_profile], active_weights)
+        pred_p = opt_engine._predict_prob(current_blend)
+
+        with solve_col2:
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Coupage Quality Prob", f"{pred_p:.3f}", delta=f"{(pred_p - DEFAULT_SCREENING_THRESHOLD):+.3f} vs τ*")
+            m2.metric("Blended Alcohol", f"{current_blend['alcohol']:.2f}% vol")
+            m3.metric("Blended pH", f"{current_blend['pH']:.2f}", help="Non-linear logarithmic [H+] equilibrium")
+            m4.metric("Volatile Acidity", f"{current_blend['volatile acidity']:.2f} g/L", delta="Compliant" if current_blend["volatile acidity"] <= 0.60 else "Spoilage Risk")
+
+            if pred_p >= DEFAULT_SCREENING_THRESHOLD and current_blend["volatile acidity"] <= 0.60:
+                st.success("🏆 **Certified Reserve Grade Coupage** — Biochemical attributes satisfy all premium thresholds.")
+            elif current_blend["volatile acidity"] > 0.60:
+                st.warning("⚠️ **Enological Warning:** Volatile acidity exceeds 0.60 g/L legal/spoilage ceiling.")
+            else:
+                st.info("🍷 **Everyday Table Wine Blend** — Pleasant sensory balance for commercial table bottling.")
+
+    # ------------------------------------------------------------------------
+    # TAB 5: Split Conformal Uncertainty & Winery Economics (Day 10)
+    # ------------------------------------------------------------------------
+    with tab_conformal:
+        st.subheader("🎯 Split Conformal Uncertainty & Winery Economic Value Engine")
+        st.caption(
+            "Provides finite-sample statistical coverage guarantees (P(Y in C(X)) >= 1 - alpha) "
+            "and commercial expected monetary value (EMV) threshold optimization."
+        )
+
+        from src.assemblage_and_conformal import (
+            EnologicalConformalPredictor,
+            WineryEconomicEngine
+        )
+
+        conf_tab1, conf_tab2 = st.columns([1, 1])
+        with conf_tab1:
+            st.markdown("#### 🛡️ Conformal Prediction Set Analysis")
+            alpha_val = st.select_slider(
+                "Significance Level α (Error Tolerance)",
+                options=[0.01, 0.05, 0.10, 0.15, 0.20],
+                value=0.10,
+                format_func=lambda a: f"α = {a:.2f} ({int((1-a)*100)}% Confidence Guarantee)"
+            )
+
+            try:
+                conformal_engine = EnologicalConformalPredictor(model=service.pipeline)
+                conformal_path = Path("models/conformal_calibrator.json")
+                if conformal_path.exists():
+                    conformal_engine.load(conformal_path)
+                else:
+                    ref_d = load_wine_data("red")
+                    from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+                    d_tar = create_binned_targets(ref_d)
+                    d_fe = create_engineered_features(d_tar)
+                    _, X_cal_s, _, y_cal_s = get_stratified_train_test_split(d_fe, d_fe["binary_quality"], test_size=0.25, random_state=42)
+                    conformal_engine.fit_calibration(X_cal_s, y_cal_s)
+
+                conf_res = conformal_engine.predict_conformal_set(current_sample, alpha=alpha_val)
+
+                st.markdown(f"**Conformal Set:** `{conf_res['prediction_labels']}` (Cardinality: {conf_res['set_size']})")
+                st.info(f"**Sommelier Directive:** {conf_res['sommelier_action']}")
+            except Exception as e:
+                st.warning(f"Conformal evaluation note: {e}")
+
+        with conf_tab2:
+            st.markdown("#### 💰 Winery Expected Monetary Value (EMV)")
+            lot_bottles = st.number_input("Commercial Harvest Vintage (Bottles)", value=25000, step=5000)
+            tp_marg = st.number_input("Premium Reserve Margin ($/bottle)", value=28.00, step=1.0)
+            fp_pen = st.number_input("Substandard Release Brand Penalty ($/bottle)", value=-45.00, step=5.0)
+
+            if st.button("📈 Run Financial Threshold Optimization"):
+                try:
+                    econ_eng = WineryEconomicEngine(tp_margin=tp_marg, fp_penalty=fp_pen)
+                    ref_d = load_wine_data("red")
+                    from src.feature_engineering import create_binned_targets, create_engineered_features, get_stratified_train_test_split
+                    d_tar = create_binned_targets(ref_d)
+                    d_fe = create_engineered_features(d_tar)
+                    from src.production_service import FULL_FEATURE_ORDER
+                    X_f = d_fe[FULL_FEATURE_ORDER]
+                    _, X_te, _, y_te = get_stratified_train_test_split(X_f, d_fe["binary_quality"], test_size=0.20, random_state=42)
+                    p_te = service.pipeline.predict_proba(X_te)[:, 1]
+                    econ_out = econ_eng.optimize_financial_threshold(y_te.values, p_te, lot_size_bottles=lot_bottles)
+
+                    st.success(
+                        f"**Financially Optimal Threshold:** $\\tau^* = {econ_out['optimal_financial_threshold']:.2f}$  \n"
+                        f"**Maximum Net Harvest Profit:** ${econ_out['max_harvest_profit']:,.0f}  \n"
+                        f"**Financial Lift vs Default ($\\tau=0.50$):** +${econ_out['dollar_uplift_vs_default']:,.0f} (+{econ_out['percent_uplift_vs_default']:.1f}%)"
+                    )
+                except Exception as e:
+                    st.error(f"Economic optimization error: {e}")
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring

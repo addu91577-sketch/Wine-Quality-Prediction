@@ -123,6 +123,16 @@ from src.cross_cultivar_and_recourse import (
     WHITE_CHAMPION_MODEL_PATH,
     CULTIVAR_DETECTOR_PATH
 )
+from src.assemblage_and_conformal import (
+    calculate_blended_chemistry,
+    WineAssemblageOptimizer,
+    EnologicalConformalPredictor,
+    WineryEconomicEngine,
+    WineStackingEnsemble,
+    RAW_FEATURE_NAMES,
+    ENGINEERED_FEATURE_NAMES,
+    ALL_FEATURE_NAMES
+)
 
 __all__ = [
     "load_wine_data",
@@ -218,6 +228,14 @@ __all__ = [
     "compute_derived_features_dict",
     "DEFAULT_WHITE_THRESHOLD",
     "WHITE_CHAMPION_MODEL_PATH",
-    "CULTIVAR_DETECTOR_PATH"
+    "CULTIVAR_DETECTOR_PATH",
+    "calculate_blended_chemistry",
+    "WineAssemblageOptimizer",
+    "EnologicalConformalPredictor",
+    "WineryEconomicEngine",
+    "WineStackingEnsemble",
+    "RAW_FEATURE_NAMES",
+    "ENGINEERED_FEATURE_NAMES",
+    "ALL_FEATURE_NAMES"
 ]
 
