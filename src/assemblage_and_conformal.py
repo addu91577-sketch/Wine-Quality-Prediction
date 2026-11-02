@@ -1000,10 +1000,35 @@ class WineStackingEnsemble:
         self.is_fitted = True
         return self
 
+    def _ensure_compatibility(self) -> None:
+        """Ensure cross-version scikit-learn attribute compatibility for serialized models."""
+        models_to_check = []
+        if hasattr(self, "meta_learner") and self.meta_learner is not None:
+            models_to_check.append(self.meta_learner)
+        if hasattr(self, "base_models") and isinstance(self.base_models, dict):
+            for model in self.base_models.values():
+                if hasattr(model, "named_steps"):
+                    for step in model.named_steps.values():
+                        models_to_check.append(step)
+                else:
+                    models_to_check.append(model)
+
+        for m in models_to_check:
+            # scikit-learn < 1.8 expects multi_class on LogisticRegression
+            if m.__class__.__name__ == "LogisticRegression" or "LogisticRegression" in [c.__name__ for c in m.__class__.__mro__]:
+                if not hasattr(m, "multi_class"):
+                    setattr(m, "multi_class", "auto")
+
+    def __setstate__(self, state: Dict[str, Any]) -> None:
+        """Unpickling state restoration ensuring cross-version compatibility."""
+        self.__dict__.update(state)
+        self._ensure_compatibility()
+
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
         """Predict class probabilities via Level-0 forwarding through Meta-Learner."""
         if not self.is_fitted:
             raise ValueError("Stacking ensemble must be fitted before predict_proba().")
+        self._ensure_compatibility()
 
         X_feat = X[self.feature_names] if isinstance(X, pd.DataFrame) else pd.DataFrame(X, columns=self.feature_names)
         n_samples = len(X_feat)
@@ -1068,6 +1093,7 @@ class WineStackingEnsemble:
 
     def save(self, joblib_path: Union[str, Path], json_path: Union[str, Path]) -> None:
         """Serialize stacking ensemble and metadata."""
+        self._ensure_compatibility()
         joblib.dump(self, joblib_path)
         meta = {
             "model_type": "Heterogeneous Stacking Meta-Learner",
@@ -1086,4 +1112,7 @@ class WineStackingEnsemble:
     @classmethod
     def load(cls, joblib_path: Union[str, Path]) -> "WineStackingEnsemble":
         """Load serialized stacking ensemble."""
-        return joblib.load(joblib_path)
+        instance = joblib.load(joblib_path)
+        if hasattr(instance, "_ensure_compatibility"):
+            instance._ensure_compatibility()
+        return instance
