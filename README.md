@@ -35,7 +35,10 @@ Wine Quality Prediction/
 │   ├── cultivar_classifier.json     # Cultivar Detector metadata & discriminator rankings
 │   ├── stacking_ensemble.joblib     # Serialized Day 10 Multi-Model Stacking Ensemble (ROC-AUC 0.9435)
 │   ├── stacking_ensemble.json       # Stacking Meta-Learner coefficients and benchmarks
-│   └── conformal_calibrator.json    # Calibrated conformal non-conformity quantiles (90%-99%)
+│   ├── conformal_calibrator.json    # Calibrated conformal non-conformity quantiles (90%-99%)
+│   ├── aging_kinetics_benchmarks.json # Day 11 bottle aging rate constants & cellar trajectories
+│   ├── pareto_frontier_benchmarks.json # Day 11 multi-objective Pareto optimal benchmark lots
+│   └── enological_interactions.json # Day 11 molecular SO2 & ethanol-VA masking synergy benchmarks
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -56,7 +59,9 @@ Wine Quality Prediction/
 │   ├── Day9_Dual_Cultivar_Transfer_and_White_Wine_Pipeline.ipynb # Executed cross-cultivar & recourse notebook
 │   ├── generate_day9_notebook.py                    # Day 9 reproducible notebook generator
 │   ├── Day10_Coupage_Blending_Conformal_and_Economic_Engine.ipynb # Executed coupage, conformal & economics notebook
-│   └── generate_day10_notebook.py                   # Day 10 reproducible notebook generator
+│   ├── generate_day10_notebook.py                   # Day 10 reproducible notebook generator
+│   ├── Day11_Aging_Kinetics_Pareto_Optimization_and_Stress_Testing.ipynb # Executed aging, Pareto & stress notebook
+│   └── generate_day11_notebook.py                   # Day 11 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -101,7 +106,11 @@ Wine Quality Prediction/
 │       ├── day10_coupage_optimization_surface.png   # Enological coupage trajectory, reserve zone & chemical balance
 │       ├── day10_conformal_prediction_coverage.png  # Conformal coverage calibration & prediction set composition
 │       ├── day10_winery_economic_threshold_utility.png # Expected Monetary Value (EMV) profit curve & harvest uplift
-│       └── day10_stacking_ensemble_calibration.png  # Reliability calibration curves & Brier score benchmarks
+│       ├── day10_stacking_ensemble_calibration.png  # Reliability calibration curves & Brier score benchmarks
+│       ├── day11_cellar_aging_kinetics.png          # 4-panel kinetic bottle aging & peak drinking window curves
+│       ├── day11_pareto_multiobjective_frontier.png # Multi-objective Pareto optimal frontier & knee-point selection
+│       ├── day11_physicochemical_stress_testing.png # Perturbation shock response & stability tolerance index
+│       └── day11_shap_enological_interactions.png   # Pairwise chemical synergy & Henderson-Hasselbalch molecular SO2
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -116,16 +125,19 @@ Wine Quality Prediction/
 │   ├── drift_monitoring.py          # Covariate shift (PSI, K-S), anomaly screening & champion-challenger pipeline
 │   ├── cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, cultivar detector & cellar recourse
 │   ├── assemblage_and_conformal.py  # Coupage optimizer, split conformal predictor, winery economics & stacking
+│   ├── aging_pareto_stress.py       # First-principles bottle aging kinetics, Pareto optimizer & stress testing
 │   ├── day7_figures.py              # Day 7 publication figures generator
 │   ├── day8_figures.py              # Day 8 diagnostic figures generator
 │   ├── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
-│   └── day10_figures.py             # Day 10 coupage, conformal, economics & stacking figures generator
+│   ├── day10_figures.py             # Day 10 coupage, conformal, economics & stacking figures generator
+│   └── day11_figures.py             # Day 11 aging kinetics, Pareto, stress testing & synergy figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
 │   ├── test_drift_monitoring.py     # Statistical drift, PSI, anomaly filter & tournament tests
 │   ├── test_cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, recourse & API tests
-│   └── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
+│   ├── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
+│   └── test_aging_pareto_and_stress.py  # Bottle aging kinetics, Pareto frontier, stress testing & API tests
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -149,6 +161,8 @@ Wine Quality Prediction/
 - [x] **Day 7: Production Inference Engine, Real-Time REST API, Interactive Web Dashboard, Docker Containerization & CI/CD Automated Testing Framework**
 - [x] **Day 8: Continuous MLOps Monitoring, Statistical Drift Detection & Automated Retraining Framework**
 - [x] **Day 9: Cross-Cultivar Domain Adaptation, White Wine Champion Pipeline & Prescriptive Enological Recourse Engine**
+- [x] **Day 10: Enological Coupage Optimizer, Split Conformal Uncertainty Quantification, Winery Economics & Multi-Model Stacking Ensemble**
+- [x] **Day 11: Enological Aging Kinetics, Multi-Objective Pareto Frontier Optimization & Physicochemical Stress-Testing Suite**
 
 ---
 
@@ -1383,5 +1397,140 @@ All coupage, conformal, and economic diagnostic figures are published in `report
 ![Conformal Prediction Coverage](reports/figures/day10_conformal_prediction_coverage.png)
 ![Winery Economic Threshold Utility](reports/figures/day10_winery_economic_threshold_utility.png)
 ![Stacking Ensemble Calibration](reports/figures/day10_stacking_ensemble_calibration.png)
+
+---
+
+## 🍾 Day 11 Summary: Enological Aging Kinetics, Multi-Objective Pareto Optimization & Physicochemical Stress-Testing Suite
+
+Day 11 expands the platform beyond static point-in-time scoring into continuous lifecycle enology, multi-objective commercial decision theory, and environmental perturbation stress resilience.
+
+```
++----------------------------------------------------------------------------------------------------+
+|                         Day 11 Enological Dynamics & Optimization Platform                         |
++------------------------------------+-----------------------------------+---------------------------+
+| 1. Bottle Aging Kinetics Simulator | 2. Multi-Objective Pareto Front   | 3. Stress-Testing Engine  |
+| - Arrhenius Free SO2 decay         | - Maximize P(Quality >= 7)        | - Transit Heat Shock      |
+| - Acetobacter acetic spoilage      | - Minimize Sulphites dosing       | - Micro-Oxygen Ingress    |
+| - Monthly trajectory (12-84M)      | - Manage Alcohol / Excise tax     | - Acidification / Rain    |
+| - Dynamic peak drinking window     | - Knee-point multi-compromise     | - Critical VA flip margin |
++------------------------------------+-----------------------------------+---------------------------+
+```
+
+---
+
+### 1. First-Principles Enological Bottle Aging Kinetics Simulator
+
+Bottled commercial wine undergoes slow biochemical evolution governed by temperature, oxygen transmission rate (OTR) of closures, and preservative equilibrium. Day 11 implements `CellarAgingKineticsSimulator`:
+
+* **Arrhenius Free $\text{SO}_2$ First-Order Consumption Law:**
+  $$k_{\text{SO}_2}(T, \text{closure}) = k_0 \cdot \exp\left( - \frac{E_a}{R(T+273.15)} \right) \cdot \theta_{\text{closure}}$$
+  $$\text{Free } \text{SO}_2(t) = \text{Free } \text{SO}_2(0) \cdot e^{-k_{\text{SO}_2} t}$$
+  - Activation energy $E_a = 65.0 \text{ kJ/mol}$, standard cellar baseline $T_0 = 14.0^\circ\text{C}$, reference rate $k_0 = 0.028 \text{ month}^{-1}$.
+  - Relative Closure OTR: Screwcap $\theta = 0.35\times$ (hermetic, half-life $\approx 70$ months), Technical cork $\theta = 0.70\times$, Natural cork $\theta = 1.00\times$ (half-life $\approx 25$ months), Synthetic cork $\theta = 1.45\times$ (accelerated oxidation).
+
+* **Acetobacter Acetic Acid Spoilage Dynamics:**
+  When protective antioxidant barrier drops below Free $\text{SO}_2 < 10.0 \text{ mg/L}$, acetic acid bacterial metabolism triggers volatile acidity accumulation:
+  $$\frac{d(\text{VA})}{dt} = \max\left(0, 10.0 - \text{Free } \text{SO}_2(t)\right) \cdot 0.0025 \cdot \left[1 + 0.05 \cdot (T - 14.0)\right]$$
+
+* **Acid Softening & Dynamic Quality Trajectory:**
+  Models tartaric bitartrate precipitation ($\Delta \text{pH} = +0.10 \cdot (1 - e^{-0.025 t})$) and recalculates all 5 biochemical interaction features at each monthly step ($t=0 \dots 60$), projecting predicted quality $P(\text{Quality} \ge 7)$.
+  - **Empirical Reserve Wine Profile:** Initial $P = 0.9750$; remains in optimal reserve drinking window until Month 26; reaches oxidation warning at Month 38 under natural cork; shelf-life extended to Month 54 under screwcap.
+
+---
+
+### 2. Multi-Objective Pareto Frontier Optimizer
+
+Commercial wineries face conflicting enological and economic objectives. Day 11 implements `ParetoEnologicalOptimizer`:
+
+* **Vector Objective Space:**
+  - $\max f_1(x) = P(\text{Quality} \ge 7 \mid x)$ (Sensory Reserve Excellence)
+  - $\min f_2(x) = \text{Sulphates}(x)$ (Preservative minimization for clean / organic market tiers)
+  - $\min f_3(x) = \max(0, \text{Alcohol} - 13.5) \cdot 1.5$ (Excise tax tier penalty)
+  - $\min f_4(x) = \text{Volatile Acidity}(x)$ (Spoilage risk)
+
+* **Non-Dominated Sorting & Knee-Point Compromise:**
+  - Identifies non-dominated Rank 1 Pareto optimal lots where no objective can be improved without degrading another.
+  - Detects **Knee-Point Best Compromise** minimizing normalized Euclidean distance to the Utopian Ideal Point $(1, 0, 0, 0)$.
+  - Categorizes vintage lots into operational archetypes:
+    - **Reserve Grand Vin:** Maximum Quality focus ($P \ge 0.95$).
+    - **Low-Intervention Natural:** Minimum Sulphates ($\le 0.45$ g/L) while preserving acceptable commercial quality.
+    - **Balanced Sommelier Selection:** Optimal knee-point compromise.
+
+---
+
+### 3. Physicochemical Environmental Stress-Testing & Perturbation Audit
+
+Audits classifier robustness against physical cellar and shipping disturbances via `EnologicalStressTester`:
+
+| Disturbance Scenario | Physicochemical Shift | Enological Real-World Hazard | Classification Impact |
+| :--- | :--- | :--- | :---: |
+| **Thermal Heat Shock** | Free $\text{SO}_2$ $-25\%$, VA $+0.08$ g/L, Alc $-0.15\%$ | Non-refrigerated container transit shock ($+8^\circ\text{C}$) | $\Delta P = -0.32$ to $-0.68$ |
+| **Micro-Oxygenation Ingress** | Free $\text{SO}_2$ $-40\%$, Total $\text{SO}_2$ $-15\%$, VA $+0.12$ g/L | Leaky cork closure oxygen ingress | $\Delta P = -0.28$ to $-0.53$ |
+| **Tartaric Acidification Shock** | Fixed Acidity $+1.2$ g/L, pH $-0.20$, Citric $+0.10$ | Cellar tartaric dosing overshoot | $\Delta P = -0.15$ to $-0.28$ |
+| **Harvest Rain Dilution** | Fixed Acidity $-0.9$ g/L, Alc $-0.6\%$, pH $+0.15$ | Pre-harvest precipitation must swelling | $\Delta P = -0.30$ to $-0.59$ |
+| **Compound Storage Failure** | Free $\text{SO}_2$ $-50\%$, VA $+0.18$ g/L, Alc $-0.30\%$ | Combined heat wave + defective cork seal | Severe ($\Delta P > -0.70$) |
+
+* **Critical $\epsilon$-Margin to Failure:** Quantifies the minimum perturbation norm required to flip a sample from Reserve ($\ge 7$) to Standard ($< 7$).
+* **Vintage Resilience Index:** Standardized 0–100 score rating cellar durability (Reserve lots score 53–85, table standard lots score 30–45).
+
+---
+
+### 4. Shapley Enological Chemical Interactions & Molecular $\text{SO}_2$ Equilibrium
+
+Day 11 implements `ShapEnologicalInteractions` to uncover non-linear biochemical synergies:
+
+* **Ethanol Masking of Volatile Acidity:**
+  - High alcohol ($\ge 11.5\%$) sensory body mitigates consumer rejection of moderate volatile acidity up to $0.60$ g/L.
+  - Low alcohol + high VA yields an average reserve probability of **0.0314**, whereas high alcohol + high VA achieves **0.1850** (+$15.35\%$ sensory buffering lift).
+* **Henderson-Hasselbalch Molecular $\text{SO}_2$ Equilibrium:**
+  $$\text{Molecular Active SO}_2 = \frac{\text{Free SO}_2}{1 + 10^{\text{pH} - 1.81}}$$
+  At lower pH ($< 3.20$), a significantly lower Free $\text{SO}_2$ dose ($20$ mg/L) achieves the protective antimicrobial threshold ($0.60$ mg/L active molecular $\text{SO}_2$), whereas at higher pH ($> 3.60$), over $50$ mg/L of Free $\text{SO}_2$ is required.
+
+---
+
+### 5. Production REST API Endpoints (`src/production_service.py`)
+
+Four enterprise microservice endpoints added to the production FastAPI REST engine:
+- `POST /aging/simulate`: Simulates 12-84 month bottle cellaring, returning chemical trajectory, peak month, and drinking window.
+- `POST /pareto/optimize`: Accepts candidate lots, computes non-dominated Pareto frontier, knee point, and archetypes.
+- `POST /stress/test`: Executes the 5-scenario environmental disturbance battery, returning resilience score and $\epsilon$-flip margin.
+- `GET /metrics/shap-interactions`: Exposes precomputed pairwise enological synergy metrics and Henderson-Hasselbalch active molecular $\text{SO}_2$.
+
+---
+
+### 6. Interactive Streamlit Aging & Pareto Studios (`src/interactive_dashboard.py`)
+
+Two new dedicated sommelier modules added to the web dashboard:
+* **🍷 Bottle Aging Kinetics & Shelf-Life Simulator:** Live ambient temperature slider ($8^\circ\text{C}-24^\circ\text{C}$), closure selector (Cork, Screwcap, Synthetic), 12-84 month projection curves for Free $\text{SO}_2$, VA accumulation, and quality score, with automated sommelier drinking window badges.
+* **⚖️ Multi-Objective Pareto & Stress Studio:** 2D trade-off explorer (Quality vs Sulphates vs Alcohol), knee-point compromise selector, and real-time perturbation stress resilience scorecard.
+
+---
+
+### 7. Automated Pytest Verification Suite (69 Passing Tests)
+
+The automated test suite was expanded with 12 new unit and API tests in `tests/test_aging_pareto_and_stress.py`:
+- Validates Arrhenius temperature scaling and closure OTR modulation for Free $\text{SO}_2$ decay.
+- Verifies monotonic decay, *Acetobacter* volatile acidity accumulation, and drinking window range calculations.
+- Tests Pareto dominance logic, non-dominated frontier sorting, and knee-point Euclidean distance minimization.
+- Tests perturbation disturbance scenarios, adversarial epsilon flip margins, and resilience index bounds.
+- Validates Henderson-Hasselbalch molecular active $\text{SO}_2$ acid equilibrium.
+- Validates all FastAPI endpoints (`/aging/simulate`, `/pareto/optimize`, `/stress/test`, `/metrics/shap-interactions`).
+- **Full Test Results:** **69 passed out of 69 tests (100% pass rate).**
+
+---
+
+### 8. Generated Day 11 Figures & Jupyter Notebook
+
+All diagnostic figures are published in `reports/figures/` and verified in `notebooks/Day11_Aging_Kinetics_Pareto_Optimization_and_Stress_Testing.ipynb`:
+* [day11_cellar_aging_kinetics.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day11_cellar_aging_kinetics.png) — 4-panel kinetic bottle aging: Free $\text{SO}_2$ exponential decay, Volatile Acidity accumulation, and Predictive Quality Curve with Peak Window badge.
+* [day11_pareto_multiobjective_frontier.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day11_pareto_multiobjective_frontier.png) — Multi-objective Pareto frontier scatter: Quality vs Sulphates colored by Alcohol, showing Knee Point and Compromise Solutions.
+* [day11_physicochemical_stress_testing.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day11_physicochemical_stress_testing.png) — Physicochemical perturbation tolerance and stability margin under transit heat, oxygen, and acidification shocks.
+* [day11_shap_enological_interactions.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day11_shap_enological_interactions.png) — Ethanol $\times$ Volatile Acidity sensory masking surface and Henderson-Hasselbalch active molecular $\text{SO}_2$ vs must pH.
+
+![Cellar Aging Kinetics](reports/figures/day11_cellar_aging_kinetics.png)
+![Multi-Objective Pareto Frontier](reports/figures/day11_pareto_multiobjective_frontier.png)
+![Physicochemical Stress-Testing](reports/figures/day11_physicochemical_stress_testing.png)
+![Shapley Enological Interactions](reports/figures/day11_shap_enological_interactions.png)
+
 
 

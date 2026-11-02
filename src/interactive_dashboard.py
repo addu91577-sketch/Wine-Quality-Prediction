@@ -238,12 +238,14 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
         "🍇 Enological Coupage & Blending Lab",
         "🎯 Conformal Uncertainty & Winery Economics",
+        "🍷 Bottle Aging Kinetics & Shelf-Life",
+        "⚖️ Multi-Objective Pareto & Stress Studio",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -760,6 +762,125 @@ def main():
                     )
                 except Exception as e:
                     st.error(f"Economic optimization error: {e}")
+
+    # ------------------------------------------------------------------------
+    # TAB: Bottle Aging Kinetics & Cellar Shelf-Life Simulator (Day 11)
+    # ------------------------------------------------------------------------
+    with tab_aging:
+        st.subheader("🍷 First-Principles Bottle Aging Kinetics & Shelf-Life")
+        st.caption(
+            "Simulates chemical kinetic evolution across 12-60 months: Free SO2 Arrhenius oxidation decay, "
+            "Acetobacter acetic spoilage, and dynamic sensory window projection."
+        )
+
+        from src.aging_pareto_stress import CellarAgingKineticsSimulator
+
+        aging_col1, aging_col2 = st.columns([1, 2])
+        with aging_col1:
+            st.markdown("#### ⚙️ Cellaring Environmental Parameters")
+            closure_choice = st.selectbox(
+                "Bottle Closure Type:",
+                ["natural_cork", "screwcap", "synthetic", "technical_cork"],
+                index=0,
+                format_func=lambda x: {
+                    "natural_cork": "Natural Cork (OTR 1.0x)",
+                    "screwcap": "Stelvin Screwcap (OTR 0.35x)",
+                    "synthetic": "Synthetic Cork (OTR 1.45x)",
+                    "technical_cork": "Technical Micro-Agglomerate (OTR 0.70x)"
+                }.get(x, x)
+            )
+            temp_choice = st.slider("Cellar Ambient Temperature (°C)", min_value=8.0, max_value=24.0, value=14.0, step=0.5)
+            duration_choice = st.slider("Simulation Horizon (Months)", min_value=12, max_value=84, value=60, step=6)
+
+            sim_engine = CellarAgingKineticsSimulator(model_pipeline=service.pipeline)
+            active_chem = {
+                "fixed acidity": float(fixed_acidity),
+                "volatile acidity": float(volatile_acidity),
+                "citric acid": float(citric_acid),
+                "residual sugar": float(residual_sugar),
+                "chlorides": float(chlorides),
+                "free sulfur dioxide": float(free_so2),
+                "total sulfur dioxide": float(total_so2),
+                "density": float(density),
+                "pH": float(ph_val),
+                "sulphates": float(sulphates),
+                "alcohol": float(alcohol)
+            }
+            aging_res = sim_engine.simulate_trajectory(
+                active_chem,
+                months=duration_choice,
+                temperature_c=temp_choice,
+                closure=closure_choice
+            )
+
+        with aging_col2:
+            st.markdown("#### 📊 Cellar Longevity KPIs")
+            kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+            kpi1.metric("Initial Quality", f"{aging_res['initial_probability']*100:.1f}%")
+            kpi2.metric("Peak Quality", f"{aging_res['peak_probability']*100:.1f}%", f"Month {aging_res['peak_month']}")
+            w_start = f"M{aging_res['drinking_window_start_month']}" if aging_res["drinking_window_start_month"] is not None else "None"
+            w_end = f"M{aging_res['drinking_window_end_month']}" if aging_res["drinking_window_end_month"] is not None else "None"
+            kpi3.metric("Drinking Window", f"{w_start} - {w_end}")
+            kpi4.metric("Spoilage Month", f"Month {aging_res['spoilage_risk_month']}" if aging_res['spoilage_risk_month'] is not None else "None (<60M)")
+
+            st.info(f"🍾 **Sommelier Guidance:** {aging_res['sommelier_cellar_advice']}")
+
+            traj_df = pd.DataFrame(aging_res["trajectory"])
+            st.line_chart(traj_df.set_index("month")[["free sulfur dioxide", "volatile acidity"]])
+            st.line_chart(traj_df.set_index("month")["premium_probability"])
+
+    # ------------------------------------------------------------------------
+    # TAB: Multi-Objective Pareto & Stress Studio (Day 11)
+    # ------------------------------------------------------------------------
+    with tab_pareto:
+        st.subheader("⚖️ Multi-Objective Pareto Frontier & Stress Studio")
+        st.caption(
+            "Balances conflicting commercial objectives (Sensory Quality vs Added Preservatives vs Tax/Alcohol) "
+            "and audits physicochemical stability under transport shocks."
+        )
+
+        from src.aging_pareto_stress import ParetoEnologicalOptimizer, EnologicalStressTester
+
+        p_col1, p_col2 = st.columns([1, 1])
+        with p_col1:
+            st.markdown("#### 🎯 Pareto Frontier Optimization")
+            ref_red = load_wine_data("red")
+            sample_cands = [
+                {"name": f"Lot_{idx+1}", **ref_red.drop(columns=["quality"]).iloc[idx].to_dict()}
+                for idx in range(25)
+            ]
+            pareto_engine = ParetoEnologicalOptimizer(model_pipeline=service.pipeline)
+            pareto_out = pareto_engine.compute_pareto_frontier(sample_cands)
+
+            st.metric("Pareto-Optimal Lots", f"{pareto_out['pareto_optimal_count']} of {pareto_out['total_candidates_evaluated']}")
+            if pareto_out["knee_point_lot"]:
+                st.success(
+                    f"⭐ **Knee-Point Best Compromise:** {pareto_out['knee_point_lot']['name']} "
+                    f"(Quality: {pareto_out['knee_point_lot']['quality_prob']*100:.1f}%, Sulphates: {pareto_out['knee_point_lot']['sulphates']} g/L)"
+                )
+            if pareto_out["archetypes"]["low_intervention_natural"]:
+                nat = pareto_out["archetypes"]["low_intervention_natural"]
+                st.info(f"🌿 **Low-Intervention Natural Lot:** {nat['name']} (Sulphates: {nat['sulphates']} g/L, Quality: {nat['quality_prob']*100:.1f}%)")
+
+        with p_col2:
+            st.markdown("#### 🛡️ Physicochemical Perturbation Stress Audit")
+            stress_engine = EnologicalStressTester(model_pipeline=service.pipeline)
+            stress_res = stress_engine.run_stress_test(active_chem)
+
+            s_kpi1, s_kpi2, s_kpi3 = st.columns(3)
+            s_kpi1.metric("Resilience Score", f"{stress_res['resilience_score']:.1f} / 100", stress_res["resilience_tier"])
+            s_kpi2.metric("Classification Flips", f"{stress_res['classification_flips']} / {stress_res['scenarios_tested']}")
+            s_kpi3.metric("VA Epsilon Margin", f"{stress_res['critical_va_epsilon_flip_margin']} g/L")
+
+            sc_df = pd.DataFrame([
+                {
+                    "Scenario": s["scenario_name"].split(" (")[0],
+                    "Probability Delta": f"{s['probability_delta']:+.4f}",
+                    "Classification Retained": "✅ Retained" if s["retained_classification"] else "⚠️ Flipped"
+                }
+                for s in stress_res["scenario_results"]
+            ])
+            st.dataframe(sc_df, use_container_width=True)
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring

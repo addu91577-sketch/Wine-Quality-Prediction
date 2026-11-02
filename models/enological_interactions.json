@@ -1,0 +1,32 @@
+{
+  "alcohol_va_masking": {
+    "pair": [
+      "alcohol",
+      "volatile acidity"
+    ],
+    "interaction_type": "Sensory Masking / Buffering",
+    "prob_high_va_low_alcohol": 0.0314,
+    "prob_high_va_high_alcohol": 0.185,
+    "alcohol_buffering_lift": 0.1535,
+    "enological_rule": "High alcohol (>=11.5%) mitigates consumer rejection of moderate volatile acidity up to 0.60 g/L."
+  },
+  "molecular_so2_equilibrium": {
+    "pair": [
+      "free sulfur dioxide",
+      "pH"
+    ],
+    "interaction_type": "Logarithmic Antimicrobial Potency",
+    "mean_molecular_so2_mg_l": 0.445,
+    "protective_threshold_mg_l": 0.6,
+    "enological_rule": "At lower pH (<3.30), a lower Free SO2 dose achieves equal antimicrobial efficacy."
+  },
+  "sulphate_chloride_balance": {
+    "pair": [
+      "sulphates",
+      "chlorides"
+    ],
+    "interaction_type": "Preservation vs Salinity Ratio",
+    "mean_ratio": 8.55,
+    "enological_rule": "Sulphates/Chlorides ratio > 6.0 correlates with superior aging potential and clean finish."
+  }
+}

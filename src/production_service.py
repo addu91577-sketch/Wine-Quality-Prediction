@@ -423,6 +423,84 @@ class StackingBenchmarkResponse(BaseModel):
     base_models_benchmarks: Dict[str, Dict[str, float]]
 
 
+class AgingSimulationRequest(BaseModel):
+    """Request parameters for bottle cellar aging simulation."""
+    sample: WinePhysicochemicalInput = Field(..., description="Laboratory chemistry of bottled vintage")
+    months: int = Field(default=60, ge=6, le=120, description="Simulation duration horizon in months")
+    temperature_c: float = Field(default=14.0, ge=5.0, le=30.0, description="Cellar ambient temperature in Celsius")
+    closure_type: str = Field(default="natural_cork", description="Bottle closure: natural_cork, screwcap, synthetic, technical_cork")
+    step_months: int = Field(default=1, ge=1, le=12)
+
+
+class AgingSimulationResponse(BaseModel):
+    """Dynamic chemical and sensory quality trajectory across cellar aging."""
+    cellar_temperature_c: float
+    closure_type: str
+    so2_decay_rate_k: float
+    simulation_months: int
+    initial_probability: float
+    peak_probability: float
+    peak_month: int
+    drinking_window_start_month: Optional[int]
+    drinking_window_end_month: Optional[int]
+    spoilage_risk_month: Optional[int]
+    sommelier_cellar_advice: str
+    trajectory_preview: List[Dict[str, Any]]
+
+
+class ParetoCandidateItem(WinePhysicochemicalInput):
+    """Candidate lot for multi-objective optimization."""
+    name: Optional[str] = Field(default="Candidate Lot")
+
+
+class ParetoOptimizationRequest(BaseModel):
+    """Request for non-dominated multi-objective Pareto analysis."""
+    candidates: List[ParetoCandidateItem] = Field(..., min_length=2)
+
+
+class ParetoOptimizationResponse(BaseModel):
+    """Multi-objective Pareto frontier and compromise archetypes."""
+    total_candidates_evaluated: int
+    pareto_optimal_count: int
+    pareto_frontier: List[Dict[str, Any]]
+    knee_point_lot: Optional[Dict[str, Any]]
+    archetypes: Dict[str, Any]
+
+
+class StressTestRequest(BaseModel):
+    """Request for physicochemical environmental perturbation stress test."""
+    sample: WinePhysicochemicalInput = Field(..., description="Physicochemical wine lot to stress-test")
+
+
+class StressScenarioResult(BaseModel):
+    """Stress response under individual disturbance scenario."""
+    scenario_id: str
+    scenario_name: str
+    description: str
+    perturbed_probability: float
+    probability_delta: float
+    retained_classification: bool
+    perturbed_is_premium: bool
+
+
+class StressTestResponse(BaseModel):
+    """Consolidated physicochemical perturbation and stability audit."""
+    baseline_probability: float
+    baseline_is_premium: bool
+    decision_threshold: float
+    scenarios_tested: int
+    classification_flips: int
+    resilience_score: float
+    resilience_tier: str
+    critical_va_epsilon_flip_margin: float
+    scenario_results: List[StressScenarioResult]
+
+
+class ShapInteractionsResponse(BaseModel):
+    """Pairwise chemical synergy and molecular equilibrium interactions."""
+    interactions: Dict[str, Any]
+
+
 
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
@@ -1257,6 +1335,157 @@ def create_app(
                 meta_learner_coefficients=eval_metrics["meta_learner_coefficients"],
                 base_models_benchmarks=eval_metrics["base_models_benchmarks"]
             )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ========================================================================
+    # Day 11 Endpoints: Aging Kinetics, Pareto Optimization, Stress Testing, SHAP
+    # ========================================================================
+
+    @app.post(
+        "/aging/simulate",
+        response_model=AgingSimulationResponse,
+        summary="Simulate temporal bottle cellar aging and shelf-life kinetics",
+        tags=["Enological Dynamics (Day 11)"]
+    )
+    def simulate_bottle_aging(req: AgingSimulationRequest):
+        try:
+            from src.aging_pareto_stress import CellarAgingKineticsSimulator
+            sim = CellarAgingKineticsSimulator(model_pipeline=service.pipeline)
+            raw_dict = req.sample.model_dump(by_alias=False)
+            chem = {
+                "fixed acidity": raw_dict["fixed_acidity"],
+                "volatile acidity": raw_dict["volatile_acidity"],
+                "citric acid": raw_dict["citric_acid"],
+                "residual sugar": raw_dict["residual_sugar"],
+                "chlorides": raw_dict["chlorides"],
+                "free sulfur dioxide": raw_dict["free_sulfur_dioxide"],
+                "total sulfur dioxide": raw_dict["total_sulfur_dioxide"],
+                "density": raw_dict["density"],
+                "pH": raw_dict.get("pH", raw_dict.get("ph")),
+                "sulphates": raw_dict["sulphates"],
+                "alcohol": raw_dict["alcohol"]
+            }
+            res = sim.simulate_trajectory(
+                chem,
+                months=req.months,
+                temperature_c=req.temperature_c,
+                closure=req.closure_type,
+                step_months=req.step_months
+            )
+            return AgingSimulationResponse(
+                cellar_temperature_c=res["cellar_temperature_c"],
+                closure_type=res["closure_type"],
+                so2_decay_rate_k=res["so2_decay_rate_k"],
+                simulation_months=res["simulation_months"],
+                initial_probability=res["initial_probability"],
+                peak_probability=res["peak_probability"],
+                peak_month=res["peak_month"],
+                drinking_window_start_month=res["drinking_window_start_month"],
+                drinking_window_end_month=res["drinking_window_end_month"],
+                spoilage_risk_month=res["spoilage_risk_month"],
+                sommelier_cellar_advice=res["sommelier_cellar_advice"],
+                trajectory_preview=res["trajectory"][:12]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/pareto/optimize",
+        response_model=ParetoOptimizationResponse,
+        summary="Compute non-dominated Pareto trade-off frontier balancing quality and preservatives",
+        tags=["Multi-Objective Optimization (Day 11)"]
+    )
+    def optimize_pareto_frontier(req: ParetoOptimizationRequest):
+        try:
+            from src.aging_pareto_stress import ParetoEnologicalOptimizer
+            opt = ParetoEnologicalOptimizer(model_pipeline=service.pipeline)
+            candidates = []
+            for item in req.candidates:
+                d = item.model_dump(by_alias=False)
+                candidates.append({
+                    "name": item.name or "Candidate Lot",
+                    "fixed acidity": d["fixed_acidity"],
+                    "volatile acidity": d["volatile_acidity"],
+                    "citric acid": d["citric_acid"],
+                    "residual sugar": d["residual_sugar"],
+                    "chlorides": d["chlorides"],
+                    "free sulfur dioxide": d["free_sulfur_dioxide"],
+                    "total sulfur dioxide": d["total_sulfur_dioxide"],
+                    "density": d["density"],
+                    "pH": d.get("pH", d.get("ph")),
+                    "sulphates": d["sulphates"],
+                    "alcohol": d["alcohol"]
+                })
+            res = opt.compute_pareto_frontier(candidates)
+            return ParetoOptimizationResponse(
+                total_candidates_evaluated=res["total_candidates_evaluated"],
+                pareto_optimal_count=res["pareto_optimal_count"],
+                pareto_frontier=res["pareto_frontier"],
+                knee_point_lot=res["knee_point_lot"],
+                archetypes=res["archetypes"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/stress/test",
+        response_model=StressTestResponse,
+        summary="Audit physicochemical perturbation stability and adversarial flip margin",
+        tags=["Adversarial Robustness (Day 11)"]
+    )
+    def audit_stress_testing(req: StressTestRequest):
+        try:
+            from src.aging_pareto_stress import EnologicalStressTester
+            tester = EnologicalStressTester(model_pipeline=service.pipeline)
+            raw_dict = req.sample.model_dump(by_alias=False)
+            chem = {
+                "fixed acidity": raw_dict["fixed_acidity"],
+                "volatile acidity": raw_dict["volatile_acidity"],
+                "citric acid": raw_dict["citric_acid"],
+                "residual sugar": raw_dict["residual_sugar"],
+                "chlorides": raw_dict["chlorides"],
+                "free sulfur dioxide": raw_dict["free_sulfur_dioxide"],
+                "total sulfur dioxide": raw_dict["total_sulfur_dioxide"],
+                "density": raw_dict["density"],
+                "pH": raw_dict.get("pH", raw_dict.get("ph")),
+                "sulphates": raw_dict["sulphates"],
+                "alcohol": raw_dict["alcohol"]
+            }
+            res = tester.run_stress_test(chem)
+            scenarios = [StressScenarioResult(**s) for s in res["scenario_results"]]
+            return StressTestResponse(
+                baseline_probability=res["baseline_probability"],
+                baseline_is_premium=res["baseline_is_premium"],
+                decision_threshold=res["decision_threshold"],
+                scenarios_tested=res["scenarios_tested"],
+                classification_flips=res["classification_flips"],
+                resilience_score=res["resilience_score"],
+                resilience_tier=res["resilience_tier"],
+                critical_va_epsilon_flip_margin=res["critical_va_epsilon_flip_margin"],
+                scenario_results=scenarios
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get(
+        "/metrics/shap-interactions",
+        response_model=ShapInteractionsResponse,
+        summary="Retrieve chemical interaction synergies and molecular SO2 equilibrium metrics",
+        tags=["Explainability & Synergy (Day 11)"]
+    )
+    def get_shap_interactions():
+        try:
+            p = Path("models/enological_interactions.json")
+            if p.exists():
+                with open(p, "r") as f:
+                    data = json.load(f)
+            else:
+                from src.aging_pareto_stress import ShapEnologicalInteractions
+                from src.data_loader import load_wine_data
+                df = load_wine_data("red")
+                data = ShapEnologicalInteractions.compute_interaction_matrix(service.model_pipeline, df)
+            return ShapInteractionsResponse(interactions=data)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

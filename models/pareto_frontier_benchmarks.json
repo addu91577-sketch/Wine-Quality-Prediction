@@ -1,0 +1,9 @@
+{
+  "total_candidates": 15,
+  "pareto_optimal_count": 8,
+  "knee_point": "Lot_9",
+  "archetypes": {
+    "reserve_grand_vin": "Lot_8",
+    "low_intervention_natural": "Lot_7"
+  }
+}

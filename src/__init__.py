@@ -133,6 +133,14 @@ from src.assemblage_and_conformal import (
     ENGINEERED_FEATURE_NAMES,
     ALL_FEATURE_NAMES
 )
+from src.aging_pareto_stress import (
+    CellarAgingKineticsSimulator,
+    ParetoEnologicalOptimizer,
+    EnologicalStressTester,
+    ShapEnologicalInteractions,
+    CLOSURE_OTR,
+    STANDARD_CELLAR_TEMP_C
+)
 
 __all__ = [
     "load_wine_data",
@@ -236,6 +244,12 @@ __all__ = [
     "WineStackingEnsemble",
     "RAW_FEATURE_NAMES",
     "ENGINEERED_FEATURE_NAMES",
-    "ALL_FEATURE_NAMES"
+    "ALL_FEATURE_NAMES",
+    "CellarAgingKineticsSimulator",
+    "ParetoEnologicalOptimizer",
+    "EnologicalStressTester",
+    "ShapEnologicalInteractions",
+    "CLOSURE_OTR",
+    "STANDARD_CELLAR_TEMP_C"
 ]
 
