@@ -1,0 +1,54 @@
+{
+  "low_volatile_acidity": {
+    "intervention_key": "low_volatile_acidity",
+    "intervention_name": "Volatile Acidity Mitigation (VA <= 0.45 g/L)",
+    "treated_sample_count": 600,
+    "control_sample_count": 999,
+    "causal_ate": 0.0694,
+    "causal_ate_pct": 6.94,
+    "ci_95_lower": 0.0222,
+    "ci_95_upper": 0.1212,
+    "naive_observational_delta": 0.1909,
+    "confounding_bias": 0.1215,
+    "statistically_significant": true
+  },
+  "preservative_sulphates": {
+    "intervention_key": "preservative_sulphates",
+    "intervention_name": "Adequate Sulphate Fortification (Sulphates >= 0.65 g/L)",
+    "treated_sample_count": 676,
+    "control_sample_count": 923,
+    "causal_ate": 0.1015,
+    "causal_ate_pct": 10.15,
+    "ci_95_lower": 0.0727,
+    "ci_95_upper": 0.1362,
+    "naive_observational_delta": 0.198,
+    "confounding_bias": 0.0965,
+    "statistically_significant": true
+  },
+  "optimal_ripeness_alcohol": {
+    "intervention_key": "optimal_ripeness_alcohol",
+    "intervention_name": "Grape Ripeness & Chaptalization (Alcohol >= 11.5% vol)",
+    "treated_sample_count": 280,
+    "control_sample_count": 1319,
+    "causal_ate": 0.2801,
+    "causal_ate_pct": 28.01,
+    "ci_95_lower": 0.1949,
+    "ci_95_upper": 0.3703,
+    "naive_observational_delta": 0.3377,
+    "confounding_bias": 0.0576,
+    "statistically_significant": true
+  },
+  "antimicrobial_free_so2": {
+    "intervention_key": "antimicrobial_free_so2",
+    "intervention_name": "Free SO2 Protection (Free SO2 >= 18.0 mg/L)",
+    "treated_sample_count": 554,
+    "control_sample_count": 1045,
+    "causal_ate": -0.0445,
+    "causal_ate_pct": -4.45,
+    "ci_95_lower": -0.0708,
+    "ci_95_upper": -0.0026,
+    "naive_observational_delta": -0.0557,
+    "confounding_bias": -0.0112,
+    "statistically_significant": true
+  }
+}

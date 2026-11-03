@@ -141,6 +141,16 @@ from src.aging_pareto_stress import (
     CLOSURE_OTR,
     STANDARD_CELLAR_TEMP_C
 )
+from src.fermentation_and_sensory import (
+    FermentationKineticsSimulator,
+    StuckFermentationDetector,
+    SensoryOrganolepticEngine,
+    CausalEnologicalEngine,
+    DEFAULT_MU_MAX,
+    DEFAULT_KS_SUGAR,
+    DEFAULT_KN_YAN,
+    DEFAULT_E_MAX
+)
 
 __all__ = [
     "load_wine_data",
@@ -250,6 +260,14 @@ __all__ = [
     "EnologicalStressTester",
     "ShapEnologicalInteractions",
     "CLOSURE_OTR",
-    "STANDARD_CELLAR_TEMP_C"
+    "STANDARD_CELLAR_TEMP_C",
+    "FermentationKineticsSimulator",
+    "StuckFermentationDetector",
+    "SensoryOrganolepticEngine",
+    "CausalEnologicalEngine",
+    "DEFAULT_MU_MAX",
+    "DEFAULT_KS_SUGAR",
+    "DEFAULT_KN_YAN",
+    "DEFAULT_E_MAX"
 ]
 

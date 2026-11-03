@@ -1,0 +1,152 @@
+{
+  "reserve_grand_vin": {
+    "radar_scores": {
+      "Body & Viscosity": 1.0,
+      "Acidity & Crispness": 1.8,
+      "Tannic Grip & Structure": 1.0,
+      "Aromatic Freshness & Purity": 2.0,
+      "Sweetness-Acid Harmony": 6.2,
+      "Ethanol Warmth & Persistence": 2.0
+    },
+    "overall_sensory_intensity": 2.33,
+    "dry_extract_est_g_l": 15.0,
+    "tasting_note": {
+      "appearance": "Pale ruby with light brick highlights and rapid tearing.",
+      "nose": "Subdued dark plum, cedar shavings, dried thyme, and subtle baking spices.",
+      "palate": "Light-bodied and linear on entry, framed by measured, well-integrated acidity and supported by soft, rounded, accessible tannins.",
+      "finish": "Crisp, refreshing finish (10.0% ABV) characterized by clean tart red fruit and dried herbs."
+    },
+    "food_pairings": [
+      {
+        "dish": "Spicy Red Thai Curry & Sichuan Noodles",
+        "category": "Spicy Cuisine",
+        "affinity": 58.6,
+        "pairing_rationale": "Light body and low perceived heat prevent burning capsaicin friction on the palate."
+      },
+      {
+        "dish": "Pan-Seared Wild Salmon & Morel Mushrooms",
+        "category": "Fish & Seafood",
+        "affinity": 43.7,
+        "pairing_rationale": "Delicate red fruit and brisk acidity flatter the rich omega-3 oils without metallic clash."
+      },
+      {
+        "dish": "Aged Hard Cheeses (Comt\u00e9 & Manchego)",
+        "category": "Dairy & Artisan Cheese",
+        "affinity": 37.0,
+        "pairing_rationale": "Complex nutty curds mirror the wine's rich extract and ethanol warmth."
+      },
+      {
+        "dish": "Roasted Duck Breast & Confit Duck",
+        "category": "Poultry & Game",
+        "affinity": 36.1,
+        "pairing_rationale": "Vibrant acidity cuts through duck fat while ripe red fruit accents savory spices."
+      },
+      {
+        "dish": "Charbroiled Prime Ribeye Steak",
+        "category": "Red Meat",
+        "affinity": 27.0,
+        "pairing_rationale": "Ample tannins and bold structure effortlessly cut through marbling and rich umami."
+      }
+    ]
+  },
+  "standard_commercial_table": {
+    "radar_scores": {
+      "Body & Viscosity": 1.0,
+      "Acidity & Crispness": 1.3,
+      "Tannic Grip & Structure": 1.3,
+      "Aromatic Freshness & Purity": 1.3,
+      "Sweetness-Acid Harmony": 7.1,
+      "Ethanol Warmth & Persistence": 1.2
+    },
+    "overall_sensory_intensity": 2.2,
+    "dry_extract_est_g_l": 15.0,
+    "tasting_note": {
+      "appearance": "Pale ruby with light brick highlights and rapid tearing.",
+      "nose": "Forward volatile notes of balsamic glaze, bruised apple, and sharp acetone overshadowing faint red currant fruit.",
+      "palate": "Light-bodied and linear on entry, framed by measured, well-integrated acidity and supported by soft, rounded, accessible tannins.",
+      "finish": "Crisp, refreshing finish (9.4% ABV) characterized by clean tart red fruit and dried herbs."
+    },
+    "food_pairings": [
+      {
+        "dish": "Spicy Red Thai Curry & Sichuan Noodles",
+        "category": "Spicy Cuisine",
+        "affinity": 61.6,
+        "pairing_rationale": "Light body and low perceived heat prevent burning capsaicin friction on the palate."
+      },
+      {
+        "dish": "Pan-Seared Wild Salmon & Morel Mushrooms",
+        "category": "Fish & Seafood",
+        "affinity": 37.2,
+        "pairing_rationale": "Delicate red fruit and brisk acidity flatter the rich omega-3 oils without metallic clash."
+      },
+      {
+        "dish": "Aged Hard Cheeses (Comt\u00e9 & Manchego)",
+        "category": "Dairy & Artisan Cheese",
+        "affinity": 35.4,
+        "pairing_rationale": "Complex nutty curds mirror the wine's rich extract and ethanol warmth."
+      },
+      {
+        "dish": "Roasted Duck Breast & Confit Duck",
+        "category": "Poultry & Game",
+        "affinity": 32.1,
+        "pairing_rationale": "Vibrant acidity cuts through duck fat while ripe red fruit accents savory spices."
+      },
+      {
+        "dish": "Charbroiled Prime Ribeye Steak",
+        "category": "Red Meat",
+        "affinity": 26.8,
+        "pairing_rationale": "Ample tannins and bold structure effortlessly cut through marbling and rich umami."
+      }
+    ]
+  },
+  "elevated_va_rustic": {
+    "radar_scores": {
+      "Body & Viscosity": 1.0,
+      "Acidity & Crispness": 2.6,
+      "Tannic Grip & Structure": 2.2,
+      "Aromatic Freshness & Purity": 1.4,
+      "Sweetness-Acid Harmony": 7.3,
+      "Ethanol Warmth & Persistence": 1.8
+    },
+    "overall_sensory_intensity": 2.72,
+    "dry_extract_est_g_l": 15.0,
+    "tasting_note": {
+      "appearance": "Pale ruby with light brick highlights and rapid tearing.",
+      "nose": "Forward volatile notes of balsamic glaze, bruised apple, and sharp acetone overshadowing faint red currant fruit.",
+      "palate": "Light-bodied and linear on entry, framed by measured, well-integrated acidity and supported by soft, rounded, accessible tannins.",
+      "finish": "Crisp, refreshing finish (9.8% ABV) characterized by clean tart red fruit and dried herbs."
+    },
+    "food_pairings": [
+      {
+        "dish": "Spicy Red Thai Curry & Sichuan Noodles",
+        "category": "Spicy Cuisine",
+        "affinity": 56.9,
+        "pairing_rationale": "Light body and low perceived heat prevent burning capsaicin friction on the palate."
+      },
+      {
+        "dish": "Pan-Seared Wild Salmon & Morel Mushrooms",
+        "category": "Fish & Seafood",
+        "affinity": 39.7,
+        "pairing_rationale": "Delicate red fruit and brisk acidity flatter the rich omega-3 oils without metallic clash."
+      },
+      {
+        "dish": "Aged Hard Cheeses (Comt\u00e9 & Manchego)",
+        "category": "Dairy & Artisan Cheese",
+        "affinity": 39.4,
+        "pairing_rationale": "Complex nutty curds mirror the wine's rich extract and ethanol warmth."
+      },
+      {
+        "dish": "Roasted Duck Breast & Confit Duck",
+        "category": "Poultry & Game",
+        "affinity": 38.2,
+        "pairing_rationale": "Vibrant acidity cuts through duck fat while ripe red fruit accents savory spices."
+      },
+      {
+        "dish": "Charbroiled Prime Ribeye Steak",
+        "category": "Red Meat",
+        "affinity": 32.0,
+        "pairing_rationale": "Ample tannins and bold structure effortlessly cut through marbling and rich umami."
+      }
+    ]
+  }
+}

@@ -501,6 +501,83 @@ class ShapInteractionsResponse(BaseModel):
     interactions: Dict[str, Any]
 
 
+# ============================================================================
+# Day 12: Fermentation Bioprocess, Stuck Early-Warning & Sensory Schemas
+# ============================================================================
+
+class FermentationSimulationRequest(BaseModel):
+    """Parameters for numerical bioprocess simulation of primary alcoholic fermentation."""
+    initial_sugar_g_l: float = Field(default=225.0, ge=100.0, le=350.0, description="Initial hexose sugar concentration in g/L")
+    initial_yan_mg_l: float = Field(default=220.0, ge=20.0, le=500.0, description="Initial Yeast Assimilable Nitrogen in mg/L")
+    initial_temp_c: float = Field(default=20.0, ge=10.0, le=35.0, description="Initial must fermentation temperature in Celsius")
+    jacket_temp_c: float = Field(default=20.0, ge=10.0, le=35.0, description="Cooling jacket setpoint temperature in Celsius")
+    initial_biomass_g_l: float = Field(default=0.5, ge=0.05, le=5.0, description="Inoculated yeast biomass in g/L")
+    total_days: int = Field(default=14, ge=3, le=30, description="Fermentation simulation duration in days")
+    yeast_strain: str = Field(default="EC1118_champagne", description="Yeast strain profile (EC1118_champagne, RC212_pinot_red, D254_rhone_bold, QA23_aromatic_white)")
+
+
+class FermentationSimulationResponse(BaseModel):
+    """Results from bioprocess kinetic simulation."""
+    yeast_strain: str
+    fermentation_status: str
+    duration_days: int
+    final_residual_sugar_g_l: float
+    final_ethanol_pct: float
+    final_volatile_acidity_g_l: float
+    peak_fermentation_rate_g_l_day: float
+    peak_rate_day: float
+    predicted_quality_prob: float
+    is_premium: bool
+    trajectory: List[Dict[str, Any]]
+
+
+class StuckDiagnosisReading(BaseModel):
+    """Single timestamp observation in a fermentation log."""
+    day: float = Field(..., ge=0.0, description="Elapsed day of fermentation")
+    sugar: float = Field(..., ge=0.0, description="Residual hexose sugar in g/L")
+    temp: Optional[float] = Field(default=20.0, description="Tank temperature in Celsius")
+    yan: Optional[float] = Field(default=150.0, description="YAN in mg/L")
+    alcohol: Optional[float] = Field(default=0.0, description="Current ethanol in % v/v")
+
+
+class StuckDiagnosisRequest(BaseModel):
+    """Sequential time-series log for kinetic stuck/sluggish triage."""
+    readings: List[StuckDiagnosisReading] = Field(..., min_length=2, description="At least 2 chronological fermentation measurements")
+
+
+class StuckDiagnosisResponse(BaseModel):
+    """Early warning status, kinetic derivatives, and prescriptive intervention."""
+    diagnosis: str
+    risk_score_pct: float
+    is_stuck_or_sluggish: bool
+    current_sugar_g_l: float
+    current_rate_g_l_day: float
+    acceleration_g_l_day2: float
+    current_temperature_c: float
+    current_ethanol_pct: float
+    message: str
+    prescriptive_actions: List[Dict[str, str]]
+
+
+class SensoryProfileRequest(BaseModel):
+    """Request for 6-axis organoleptic radar, sommelier tasting note, and food pairings."""
+    sample: WinePhysicochemicalInput = Field(..., description="Laboratory chemistry of wine sample")
+
+
+class SensoryProfileResponse(BaseModel):
+    """Calculated sensory organoleptic profile."""
+    radar_scores: Dict[str, float]
+    overall_sensory_intensity: float
+    dry_extract_est_g_l: float
+    tasting_note: Dict[str, str]
+    food_pairings: List[Dict[str, Any]]
+
+
+class CausalMetricsResponse(BaseModel):
+    """Causal Average Treatment Effects and confounding bias mitigation metrics."""
+    interventions: Dict[str, Any]
+
+
 
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
@@ -1486,6 +1563,100 @@ def create_app(
                 df = load_wine_data("red")
                 data = ShapEnologicalInteractions.compute_interaction_matrix(service.model_pipeline, df)
             return ShapInteractionsResponse(interactions=data)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ========================================================================
+    # Day 12 Endpoints: Fermentation Kinetics, Stuck Early Warning & Sensory
+    # ========================================================================
+
+    @app.post(
+        "/fermentation/simulate",
+        response_model=FermentationSimulationResponse,
+        summary="Simulate primary alcoholic fermentation bioprocess kinetics",
+        tags=["Fermentation & Bioprocess (Day 12)"]
+    )
+    def simulate_fermentation_endpoint(req: FermentationSimulationRequest):
+        try:
+            from src.fermentation_and_sensory import FermentationKineticsSimulator
+            sim = FermentationKineticsSimulator(model_pipeline=service.pipeline)
+            res = sim.simulate_fermentation(
+                initial_sugar_g_l=req.initial_sugar_g_l,
+                initial_yan_mg_l=req.initial_yan_mg_l,
+                initial_temp_c=req.initial_temp_c,
+                jacket_temp_c=req.jacket_temp_c,
+                initial_biomass_g_l=req.initial_biomass_g_l,
+                total_days=req.total_days,
+                yeast_strain=req.yeast_strain
+            )
+            return FermentationSimulationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/fermentation/diagnose-stuck",
+        response_model=StuckDiagnosisResponse,
+        summary="Evaluate sequential fermentation readings for sluggish/stuck risks",
+        tags=["Fermentation & Bioprocess (Day 12)"]
+    )
+    def diagnose_stuck_endpoint(req: StuckDiagnosisRequest):
+        try:
+            from src.fermentation_and_sensory import StuckFermentationDetector
+            detector = StuckFermentationDetector()
+            readings_raw = [r.model_dump() for r in req.readings]
+            res = detector.diagnose_trajectory(readings_raw)
+            return StuckDiagnosisResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/sensory/profile",
+        response_model=SensoryProfileResponse,
+        summary="Translate laboratory chemistry into 6-axis organoleptic radar and sommelier notes",
+        tags=["Sensory & Organoleptic (Day 12)"]
+    )
+    def sensory_profile_endpoint(req: SensoryProfileRequest):
+        try:
+            from src.fermentation_and_sensory import SensoryOrganolepticEngine
+            raw_dict = req.sample.model_dump(by_alias=False)
+            chem = {
+                "fixed acidity": raw_dict["fixed_acidity"],
+                "volatile acidity": raw_dict["volatile_acidity"],
+                "citric acid": raw_dict["citric_acid"],
+                "residual sugar": raw_dict["residual_sugar"],
+                "chlorides": raw_dict["chlorides"],
+                "free sulfur dioxide": raw_dict["free_sulfur_dioxide"],
+                "total sulfur dioxide": raw_dict["total_sulfur_dioxide"],
+                "density": raw_dict["density"],
+                "pH": raw_dict.get("pH", raw_dict.get("ph")),
+                "sulphates": raw_dict["sulphates"],
+                "alcohol": raw_dict["alcohol"]
+            }
+            res = SensoryOrganolepticEngine.compute_sensory_profile(chem)
+            return SensoryProfileResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.get(
+        "/metrics/causal-effects",
+        response_model=CausalMetricsResponse,
+        summary="Retrieve Doubly Robust IPW causal Average Treatment Effects on wine quality",
+        tags=["Causal Inference (Day 12)"]
+    )
+    def get_causal_effects_endpoint():
+        try:
+            p = Path("models/causal_intervention_benchmarks.json")
+            if p.exists():
+                with open(p, "r") as f:
+                    data = json.load(f)
+            else:
+                from src.fermentation_and_sensory import CausalEnologicalEngine
+                from src.data_loader import load_wine_data
+                df = load_wine_data("red")
+                data = {}
+                for k in CausalEnologicalEngine.INTERVENTIONS:
+                    data[k] = CausalEnologicalEngine.estimate_causal_effect(df, intervention_key=k, n_bootstraps=50)
+            return CausalMetricsResponse(interventions=data)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

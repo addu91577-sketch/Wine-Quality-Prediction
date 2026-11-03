@@ -238,7 +238,7 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
@@ -246,6 +246,8 @@ def main():
         "🎯 Conformal Uncertainty & Winery Economics",
         "🍷 Bottle Aging Kinetics & Shelf-Life",
         "⚖️ Multi-Objective Pareto & Stress Studio",
+        "🧬 Fermentation Bioprocess & Stuck Warning",
+        "🎨 Sensory Organoleptic & Flavor Lexicon",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -881,6 +883,159 @@ def main():
                 for s in stress_res["scenario_results"]
             ])
             st.dataframe(sc_df, use_container_width=True)
+
+    # ------------------------------------------------------------------------
+    # TAB: Fermentation Bioprocess & Stuck Early-Warning Studio (Day 12)
+    # ------------------------------------------------------------------------
+    with tab_fermentation:
+        st.subheader("🧬 Fermentation Bioprocess Kinetics & Stuck Early-Warning")
+        st.caption(
+            "First-principles numerical simulation of primary alcoholic fermentation: "
+            "Saccharomyces cerevisiae biomass proliferation, hexose consumption, ethanol synthesis, "
+            "metabolic thermal kinetics, and real-time stuck fermentation early-warning triage."
+        )
+
+        from src.fermentation_and_sensory import FermentationKineticsSimulator, StuckFermentationDetector
+
+        ferm_col1, ferm_col2 = st.columns([1, 2])
+        with ferm_col1:
+            st.markdown("#### 🍇 Must Inoculum & Cellar Controls")
+            ferm_sugar = st.slider("Initial Hexose Sugar (g/L):", min_value=160.0, max_value=300.0, value=225.0, step=5.0)
+            ferm_yan = st.slider("Initial YAN Nitrogen (mg/L):", min_value=40.0, max_value=400.0, value=220.0, step=10.0)
+            ferm_temp = st.slider("Inoculation Temp (°C):", min_value=12.0, max_value=32.0, value=20.0, step=1.0)
+            jacket_temp = st.slider("Cooling Jacket Target (°C):", min_value=12.0, max_value=30.0, value=20.0, step=1.0)
+            strain_sel = st.selectbox(
+                "Yeast Strain Profile:",
+                ["EC1118_champagne", "RC212_pinot_red", "D254_rhone_bold", "QA23_aromatic_white"],
+                index=0
+            )
+            ferm_days = st.slider("Fermentation Horizon (Days):", min_value=7, max_value=21, value=14, step=1)
+
+            sim_ferm = FermentationKineticsSimulator(model_pipeline=service.pipeline)
+            active_chem = {
+                "fixed acidity": float(fixed_acidity),
+                "volatile acidity": float(volatile_acidity),
+                "citric acid": float(citric_acid),
+                "residual sugar": float(residual_sugar),
+                "chlorides": float(chlorides),
+                "free sulfur dioxide": float(free_so2),
+                "total sulfur dioxide": float(total_so2),
+                "density": float(density),
+                "pH": float(pH),
+                "sulphates": float(sulphates),
+                "alcohol": float(alcohol)
+            }
+            ferm_res = sim_ferm.simulate_fermentation(
+                initial_sugar_g_l=ferm_sugar,
+                initial_yan_mg_l=ferm_yan,
+                initial_temp_c=ferm_temp,
+                jacket_temp_c=jacket_temp,
+                total_days=ferm_days,
+                yeast_strain=strain_sel,
+                baseline_chemistry=active_chem
+            )
+
+        with ferm_col2:
+            st.markdown("#### 📊 Fermentation Kinetic KPIs")
+            fkpi1, fkpi2, fkpi3, fkpi4 = st.columns(4)
+            fkpi1.metric("Status", ferm_res["fermentation_status"])
+            fkpi2.metric("Residual Sugar", f"{ferm_res['final_residual_sugar_g_l']} g/L")
+            fkpi3.metric("Final Ethanol", f"{ferm_res['final_ethanol_pct']}% vol")
+            fkpi4.metric("Finished Quality", f"{ferm_res['predicted_quality_prob']*100:.1f}%", "Premium" if ferm_res["is_premium"] else "Standard")
+
+            f_df = pd.DataFrame(ferm_res["trajectory"])
+            st.line_chart(f_df.set_index("day")[["sugar_g_l", "ethanol_pct"]])
+
+            # Early warning diagnostic
+            st.markdown("#### 🚨 Stuck & Sluggish Early-Warning Diagnostic")
+            stuck_diag = StuckFermentationDetector()
+            # Convert daily trajectory
+            daily_pts = [
+                {"day": r["day"], "sugar": r["sugar_g_l"], "temp": r["temperature_c"], "yan": r["yan_mg_l"], "alcohol": r["ethanol_pct"]}
+                for r in ferm_res["trajectory"] if r["hour"] % 24 == 0 or r["day"] == ferm_res["duration_days"]
+            ]
+            diag_out = stuck_diag.diagnose_trajectory(daily_pts)
+
+            if diag_out["is_stuck_or_sluggish"]:
+                st.warning(f"⚠️ **{diag_out['diagnosis']}** (Risk Score: {diag_out['risk_score_pct']}%): {diag_out['message']}")
+            else:
+                st.success(f"✅ **{diag_out['diagnosis']}** (Risk Score: {diag_out['risk_score_pct']}%): {diag_out['message']}")
+
+            if diag_out["prescriptive_actions"]:
+                st.markdown("**Prescriptive Cellar Interventions:**")
+                for act in diag_out["prescriptive_actions"]:
+                    st.info(f"**{act['action']}:** {act['protocol']}")
+
+    # ------------------------------------------------------------------------
+    # TAB: Sensory Organoleptic & Flavor Lexicon Studio (Day 12)
+    # ------------------------------------------------------------------------
+    with tab_sensory:
+        st.subheader("🎨 Sensory Organoleptic Lexicon & Culinary Pairing Studio")
+        st.caption(
+            "Maps laboratory physicochemical parameters into 6-axis organoleptic sensory dimensions, "
+            "synthesizes professional sommelier tasting notes, and computes gastronomic food pairing affinities."
+        )
+
+        from src.fermentation_and_sensory import SensoryOrganolepticEngine, CausalEnologicalEngine
+
+        active_chem = {
+            "fixed acidity": float(fixed_acidity),
+            "volatile acidity": float(volatile_acidity),
+            "citric acid": float(citric_acid),
+            "residual sugar": float(residual_sugar),
+            "chlorides": float(chlorides),
+            "free sulfur dioxide": float(free_so2),
+            "total sulfur dioxide": float(total_so2),
+            "density": float(density),
+            "pH": float(pH),
+            "sulphates": float(sulphates),
+            "alcohol": float(alcohol)
+        }
+        sens_res = SensoryOrganolepticEngine.compute_sensory_profile(active_chem)
+
+        sens_col1, sens_col2 = st.columns([1, 1])
+
+        with sens_col1:
+            st.markdown("#### 🕸️ 6-Axis Sensory Organoleptic Profile (0-10)")
+            radar_df = pd.DataFrame([
+                {"Sensory Attribute": k, "Intensity Score (0-10)": v}
+                for k, v in sens_res["radar_scores"].items()
+            ])
+            st.dataframe(radar_df, use_container_width=True)
+            st.metric("Overall Sensory Intensity", f"{sens_res['overall_sensory_intensity']} / 10.0")
+            st.metric("Estimated Dry Extract", f"{sens_res['dry_extract_est_g_l']} g/L")
+
+            st.markdown("#### 🍷 Sommelier Tasting Notes")
+            tn = sens_res["tasting_note"]
+            st.write(f"**👁️ Eye:** {tn['appearance']}")
+            st.write(f"**👃 Nose:** {tn['nose']}")
+            st.write(f"**👅 Palate:** {tn['palate']}")
+            st.write(f"**⏳ Finish:** {tn['finish']}")
+
+        with sens_col2:
+            st.markdown("#### 🍽️ Gastronomic Food Pairing Affinities")
+            pair_df = pd.DataFrame(sens_res["food_pairings"])
+            st.dataframe(
+                pair_df[["dish", "category", "affinity", "pairing_rationale"]],
+                use_container_width=True
+            )
+
+            st.markdown("#### ⚖️ Causal Cellar Interventions (Doubly Robust IPW)")
+            st.caption("Causal Average Treatment Effect (ATE) on P(Quality >= 7) controlling for chemical confounders:")
+            p_causal = Path("models/causal_intervention_benchmarks.json")
+            if p_causal.exists():
+                with open(p_causal) as f:
+                    c_bench = json.load(f)
+                c_rows = [
+                    {
+                        "Intervention": v["intervention_name"].split(" (")[0],
+                        "Causal ATE": f"+{v['causal_ate']*100:.1f}%",
+                        "95% CI": f"[{v['ci_95_lower']*100:.1f}%, {v['ci_95_upper']*100:.1f}%]",
+                        "Confounding Bias": f"{v['confounding_bias']*100:+.1f}%"
+                    }
+                    for v in c_bench.values()
+                ]
+                st.dataframe(pd.DataFrame(c_rows), use_container_width=True)
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring
