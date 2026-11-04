@@ -238,7 +238,7 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_malolactic_oak, tab_cellar_haccp, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
@@ -248,6 +248,8 @@ def main():
         "⚖️ Multi-Objective Pareto & Stress Studio",
         "🧬 Fermentation Bioprocess & Stuck Warning",
         "🎨 Sensory Organoleptic & Flavor Lexicon",
+        "🍷 MLF & Oak Maturation Studio",
+        "📋 Cellar Dispatch & HACCP Audit",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -1036,6 +1038,194 @@ def main():
                     for v in c_bench.values()
                 ]
                 st.dataframe(pd.DataFrame(c_rows), use_container_width=True)
+
+    # ------------------------------------------------------------------------
+    # TAB: Malolactic Fermentation & Oak Maturation Studio (Day 13)
+    # ------------------------------------------------------------------------
+    with tab_malolactic_oak:
+        st.subheader("🍇 Malolactic Fermentation (MLF) & Precision Oak Maturation")
+        st.caption(
+            "Secondary Oenococcus oeni biotransformation (L-malic -> L-lactic acid + diacetyl) "
+            "and first-order Fickian dissolution kinetics of oak wood phenolics across cooperage profiles."
+        )
+
+        mlf_subcol1, mlf_subcol2 = st.columns([1, 1])
+
+        with mlf_subcol1:
+            st.markdown("#### 🧪 Secondary MLF Bioprocess Simulator")
+            m_init = st.slider("Initial L-Malic Acid (g/L)", min_value=0.5, max_value=6.0, value=2.8, step=0.1)
+            ph_init = st.slider("Initial Wine pH", min_value=2.9, max_value=3.8, value=3.35, step=0.05)
+            fa_init = st.slider("Initial Fixed Acidity (g/L)", min_value=4.0, max_value=12.0, value=7.2, step=0.2)
+            c_temp = st.slider("Cellar Temperature (°C)", min_value=10.0, max_value=30.0, value=20.0, step=0.5)
+            f_so2 = st.slider("Free SO2 at MLF Inoculation (mg/L)", min_value=0.0, max_value=30.0, value=5.0, step=1.0)
+            alc_mlf = st.slider("Alcohol (% v/v)", min_value=10.0, max_value=16.0, value=13.0, step=0.2)
+            days_mlf = st.slider("Fermentation Period (Days)", min_value=10, max_value=60, value=35, step=5)
+
+            from src.malolactic_and_oak import MalolacticFermentationSimulator
+            mlf_sim = MalolacticFermentationSimulator()
+            mlf_res = mlf_sim.simulate(
+                initial_malic_acid=m_init,
+                initial_ph=ph_init,
+                initial_fixed_acidity=fa_init,
+                alcohol=alc_mlf,
+                free_so2=f_so2,
+                temperature=c_temp,
+                duration_days=days_mlf
+            )
+
+            final_m = mlf_res["final_state"]
+            diag_m = mlf_res["diagnostics"]
+
+            col_m1, col_m2, col_m3 = st.columns(3)
+            with col_m1:
+                st.metric("Final Malic Acid", f"{final_m['malic_acid_g_l']:.2f} g/L", delta=f"{final_m['malic_acid_g_l'] - m_init:.2f} g/L")
+            with col_m2:
+                st.metric("Final Lactic Acid", f"{final_m['lactic_acid_g_l']:.2f} g/L")
+            with col_m3:
+                st.metric("Final pH", f"{final_m['ph']:.2f}", delta=f"{final_m['ph'] - ph_init:+.2f}")
+
+            col_m4, col_m5 = st.columns(2)
+            with col_m4:
+                st.metric("Conversion Rate", f"{final_m['conversion_rate_pct']:.1f}%")
+            with col_m5:
+                st.metric("Peak Diacetyl", f"{final_m['peak_diacetyl_mg_l']:.3f} mg/L")
+
+            if diag_m["is_complete"]:
+                st.success("✅ **MLF Complete:** Biologically stable (< 0.10 g/L malic). Safe for sterile bottling.")
+            else:
+                st.warning("⚠️ **Partial/Sluggish MLF:** Residual malic present. Risk of refermentation.")
+            st.info(f"**Sensory Profile:** {diag_m['sensory_descriptor']}")
+
+            traj_m = pd.DataFrame(mlf_res["trajectory"])
+            st.line_chart(traj_m.set_index("day")[["malic_acid_g_l", "lactic_acid_g_l", "diacetyl_mg_l"]])
+
+        with mlf_subcol2:
+            st.markdown("#### 🪵 Precision Oak Barrel Maturation Simulator")
+            oak_sp = st.selectbox("Oak Species & Cooperage", ["French", "American", "Hungarian"], index=0)
+            t_lvl = st.selectbox("Toast Intensity Level", ["Light", "Medium", "Medium_Plus", "Heavy"], index=2)
+            b_gen = st.selectbox("Barrel Generation / Re-use", ["New", "First_Fill", "Second_Fill", "Neutral"], index=0)
+            mat_m = st.slider("Maturation Duration (Months)", min_value=1, max_value=36, value=18, step=1)
+            b_vol = st.number_input("Barrel Volume (Liters)", min_value=50.0, max_value=1000.0, value=225.0, step=25.0)
+
+            from src.malolactic_and_oak import OakBarrelMaturationSimulator
+            oak_sim = OakBarrelMaturationSimulator()
+            oak_res = oak_sim.simulate(
+                oak_species=oak_sp.lower(),
+                toast_level=t_lvl.lower(),
+                barrel_usage=b_gen.lower(),
+                maturation_months=mat_m,
+                barrel_volume_liters=b_vol
+            )
+
+            final_o = oak_res["final_concentrations"]
+
+            col_o1, col_o2, col_o3 = st.columns(3)
+            with col_o1:
+                st.metric("Ellagitannins", f"{final_o['ellagitannins_mg_l']:.1f} mg/L")
+            with col_o2:
+                st.metric("Whiskey Lactones", f"{final_o['whiskey_lactones_mg_l']:.2f} mg/L")
+            with col_o3:
+                st.metric("Vanillin", f"{final_o['vanillin_mg_l']:.2f} mg/L")
+
+            col_o4, col_o5 = st.columns(2)
+            with col_o4:
+                st.metric("Polymeric Pigment Index", f"{final_o['polymeric_pigment_index']:.1f}")
+            with col_o5:
+                st.metric("Oak Sensory Intensity", f"{final_o['oak_intensity_score']:.1f} / 100")
+
+            st.caption(f"Astringency Softening: **+{final_o['astringency_softening_pct']:.1f}%** | Guaiacol Smoke: **{final_o['guaiacol_mg_l']:.2f} mg/L**")
+
+            traj_o = pd.DataFrame(oak_res["trajectory"])
+            st.line_chart(traj_o.set_index("month")[["ellagitannins_mg_l", "whiskey_lactones_mg_l", "vanillin_mg_l", "polymeric_pigment_index"]])
+
+    # ------------------------------------------------------------------------
+    # TAB: Cellar Master Dispatch & HACCP Compliance Studio (Day 13)
+    # ------------------------------------------------------------------------
+    with tab_cellar_haccp:
+        st.subheader("📋 Digital Cellar Master Dispatch & HACCP Food Safety Audit")
+        st.caption(
+            "Automated multi-vessel ERPI risk prioritization, chemical work-order generation, "
+            "and statutory Critical Control Point (CCP) audits with biogenic amine hazard diagnostics."
+        )
+
+        col_dsp1, col_dsp2 = st.columns([1, 1])
+
+        with col_dsp1:
+            st.markdown("#### 🛡️ Cellar Vessel Fleet Triage & Work Orders")
+            from src.malolactic_and_oak import CellarMasterDispatchEngine
+            dispatch_engine = CellarMasterDispatchEngine()
+
+            p_bench = Path("models/cellar_dispatch_benchmarks.json")
+            if p_bench.exists():
+                with open(p_bench, "r") as f:
+                    bench_dispatch = json.load(f)
+            else:
+                bench_dispatch = dispatch_engine.dispatch_cellar_inventory([])
+
+            st.metric("Cellar Health Score", f"{bench_dispatch['cellar_health_score']} / 100")
+            st.write("**Action Tier Triage Distribution:**", bench_dispatch["tier_distribution"])
+            st.info(f"**Total Potassium Metabisulfite (PMS) Reagents Required:** {bench_dispatch['aggregate_pms_reagents_required_kg']} kg")
+
+            fleet_rows = []
+            for v in bench_dispatch["dispatched_vessels"]:
+                fleet_rows.append({
+                    "Vessel": v["vessel_id"],
+                    "Type": v["vessel_type"],
+                    "ERPI Risk": v["metrics"]["erpi_score"],
+                    "Action Tier": v["triage"]["action_tier"],
+                    "Free SO2 Deficit": f"{v['metrics']['free_so2_deficit_mg_l']} mg/L",
+                    "Work Order": v["work_orders"][0]["action"]
+                })
+            st.dataframe(pd.DataFrame(fleet_rows), use_container_width=True)
+
+            with st.expander("🔍 View Detailed Vessel Work Orders & Chemical Additions"):
+                for v in bench_dispatch["dispatched_vessels"]:
+                    st.markdown(f"**{v['vessel_id']}** ({v['triage']['action_tier']}) - Urgency: **{v['triage']['urgency_hours']}h**")
+                    for wo in v["work_orders"]:
+                        st.markdown(f"- **{wo['action']}**: {wo['dosage_grams']} g of {wo['chemical']}")
+                        st.caption(f"  *Rationale:* {wo['rationale']}")
+
+        with col_dsp2:
+            st.markdown("#### ⚖️ HACCP Food Safety & Biogenic Amine Risk Auditor")
+            from src.malolactic_and_oak import EnologicalHaccpAuditor
+            haccp_auditor = EnologicalHaccpAuditor()
+
+            h_ph = st.slider("Audit Sample pH", min_value=2.9, max_value=4.1, value=3.45, step=0.05, key="h_ph")
+            h_fso2 = st.slider("Measured Free SO2 (mg/L)", min_value=0.0, max_value=50.0, value=22.0, step=1.0, key="h_fso2")
+            h_tso2 = st.slider("Measured Total SO2 (mg/L)", min_value=20.0, max_value=250.0, value=85.0, step=5.0, key="h_tso2")
+            h_va = st.slider("Volatile Acidity (g/L)", min_value=0.1, max_value=1.5, value=0.48, step=0.02, key="h_va")
+            h_alc = st.slider("Alcohol (% v/v)", min_value=8.0, max_value=16.0, value=13.5, step=0.2, key="h_alc")
+            h_mal = st.slider("Residual Malic Acid (g/L)", min_value=0.0, max_value=2.0, value=0.05, step=0.05, key="h_mal")
+
+            h_res = haccp_auditor.audit_wine_lot(
+                lot_id="LOT-AUDIT-ACTIVE",
+                cultivar="red",
+                ph=h_ph,
+                free_so2=h_fso2,
+                total_so2=h_tso2,
+                volatile_acidity=h_va,
+                alcohol=h_alc,
+                malic_acid=h_mal
+            )
+
+            if h_res["all_ccp_passed"]:
+                st.success(f"🏆 **{h_res['audit_status']}:** {h_res['summary']}")
+            else:
+                st.error(f"🚨 **{h_res['audit_status']}:** {h_res['summary']}")
+
+            st.write("##### Critical Control Point (CCP) Status:")
+            for ccp_k, ccp_v in h_res["ccp_verifications"].items():
+                icon = "✅" if ccp_v["passed"] else "❌"
+                st.write(f"- {icon} **{ccp_k}:** Passed={ccp_v['passed']}")
+
+            st.write("##### Biogenic Amine Hazard Index:")
+            bari_score = h_res["biogenic_amine_risk"]["risk_index_score"]
+            bari_lvl = h_res["biogenic_amine_risk"]["risk_level"]
+            st.metric("Biogenic Amine Risk Score", f"{bari_score} / 100", f"Level: {bari_lvl}")
+            st.caption(f"Estimated Histamine: **{h_res['biogenic_amine_risk']['predicted_histamine_content']}**")
+            if h_res["audit_findings"]:
+                for finding in h_res["audit_findings"]:
+                    st.warning(f"⚠️ {finding}")
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring

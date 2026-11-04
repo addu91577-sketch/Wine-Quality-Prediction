@@ -151,6 +151,15 @@ from src.fermentation_and_sensory import (
     DEFAULT_KN_YAN,
     DEFAULT_E_MAX
 )
+from src.malolactic_and_oak import (
+    MalolacticFermentationSimulator,
+    OakBarrelMaturationSimulator,
+    CellarMasterDispatchEngine,
+    EnologicalHaccpAuditor,
+    OAK_SPECIES_PROFILES,
+    TOAST_LEVEL_MODIFIERS,
+    BARREL_USE_FACTORS
+)
 
 __all__ = [
     "load_wine_data",
@@ -268,6 +277,13 @@ __all__ = [
     "DEFAULT_MU_MAX",
     "DEFAULT_KS_SUGAR",
     "DEFAULT_KN_YAN",
-    "DEFAULT_E_MAX"
+    "DEFAULT_E_MAX",
+    "MalolacticFermentationSimulator",
+    "OakBarrelMaturationSimulator",
+    "CellarMasterDispatchEngine",
+    "EnologicalHaccpAuditor",
+    "OAK_SPECIES_PROFILES",
+    "TOAST_LEVEL_MODIFIERS",
+    "BARREL_USE_FACTORS"
 ]
 

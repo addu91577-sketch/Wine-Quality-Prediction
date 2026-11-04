@@ -1,0 +1,231 @@
+{
+  "total_vessels": 5,
+  "tier_distribution": {
+    "CRITICAL_INTERVENTION": 3,
+    "ACTIVE_MANAGEMENT": 1,
+    "ROUTINE_MONITORING": 0,
+    "STABLE_CELLAR": 1
+  },
+  "cellar_health_score": 51.7,
+  "aggregate_pms_reagents_required_kg": 0.398,
+  "dispatched_vessels": [
+    {
+      "vessel_id": "TANK-FERM-03",
+      "vessel_type": "TANK",
+      "cultivar": "red",
+      "volume_liters": 5000.0,
+      "metrics": {
+        "erpi_score": 80.2,
+        "molecular_so2_mg_l": 0.114,
+        "minimum_required_molecular_so2": 0.5,
+        "free_so2_deficit_mg_l": 27.1,
+        "target_free_so2_mg_l": 35.1
+      },
+      "triage": {
+        "action_tier": "CRITICAL_INTERVENTION",
+        "urgency_hours": 24,
+        "risk_subscores": {
+          "so2_penalty": 100.0,
+          "va_penalty": 70.7,
+          "mlf_risk_penalty": 71.2,
+          "temp_penalty": 58.0,
+          "sugar_hazard_penalty": 75.0
+        }
+      },
+      "work_orders": [
+        {
+          "action": "ADD_SULPHUR_DIOXIDE",
+          "dosage_grams": 361.8,
+          "chemical": "Potassium Metabisulfite (K2S2O5, 57.6% active SO2)",
+          "target_free_so2_mg_l": 35.1,
+          "rationale": "Current Free SO2 (8.0 mg/L) yields deficient molecular SO2 (0.11 mg/L vs target 0.5 mg/L).",
+          "hazard_prevention": "Prevents Brettanomyces decarboxylation, Acetobacter oxidation, and wild yeast bloom."
+        },
+        {
+          "action": "VOLATILE_ACIDITY_TRIAGE",
+          "chemical": "Cellar Temperature Reduction & Inert Gas Blanketing",
+          "dosage_grams": 0.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Elevated VA (0.78 g/L) approaching critical threshold. Reduce cellar to 14\u00b0C and sparge headspace with Argon/N2.",
+          "hazard_prevention": "Inhibits Acetobacter aceti acetic acid accumulation and ethyl acetate nail-polish odor."
+        },
+        {
+          "action": "MLF_ARREST_OR_COMPLETION",
+          "chemical": "Lysozyme (250 mg/L) or SO2 Fortification",
+          "dosage_grams": 1250.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Unfinished malic acid (0.85 g/L) in aging lot risks spontaneous post-bottling refermentation.",
+          "hazard_prevention": "Microbial stabilization against lactic acid bacterial spoilage and diacetyl spikes."
+        }
+      ]
+    },
+    {
+      "vessel_id": "BARREL-VINTAGE-99",
+      "vessel_type": "BARREL",
+      "cultivar": "red",
+      "volume_liters": 225.0,
+      "metrics": {
+        "erpi_score": 75.2,
+        "molecular_so2_mg_l": 0.058,
+        "minimum_required_molecular_so2": 0.5,
+        "free_so2_deficit_mg_l": 39.0,
+        "target_free_so2_mg_l": 45.0
+      },
+      "triage": {
+        "action_tier": "CRITICAL_INTERVENTION",
+        "urgency_hours": 24,
+        "risk_subscores": {
+          "so2_penalty": 100.0,
+          "va_penalty": 100.0,
+          "mlf_risk_penalty": 61.2,
+          "temp_penalty": 5.0,
+          "sugar_hazard_penalty": 5.0
+        }
+      },
+      "work_orders": [
+        {
+          "action": "ADD_SULPHUR_DIOXIDE",
+          "dosage_grams": 23.44,
+          "chemical": "Potassium Metabisulfite (K2S2O5, 57.6% active SO2)",
+          "target_free_so2_mg_l": 45.0,
+          "rationale": "Current Free SO2 (6.0 mg/L) yields deficient molecular SO2 (0.06 mg/L vs target 0.5 mg/L).",
+          "hazard_prevention": "Prevents Brettanomyces decarboxylation, Acetobacter oxidation, and wild yeast bloom."
+        },
+        {
+          "action": "VOLATILE_ACIDITY_TRIAGE",
+          "chemical": "Cellar Temperature Reduction & Inert Gas Blanketing",
+          "dosage_grams": 0.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Elevated VA (1.05 g/L) approaching critical threshold. Reduce cellar to 14\u00b0C and sparge headspace with Argon/N2.",
+          "hazard_prevention": "Inhibits Acetobacter aceti acetic acid accumulation and ethyl acetate nail-polish odor."
+        },
+        {
+          "action": "MLF_ARREST_OR_COMPLETION",
+          "chemical": "Lysozyme (250 mg/L) or SO2 Fortification",
+          "dosage_grams": 56.25,
+          "target_free_so2_mg_l": null,
+          "rationale": "Unfinished malic acid (0.45 g/L) in aging lot risks spontaneous post-bottling refermentation.",
+          "hazard_prevention": "Microbial stabilization against lactic acid bacterial spoilage and diacetyl spikes."
+        },
+        {
+          "action": "BARREL_TOPPING_AND_RACKING",
+          "chemical": "Finished Reserve Wine Topping (Ouillage)",
+          "dosage_grams": 0.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Barrique maturation reached 340 days. Top ullage volume to prevent oxidative headspace.",
+          "hazard_prevention": "Prevents aerobic film yeast growth and oxidative brown browning."
+        }
+      ]
+    },
+    {
+      "vessel_id": "BARREL-US-08",
+      "vessel_type": "BARREL",
+      "cultivar": "red",
+      "volume_liters": 225.0,
+      "metrics": {
+        "erpi_score": 44.0,
+        "molecular_so2_mg_l": 0.22,
+        "minimum_required_molecular_so2": 0.5,
+        "free_so2_deficit_mg_l": 14.0,
+        "target_free_so2_mg_l": 25.0
+      },
+      "triage": {
+        "action_tier": "CRITICAL_INTERVENTION",
+        "urgency_hours": 24,
+        "risk_subscores": {
+          "so2_penalty": 100.0,
+          "va_penalty": 24.0,
+          "mlf_risk_penalty": 5.0,
+          "temp_penalty": 5.0,
+          "sugar_hazard_penalty": 5.0
+        }
+      },
+      "work_orders": [
+        {
+          "action": "ADD_SULPHUR_DIOXIDE",
+          "dosage_grams": 8.41,
+          "chemical": "Potassium Metabisulfite (K2S2O5, 57.6% active SO2)",
+          "target_free_so2_mg_l": 25.0,
+          "rationale": "Current Free SO2 (11.0 mg/L) yields deficient molecular SO2 (0.22 mg/L vs target 0.5 mg/L).",
+          "hazard_prevention": "Prevents Brettanomyces decarboxylation, Acetobacter oxidation, and wild yeast bloom."
+        },
+        {
+          "action": "BARREL_TOPPING_AND_RACKING",
+          "chemical": "Finished Reserve Wine Topping (Ouillage)",
+          "dosage_grams": 0.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Barrique maturation reached 210 days. Top ullage volume to prevent oxidative headspace.",
+          "hazard_prevention": "Prevents aerobic film yeast growth and oxidative brown browning."
+        }
+      ]
+    },
+    {
+      "vessel_id": "BARREL-FR-01",
+      "vessel_type": "BARREL",
+      "cultivar": "red",
+      "volume_liters": 225.0,
+      "metrics": {
+        "erpi_score": 34.6,
+        "molecular_so2_mg_l": 0.335,
+        "minimum_required_molecular_so2": 0.5,
+        "free_so2_deficit_mg_l": 8.0,
+        "target_free_so2_mg_l": 22.0
+      },
+      "triage": {
+        "action_tier": "ACTIVE_MANAGEMENT",
+        "urgency_hours": 72,
+        "risk_subscores": {
+          "so2_penalty": 79.5,
+          "va_penalty": 16.8,
+          "mlf_risk_penalty": 5.0,
+          "temp_penalty": 5.0,
+          "sugar_hazard_penalty": 5.0
+        }
+      },
+      "work_orders": [
+        {
+          "action": "ADD_SULPHUR_DIOXIDE",
+          "dosage_grams": 4.81,
+          "chemical": "Potassium Metabisulfite (K2S2O5, 57.6% active SO2)",
+          "target_free_so2_mg_l": 22.0,
+          "rationale": "Current Free SO2 (14.0 mg/L) yields deficient molecular SO2 (0.34 mg/L vs target 0.5 mg/L).",
+          "hazard_prevention": "Prevents Brettanomyces decarboxylation, Acetobacter oxidation, and wild yeast bloom."
+        }
+      ]
+    },
+    {
+      "vessel_id": "TANK-WHITE-02",
+      "vessel_type": "TANK",
+      "cultivar": "white",
+      "volume_liters": 10000.0,
+      "metrics": {
+        "erpi_score": 7.7,
+        "molecular_so2_mg_l": 1.096,
+        "minimum_required_molecular_so2": 0.8,
+        "free_so2_deficit_mg_l": 0.0,
+        "target_free_so2_mg_l": 22.0
+      },
+      "triage": {
+        "action_tier": "STABLE_CELLAR",
+        "urgency_hours": 336,
+        "risk_subscores": {
+          "so2_penalty": 6.1,
+          "va_penalty": 12.8,
+          "mlf_risk_penalty": 5.0,
+          "temp_penalty": 5.0,
+          "sugar_hazard_penalty": 5.0
+        }
+      },
+      "work_orders": [
+        {
+          "action": "NO_INTERVENTION_REQUIRED",
+          "chemical": "N/A",
+          "dosage_grams": 0.0,
+          "target_free_so2_mg_l": null,
+          "rationale": "Physicochemical parameters and preservative barriers are optimal.",
+          "hazard_prevention": "Normal aging trajectory preserved."
+        }
+      ]
+    }
+  ]
+}

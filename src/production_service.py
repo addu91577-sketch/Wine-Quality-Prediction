@@ -578,6 +578,104 @@ class CausalMetricsResponse(BaseModel):
     interventions: Dict[str, Any]
 
 
+# ============================================================================
+# Day 13 Schemas: Malolactic, Oak Aging, Cellar Dispatch & HACCP Compliance
+# ============================================================================
+
+class MalolacticSimulationRequest(BaseModel):
+    """Parameters for secondary malolactic fermentation biotransformation simulation."""
+    initial_malic_acid: float = Field(default=2.8, ge=0.2, le=8.0, description="Initial L-malic acid in g/L")
+    initial_ph: float = Field(default=3.35, ge=2.8, le=4.2, description="Initial must/wine pH")
+    initial_fixed_acidity: float = Field(default=7.2, ge=3.5, le=15.0, description="Initial fixed acidity in g/L")
+    alcohol: float = Field(default=13.0, ge=8.0, le=17.0, description="Ethanol concentration in % v/v")
+    free_so2: float = Field(default=6.0, ge=0.0, le=40.0, description="Free SO2 in mg/L")
+    temperature: float = Field(default=20.0, ge=10.0, le=32.0, description="Cellar temperature in Celsius")
+    inoculated_biomass: float = Field(default=0.05, ge=0.005, le=1.0, description="Initial Oenococcus oeni biomass in g/L")
+    duration_days: int = Field(default=35, ge=5, le=90, description="Simulation duration in days")
+
+
+class MalolacticSimulationResponse(BaseModel):
+    """Dynamic results of secondary malolactic fermentation."""
+    initial_state: Dict[str, Any]
+    final_state: Dict[str, Any]
+    diagnostics: Dict[str, Any]
+    trajectory: Dict[str, List[float]]
+
+
+class OakMaturationRequest(BaseModel):
+    """Parameters for oak barrel wood extractive and color stabilization simulation."""
+    oak_species: str = Field(default="french", description="Oak species (french, american, hungarian)")
+    toast_level: str = Field(default="medium_plus", description="Toast intensity (light, medium, medium_plus, heavy)")
+    barrel_usage: str = Field(default="new", description="Barrel generation (new, first_fill, second_fill, neutral)")
+    maturation_months: int = Field(default=18, ge=1, le=48, description="Barrel maturation duration in months")
+    barrel_volume_liters: float = Field(default=225.0, ge=50.0, le=10000.0, description="Vessel volume in Liters")
+
+
+class OakMaturationResponse(BaseModel):
+    """Results of wood phenolic extraction and micro-oxygenation tannin polymerization."""
+    parameters: Dict[str, Any]
+    final_concentrations: Dict[str, Any]
+    trajectory: Dict[str, List[float]]
+
+
+class CellarVesselItem(BaseModel):
+    """Single winery cellar vessel reading and status."""
+    vessel_id: str = Field(default="TANK-01", description="Unique vessel identifier")
+    vessel_type: str = Field(default="BARREL", description="Vessel category (BARREL, TANK, PUNCHEON, FOUDRE)")
+    cultivar: str = Field(default="red", description="Wine cultivar (red or white)")
+    volume_liters: float = Field(default=225.0, ge=10.0, description="Volume in Liters")
+    ph: float = Field(default=3.4, ge=2.8, le=4.3, description="Measured pH")
+    free_so2: float = Field(default=15.0, ge=0.0, le=100.0, description="Free SO2 in mg/L")
+    total_so2: float = Field(default=60.0, ge=0.0, le=300.0, description="Total SO2 in mg/L")
+    volatile_acidity: float = Field(default=0.45, ge=0.0, le=2.5, description="Volatile acidity in g/L")
+    alcohol: float = Field(default=13.0, ge=7.0, le=18.0, description="Ethanol % v/v")
+    temperature: float = Field(default=18.0, ge=5.0, le=35.0, description="Cellar temperature in Celsius")
+    residual_sugar: float = Field(default=2.0, ge=0.0, le=150.0, description="Residual sugar in g/L")
+    malic_acid: float = Field(default=0.05, ge=0.0, le=8.0, description="Residual malic acid in g/L")
+    maturation_days: int = Field(default=120, ge=0, description="Days in current vessel")
+    status: str = Field(default="aging", description="Vessel state (fermentation, mlf, aging, resting)")
+
+
+class CellarDispatchRequest(BaseModel):
+    """Fleet inventory of winery vessels for triage and work order generation."""
+    inventory: List[CellarVesselItem] = Field(..., min_length=1, description="List of cellar vessels")
+
+
+class CellarDispatchResponse(BaseModel):
+    """Aggregated triage metrics and prioritized cellar work orders."""
+    total_vessels: int
+    tier_distribution: Dict[str, int]
+    cellar_health_score: float
+    aggregate_pms_reagents_required_kg: float
+    dispatched_vessels: List[Dict[str, Any]]
+
+
+class HaccpAuditRequest(BaseModel):
+    """Wine lot parameters for statutory HACCP food safety and biogenic amine risk audit."""
+    lot_id: str = Field(default="LOT-2026-CHAMPION", description="Wine batch identifier")
+    cultivar: str = Field(default="red", description="Cultivar (red or white)")
+    ph: float = Field(default=3.45, ge=2.8, le=4.3, description="Measured pH")
+    free_so2: float = Field(default=22.0, ge=0.0, le=100.0, description="Free SO2 in mg/L")
+    total_so2: float = Field(default=85.0, ge=0.0, le=300.0, description="Total SO2 in mg/L")
+    volatile_acidity: float = Field(default=0.48, ge=0.0, le=2.5, description="Volatile acidity in g/L")
+    alcohol: float = Field(default=13.5, ge=7.0, le=18.0, description="Ethanol % v/v")
+    residual_sugar: float = Field(default=2.1, ge=0.0, le=150.0, description="Residual sugar in g/L")
+    malic_acid: float = Field(default=0.04, ge=0.0, le=8.0, description="Residual malic acid in g/L")
+    temperature: float = Field(default=16.0, ge=5.0, le=35.0, description="Storage temperature in Celsius")
+
+
+class HaccpAuditResponse(BaseModel):
+    """HACCP CCP verification report and biogenic amine hazard evaluation."""
+    lot_id: str
+    cultivar: str
+    audit_status: str
+    all_ccp_passed: bool
+    summary: str
+    ccp_verifications: Dict[str, Any]
+    biogenic_amine_risk: Dict[str, Any]
+    audit_findings: List[str]
+
+
 
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
@@ -1657,6 +1755,97 @@ def create_app(
                 for k in CausalEnologicalEngine.INTERVENTIONS:
                     data[k] = CausalEnologicalEngine.estimate_causal_effect(df, intervention_key=k, n_bootstraps=50)
             return CausalMetricsResponse(interventions=data)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ========================================================================
+    # Day 13: Malolactic, Oak Maturation, Cellar Dispatch & HACCP Endpoints
+    # ========================================================================
+
+    @app.post(
+        "/cellar/malolactic/simulate",
+        response_model=MalolacticSimulationResponse,
+        summary="Simulate secondary malolactic fermentation biotransformation by Oenococcus oeni",
+        tags=["Malolactic & Oak Maturation (Day 13)"]
+    )
+    def simulate_malolactic_endpoint(req: MalolacticSimulationRequest):
+        try:
+            from src.malolactic_and_oak import MalolacticFermentationSimulator
+            sim = MalolacticFermentationSimulator()
+            res = sim.simulate(
+                initial_malic_acid=req.initial_malic_acid,
+                initial_ph=req.initial_ph,
+                initial_fixed_acidity=req.initial_fixed_acidity,
+                alcohol=req.alcohol,
+                free_so2=req.free_so2,
+                temperature=req.temperature,
+                inoculated_biomass=req.inoculated_biomass,
+                duration_days=req.duration_days,
+            )
+            return MalolacticSimulationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/cellar/oak-maturation/simulate",
+        response_model=OakMaturationResponse,
+        summary="Simulate oak wood phenolics extraction and tannin polymerization",
+        tags=["Malolactic & Oak Maturation (Day 13)"]
+    )
+    def simulate_oak_maturation_endpoint(req: OakMaturationRequest):
+        try:
+            from src.malolactic_and_oak import OakBarrelMaturationSimulator
+            sim = OakBarrelMaturationSimulator()
+            res = sim.simulate(
+                oak_species=req.oak_species,
+                toast_level=req.toast_level,
+                barrel_usage=req.barrel_usage,
+                maturation_months=req.maturation_months,
+                barrel_volume_liters=req.barrel_volume_liters,
+            )
+            return OakMaturationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/cellar/dispatch/work-orders",
+        response_model=CellarDispatchResponse,
+        summary="Triage cellar vessels by ERPI risk and generate prescriptive chemical work orders",
+        tags=["Cellar Master Dispatch & HACCP (Day 13)"]
+    )
+    def dispatch_cellar_work_orders_endpoint(req: CellarDispatchRequest):
+        try:
+            from src.malolactic_and_oak import CellarMasterDispatchEngine
+            engine = CellarMasterDispatchEngine()
+            inventory_raw = [v.model_dump() for v in req.inventory]
+            res = engine.dispatch_cellar_inventory(inventory_raw)
+            return CellarDispatchResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/compliance/haccp-audit",
+        response_model=HaccpAuditResponse,
+        summary="Perform statutory HACCP Critical Control Point audit and biogenic amine risk scoring",
+        tags=["Cellar Master Dispatch & HACCP (Day 13)"]
+    )
+    def haccp_audit_endpoint(req: HaccpAuditRequest):
+        try:
+            from src.malolactic_and_oak import EnologicalHaccpAuditor
+            auditor = EnologicalHaccpAuditor()
+            res = auditor.audit_wine_lot(
+                lot_id=req.lot_id,
+                cultivar=req.cultivar,
+                ph=req.ph,
+                free_so2=req.free_so2,
+                total_so2=req.total_so2,
+                volatile_acidity=req.volatile_acidity,
+                alcohol=req.alcohol,
+                residual_sugar=req.residual_sugar,
+                malic_acid=req.malic_acid,
+                temperature=req.temperature,
+            )
+            return HaccpAuditResponse(**res)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

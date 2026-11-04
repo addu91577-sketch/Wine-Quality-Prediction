@@ -41,7 +41,10 @@ Wine Quality Prediction/
 │   ├── enological_interactions.json # Day 11 molecular SO2 & ethanol-VA masking synergy benchmarks
 │   ├── fermentation_kinetics_benchmarks.json # Day 12 primary alcoholic fermentation bioprocess benchmarks
 │   ├── sensory_lexicon_benchmarks.json # Day 12 6-axis organoleptic radar & sommelier tasting lexicon
-│   └── causal_intervention_benchmarks.json # Day 12 Doubly Robust IPW causal Average Treatment Effects
+│   ├── causal_intervention_benchmarks.json # Day 12 Doubly Robust IPW causal Average Treatment Effects
+│   ├── malolactic_kinetics_benchmarks.json # Day 13 secondary malolactic fermentation bioprocess benchmarks
+│   ├── oak_maturation_benchmarks.json     # Day 13 wood phenolics extraction & color stabilization benchmarks
+│   └── cellar_dispatch_benchmarks.json    # Day 13 digital cellar master fleet triage & work orders
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -66,7 +69,9 @@ Wine Quality Prediction/
 │   ├── Day11_Aging_Kinetics_Pareto_Optimization_and_Stress_Testing.ipynb # Executed aging, Pareto & stress notebook
 │   ├── generate_day11_notebook.py                   # Day 11 reproducible notebook generator
 │   ├── Day12_Fermentation_Kinetics_Stuck_Detection_and_Sensory_Lexicon.ipynb # Executed fermentation, stuck & sensory notebook
-│   └── generate_day12_notebook.py                   # Day 12 reproducible notebook generator
+│   ├── generate_day12_notebook.py                   # Day 12 reproducible notebook generator
+│   ├── Day13_Malolactic_Oak_Maturation_and_Cellar_Dispatch.ipynb # Executed MLF, oak maturation & cellar dispatch notebook
+│   └── generate_day13_notebook.py                   # Day 13 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -119,7 +124,11 @@ Wine Quality Prediction/
 │       ├── day12_fermentation_bioprocess_kinetics.png # Fermentation bioprocess ODE dynamics (Sugar, Ethanol, Biomass, YAN)
 │       ├── day12_stuck_fermentation_early_warning.png # Stuck & sluggish early-warning triage & remediation
 │       ├── day12_sensory_organoleptic_spider_radar.png # 6-axis sensory radar, tasting notes & food pairing affinities
-│       └── day12_causal_treatment_effects.png        # Doubly robust IPW causal ATE forest plot & confounding bias
+│       ├── day12_causal_treatment_effects.png        # Doubly robust IPW causal ATE forest plot & confounding bias
+│       ├── day13_malolactic_fermentation_kinetics.png # 4-panel MLF bioconversion, diacetyl & pH shift dynamics
+│       ├── day13_oak_maturation_wood_extractives.png  # Oak species phenolics, toast pyro-conversion & color stabilization
+│       ├── day13_cellar_master_dispatch_matrix.png    # Fleet risk scatter triage & automated chemical work orders
+│       └── day13_haccp_compliance_and_biogenic_risk.png # HACCP molecular SO2 envelope & biogenic amine risk contours
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -136,12 +145,14 @@ Wine Quality Prediction/
 │   ├── assemblage_and_conformal.py  # Coupage optimizer, split conformal predictor, winery economics & stacking
 │   ├── aging_pareto_stress.py       # First-principles bottle aging kinetics, Pareto optimizer & stress testing
 │   ├── fermentation_and_sensory.py  # Fermentation bioprocess kinetics, stuck detector, sensory radar & causal engine
+│   ├── malolactic_and_oak.py        # MLF ODE kinetics, oak extraction, cellar dispatch & HACCP auditor
 │   ├── day7_figures.py              # Day 7 publication figures generator
 │   ├── day8_figures.py              # Day 8 diagnostic figures generator
 │   ├── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
 │   ├── day10_figures.py             # Day 10 coupage, conformal, economics & stacking figures generator
 │   ├── day11_figures.py             # Day 11 aging kinetics, Pareto, stress testing & synergy figures generator
-│   └── day12_figures.py             # Day 12 fermentation, stuck warning, sensory radar & causal figures generator
+│   ├── day12_figures.py             # Day 12 fermentation, stuck warning, sensory radar & causal figures generator
+│   └── day13_figures.py             # Day 13 MLF, oak extraction, cellar dispatch & HACCP figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
@@ -149,7 +160,8 @@ Wine Quality Prediction/
 │   ├── test_cross_cultivar_and_recourse.py # Cross-cultivar divergence, White champion, recourse & API tests
 │   ├── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
 │   ├── test_aging_pareto_and_stress.py  # Bottle aging kinetics, Pareto frontier, stress testing & API tests
-│   └── test_fermentation_and_sensory.py # Fermentation ODEs, stuck early warning, sensory radar & causal API tests
+│   ├── test_fermentation_and_sensory.py # Fermentation ODEs, stuck early warning, sensory radar & causal API tests
+│   └── test_malolactic_and_oak.py       # MLF kinetics, oak species, ERPI triage, HACCP & API tests (93 total passing)
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -176,6 +188,7 @@ Wine Quality Prediction/
 - [x] **Day 10: Enological Coupage Optimizer, Split Conformal Uncertainty Quantification, Winery Economics & Multi-Model Stacking Ensemble**
 - [x] **Day 11: Enological Aging Kinetics, Multi-Objective Pareto Frontier Optimization & Physicochemical Stress-Testing Suite**
 - [x] **Day 12: Fermentation Bioprocess Kinetics, Stuck Fermentation Early-Warning, Sensory Organoleptic Lexicon & Causal Cellar Intervention Engine**
+- [x] **Day 13: Secondary Malolactic Fermentation (MLF) Biotransformation, Precision Oak Barrel Maturation Dynamics, Digital Cellar Master Dispatch Engine & HACCP Food Safety Auditor**
 
 ---
 
@@ -1680,6 +1693,141 @@ All diagnostic figures are published in `reports/figures/` and verified in `note
 ![Stuck Fermentation Early-Warning](reports/figures/day12_stuck_fermentation_early_warning.png)
 ![Sensory Organoleptic Spider Radar](reports/figures/day12_sensory_organoleptic_spider_radar.png)
 ![Causal Enological Treatment Effects](reports/figures/day12_causal_treatment_effects.png)
+
+---
+
+## 🍇 Day 13 Summary: Secondary Malolactic Fermentation (MLF), Precision Oak Barrel Maturation, Digital Cellar Master Dispatch & HACCP Food Safety Auditor
+
+Day 13 completes the platform's downstream post-fermentation cellar maturation, cooperage wood phenolics dissolution, multi-vessel fleet triage dispatching, and statutory food safety compliance auditing.
+
+```
++----------------------------------------------------------------------------------------------------+
+|                         Day 13 Cellar Maturation & HACCP Safety Platform                           |
++------------------------------------+-----------------------------------+---------------------------+
+| 1. Malolactic Biotransformation    | 2. Oak Barrel Maturation Engine   | 3. Cellar Dispatch Engine |
+| - Oenococcus oeni dX/dt            | - Ellagitannins & Lactones        | - ERPI Fleet Risk Scoring |
+| - L-Malic -> L-Lactic decarbox     | - French / American / Hungarian   | - Automated PMS Dosages   |
+| - Diacetyl flavor synthesis        | - Micro-oxygenation color index   | - HACCP Food Safety CCPs  |
++------------------------------------+-----------------------------------+---------------------------+
+```
+
+---
+
+### 1. Secondary Malolactic Fermentation (MLF) Engine (`MalolacticFermentationSimulator`)
+
+Biochemical decarboxylation of dicarboxylic L-malic acid into monocarboxylic L-lactic acid and $\text{CO}_2$ by lactic acid bacteria (*Oenococcus oeni*):
+
+$$\text{C}_4\text{H}_6\text{O}_5 \xrightarrow{\text{MLE}} \text{C}_3\text{H}_6\text{O}_3 + \text{CO}_2 \uparrow$$
+
+* **Stoichiometric Conversion Ratio:** $1.0\text{ g L-malic acid} \to 0.6718\text{ g L-lactic acid}$.
+* **Environmental Gating ($\gamma_{\text{env}}$):**
+  $$\gamma_{\text{env}} = f(T) \cdot f(\text{pH}) \cdot f(\text{EtOH}) \cdot f(\text{Free SO}_2)$$
+  - **Temperature:** Centered at optimal $20^\circ\text{C}$ with severe dormancy below $12^\circ\text{C}$.
+  - **pH:** Sigmoidal tolerance gated between $\text{pH } 3.20 - 3.80$.
+  - **Ethanol:** Sharp inhibition ceiling above $15.5\%\text{ v/v}$.
+  - **Free $\text{SO}_2$:** Extreme microbial sensitivity above $10 - 15\text{ mg/L}$.
+* **Physicochemical Deacidification & Shift Laws:**
+  $$\Delta \text{Fixed Acidity} = -0.58 \times \Delta \text{Malic Acid}$$
+  $$\Delta \text{pH} = +0.065 \times \Delta \text{Malic Acid}$$
+* **Diacetyl Buttery Aroma Dynamics:** Synthesized as a transient byproduct of citric/malic co-metabolism, peaking mid-fermentation ($0.2 - 0.8\text{ mg/L}$) before being enzymatically reduced into acetoin and 2,3-butanediol by bacterial reductases.
+
+---
+
+### 2. Precision Oak Barrel Maturation Simulator (`OakBarrelMaturationSimulator`)
+
+Dynamic first-order Fickian dissolution kinetics of oak wood phenolics across cooperage profiles over $0 - 36\text{ months}$:
+
+$$C_i(t) = C_{i,\infty} \cdot E_{\text{barrel}} \cdot M_{\text{toast}, i} \cdot \left(1 - e^{-k_i \cdot t}\right)$$
+
+* **Cooperage Profiles:**
+  - **French Oak (*Quercus petraea*):** High structural ellagitannins ($240\text{ mg/L}$ max), subtle lactones ($1.4\text{ mg/L}$), refined vanillin ($3.2\text{ mg/L}$).
+  - **American Oak (*Quercus alba*):** Very high sweet lactones ($4.6\text{ mg/L}$), creamy vanillin ($5.8\text{ mg/L}$), lower tannins ($110\text{ mg/L}$).
+  - **Hungarian Oak (*Quercus frainetto*):** Balanced tannin structure ($180\text{ mg/L}$) and pronounced baking spice.
+* **Toast Pyro-Conversion:** Heavy toast elevates smoky guaiacol ($2.40\times$) and furfural ($1.65\times$) while degrading wood ellagitannins ($0.55\times$).
+* **Micro-Oxygenation (MOX) & Polymeric Pigment Color Stabilization:**
+  - Passive stave oxygen permeation: $\sim 2.2\text{ mg O}_2/\text{L/month}$ (for $225\text{L}$ barrique).
+  - Polymeric Pigment Index rises from $15.0$ to $55.0$, accompanied by up to $48\%$ sensory astringency softening via acetaldehyde-mediated anthocyanin-tannin cross-linking.
+
+---
+
+### 3. Digital Cellar Master Dispatch Engine (`CellarMasterDispatchEngine`)
+
+Automated multi-vessel fleet triage and prescriptive cellar work-order synthesis:
+
+* **Enological Risk Priority Index (ERPI, $0 - 100$):**
+  $$\text{ERPI} = 0.35 P_{\text{SO2}} + 0.30 P_{\text{VA}} + 0.15 P_{\text{MLF}} + 0.10 P_{\text{temp}} + 0.10 P_{\text{sugar}}$$
+* **Action Tiers:**
+  - `CRITICAL_INTERVENTION` ($\text{ERPI} \ge 68$): $24\text{h}$ response ceiling.
+  - `ACTIVE_MANAGEMENT` ($42 \le \text{ERPI} < 68$): $72\text{h}$ scheduled manipulation.
+  - `ROUTINE_MONITORING` ($20 \le \text{ERPI} < 42$): $7\text{-day}$ routine cellar check.
+  - `STABLE_CELLAR` ($\text{ERPI} < 20$): Optimal maturation state.
+* **Prescriptive Chemical Dosage Formulation (Potassium Metabisulfite PMS):**
+  $$\text{PMS Dose (g)} = \frac{(\text{Target Free SO}_2 - \text{Current Free SO}_2) \times V}{0.576 \times 1000 \times (1 - \beta)}$$
+  accounting for $57.6\%$ active $\text{SO}_2$ yield and $\beta = 0.35$ binding factor.
+
+---
+
+### 4. HACCP Food Safety & Biogenic Amine Risk Auditor (`EnologicalHaccpAuditor`)
+
+Statutory Critical Control Point (CCP) verification against OIV, EU, and US TTB international limits:
+
+* **CCP-1:** Antimicrobial Molecular $\text{SO}_2 \ge 0.50\text{ mg/L}$ (Red) / $\ge 0.80\text{ mg/L}$ (White) via Henderson-Hasselbalch equilibrium.
+* **CCP-2:** Total Sulphur Dioxide ceiling $\le 150\text{ mg/L}$ (Red) / $\le 200\text{ mg/L}$ (White).
+* **CCP-3:** Volatile Acidity statutory ceiling $\le 1.20\text{ g/L}$ acetic acid equivalent.
+* **CCP-4:** Statutory minimum alcohol floor $\ge 8.5\%\text{ v/v}$.
+* **Biogenic Amine Risk Index (BARI, $0 - 100$):** Identifies histamine, tyramine, and putrescine decarboxylation hazards stemming from high $\text{pH } (> 3.65)$, residual malic acid, and sub-lethal sulfur protection.
+
+---
+
+### 5. Production REST API Endpoints (`src/production_service.py`)
+
+Four enterprise REST microservice endpoints added:
+- `POST /cellar/malolactic/simulate`: Numerical ODE simulation of secondary malolactic fermentation over $5 - 90\text{ days}$.
+- `POST /cellar/oak-maturation/simulate`: Dynamic wood extractive dissolution and color stabilization over $1 - 48\text{ months}$.
+- `POST /cellar/dispatch/work-orders`: Fleet ERPI risk triage and automated chemical work orders for cellar vessels.
+- `POST /compliance/haccp-audit`: Statutory HACCP CCP compliance audit and biogenic amine risk scoring.
+
+---
+
+### 6. Interactive Web Dashboard Studios (`src/interactive_dashboard.py`)
+
+Two interactive studios added to the Streamlit platform:
+* **🍇 MLF & Oak Maturation Studio:** Real-time initial malic/pH sliders, kinetic bioconversion curve, diacetyl buttery aroma tracking, cooperage selector (French, American, Hungarian), toast level controls, and polymeric pigment color stabilization trajectory.
+* **📋 Cellar Dispatch & HACCP Audit Studio:** Multi-vessel cellar fleet status board with ERPI triage badges (`CRITICAL`, `ACTIVE`, `ROUTINE`, `STABLE`), automated chemical additions (PMS doses in grams), and HACCP statutory food safety compliance auditor.
+
+---
+
+### 7. Automated Pytest Verification Suite (93 Passing Tests)
+
+The automated test suite was expanded with 12 new unit and integration tests in `tests/test_malolactic_and_oak.py`:
+- Validates malic-to-lactic stoichiometry ($1\text{g} \to 0.6718\text{g}$).
+- Validates temperature and Free $\text{SO}_2$ microbial inhibition on *Oenococcus oeni*.
+- Verifies deacidification and upward pH shift formulas.
+- Validates diacetyl synthesis, peak tracking, and subsequent enzymatic clearance.
+- Tests wood extractive divergence across French, American, and Hungarian oak.
+- Validates toast pyro-conversion and barrel generation degradation factors.
+- Verifies micro-oxygenation polymeric pigment accumulation and astringency softening.
+- Tests Henderson-Hasselbalch molecular $\text{SO}_2$ and PMS dosage formula accuracy.
+- Verifies multi-vessel ERPI risk prioritization and triage classification.
+- Validates statutory HACCP CCP food safety boundaries and biogenic amine risk scoring.
+- Validates all 4 new FastAPI REST endpoints (`/cellar/malolactic/simulate`, `/cellar/oak-maturation/simulate`, `/cellar/dispatch/work-orders`, `/compliance/haccp-audit`).
+- **Full Test Results:** **93 passed out of 93 tests (100% pass rate).**
+
+---
+
+### 8. Generated Day 13 Figures & Jupyter Notebook
+
+All diagnostic figures are published in `reports/figures/` and verified in `notebooks/Day13_Malolactic_Oak_Maturation_and_Cellar_Dispatch.ipynb`:
+* [day13_malolactic_fermentation_kinetics.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day13_malolactic_fermentation_kinetics.png) — 4-panel MLF bioconversion dynamics: Malic depletion, lactic accumulation, diacetyl flavor synthesis/clearance, pH shift, and environmental gating.
+* [day13_oak_maturation_wood_extractives.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day13_oak_maturation_wood_extractives.png) — Ellagitannins dissolution across oak species, sweet aromatic lactones and vanillin, toast pyro-conversion yields, and polymeric pigment color stabilization.
+* [day13_cellar_master_dispatch_matrix.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day13_cellar_master_dispatch_matrix.png) — Vessel ERPI risk priority scatter matrix, preservative deficits, action tier distribution, and aggregate PMS additions.
+* [day13_haccp_compliance_and_biogenic_risk.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day13_haccp_compliance_and_biogenic_risk.png) — Molecular $\text{SO}_2$ safety surface across pH and Free $\text{SO}_2$, and biogenic amine histamine hazard risk contours.
+
+![Malolactic Fermentation Kinetics](reports/figures/day13_malolactic_fermentation_kinetics.png)
+![Oak Barrel Maturation Dynamics](reports/figures/day13_oak_maturation_wood_extractives.png)
+![Cellar Master Dispatch Matrix](reports/figures/day13_cellar_master_dispatch_matrix.png)
+![HACCP Compliance and Biogenic Risk](reports/figures/day13_haccp_compliance_and_biogenic_risk.png)
+
 
 
 
