@@ -160,6 +160,16 @@ from src.malolactic_and_oak import (
     TOAST_LEVEL_MODIFIERS,
     BARREL_USE_FACTORS
 )
+from src.stabilization_and_packaging import (
+    TartrateStabilizationSimulator,
+    ProteinHazeAndBentoniteOptimizer,
+    CrossflowFiltrationSimulator,
+    DissolvedGasPackagingEngine,
+    ClosureShelfLifeForecaster,
+    BottlingLineQCAuditor,
+    CLOSURE_PROFILES,
+    STABILIZATION_ADDITIVES
+)
 
 __all__ = [
     "load_wine_data",
@@ -284,6 +294,14 @@ __all__ = [
     "EnologicalHaccpAuditor",
     "OAK_SPECIES_PROFILES",
     "TOAST_LEVEL_MODIFIERS",
-    "BARREL_USE_FACTORS"
+    "BARREL_USE_FACTORS",
+    "TartrateStabilizationSimulator",
+    "ProteinHazeAndBentoniteOptimizer",
+    "CrossflowFiltrationSimulator",
+    "DissolvedGasPackagingEngine",
+    "ClosureShelfLifeForecaster",
+    "BottlingLineQCAuditor",
+    "CLOSURE_PROFILES",
+    "STABILIZATION_ADDITIVES"
 ]
 

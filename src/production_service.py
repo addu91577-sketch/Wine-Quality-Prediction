@@ -676,6 +676,170 @@ class HaccpAuditResponse(BaseModel):
     audit_findings: List[str]
 
 
+# ============================================================================
+# Day 14 Schemas: Tartrate, Bentonite, Membrane Filtration & Packaging
+# ============================================================================
+
+class TartrateEvaluationRequest(BaseModel):
+    """Parameters for evaluating potassium bitartrate thermodynamic stability."""
+    tartaric_acid_g_l: float = Field(default=6.8, ge=2.0, le=16.0, description="Tartaric acid in g/L")
+    potassium_mg_l: float = Field(default=1050.0, ge=200.0, le=2500.0, description="Potassium ion in mg/L")
+    ph: float = Field(default=3.45, ge=2.8, le=4.2, description="Wine pH")
+    alcohol_pct: float = Field(default=13.0, ge=8.0, le=18.0, description="Ethanol % v/v")
+    storage_temp_c: float = Field(default=14.0, ge=-5.0, le=35.0, description="Cellar storage temperature in Celsius")
+
+
+class TartrateEvaluationResponse(BaseModel):
+    """Results of thermodynamic tartrate stability and conductivity drop evaluation."""
+    potassium_molar: float
+    bitartrate_molar: float
+    bitartrate_fraction: float
+    concentration_product_cp: float
+    solubility_product_ksp: float
+    saturation_ratio: float
+    saturation_temperature_c: float
+    storage_temp_c: float
+    minicontact_delta_chi_us_cm: float
+    stability_status: str
+    haze_crystal_risk: str
+    action_required: bool
+
+
+class ColdStabilizationSimulationRequest(BaseModel):
+    """Parameters for simulating dynamic chilled contact crystallization."""
+    tartaric_acid_g_l: float = Field(default=7.0, ge=2.0, le=16.0, description="Initial tartaric acid in g/L")
+    potassium_mg_l: float = Field(default=1100.0, ge=300.0, le=2500.0, description="Initial potassium in mg/L")
+    ph: float = Field(default=3.50, ge=2.8, le=4.2, description="Wine pH")
+    alcohol_pct: float = Field(default=13.5, ge=8.0, le=18.0, description="Ethanol % v/v")
+    chilling_temp_c: float = Field(default=-4.0, ge=-8.0, le=10.0, description="Chilling temperature in Celsius")
+    seed_crystal_g_l: float = Field(default=4.0, ge=0.0, le=10.0, description="KHT seed crystals in g/L")
+    duration_hours: int = Field(default=12, ge=2, le=72, description="Contact process duration in hours")
+
+
+class ColdStabilizationSimulationResponse(BaseModel):
+    """Dynamic results of cold contact tartrate stabilization."""
+    parameters: Dict[str, Any]
+    initial_state: Dict[str, Any]
+    final_state: Dict[str, Any]
+    trajectory: Dict[str, List[Any]]
+
+
+class BentoniteOptimizationRequest(BaseModel):
+    """Parameters for heat test protein haze risk and Langmuir bentonite dosage optimization."""
+    protein_content_mg_l: float = Field(default=110.0, ge=5.0, le=400.0, description="Thermolabile PR protein content in mg/L")
+    ph: float = Field(default=3.25, ge=2.8, le=4.2, description="Wine pH")
+    cultivar: str = Field(default="white", description="Wine cultivar ('red' or 'white')")
+    bentonite_type: str = Field(default="sodium_bentonite", description="Bentonite type: 'sodium_bentonite' or 'calcium_bentonite'")
+
+
+class BentoniteOptimizationResponse(BaseModel):
+    """Optimal bentonite fining dosage and aroma preservation evaluation."""
+    protein_initial_mg_l: float
+    heat_delta_ntu_initial: float
+    bentonite_type: Optional[str] = None
+    recommended_bentonite_g_hl: float
+    residual_protein_mg_l: float
+    heat_delta_ntu_final: float
+    aroma_stripping_penalty_pct: float
+    status: str
+
+
+class CrossflowFiltrationRequest(BaseModel):
+    """Parameters for crossflow membrane microfiltration simulation (0.45 um PES)."""
+    initial_turbidity_ntu: float = Field(default=35.0, ge=1.0, le=300.0, description="Feed wine turbidity in NTU")
+    transmembrane_pressure_bar: float = Field(default=1.6, ge=0.5, le=3.5, description="Transmembrane pressure (TMP) in bar")
+    target_volume_liters: float = Field(default=10000.0, ge=500.0, le=100000.0, description="Batch volume to filter in liters")
+    colloidal_index: float = Field(default=1.2, ge=0.2, le=3.5, description="Colloidal fouling index")
+    backwash_interval_hours: float = Field(default=2.0, ge=0.5, le=6.0, description="Hydraulic backwash interval in hours")
+    run_duration_hours: float = Field(default=6.0, ge=1.0, le=24.0, description="Simulation duration in hours")
+
+
+class CrossflowFiltrationResponse(BaseModel):
+    """Dynamic permeate flux, turbidity reduction and filterability diagnostics."""
+    parameters: Dict[str, Any]
+    summary: Dict[str, Any]
+    trajectory: Dict[str, List[Any]]
+
+
+class GasSpargingRequest(BaseModel):
+    """Parameters for micro-bubble nitrogen sparging deoxygenation."""
+    initial_do_mg_l: float = Field(default=1.4, ge=0.2, le=12.0, description="Initial dissolved oxygen in mg/L")
+    target_do_mg_l: float = Field(default=0.40, ge=0.1, le=2.0, description="Target packaging dissolved oxygen in mg/L")
+    nitrogen_flow_ratio_nl_l: float = Field(default=0.5, ge=0.05, le=3.0, description="Norm-liters N2 per liter wine")
+    temperature_c: float = Field(default=18.0, ge=5.0, le=35.0, description="Wine temperature in Celsius")
+
+
+class GasSpargingResponse(BaseModel):
+    """Deoxygenation efficiency and residual DO results."""
+    initial_do_mg_l: float
+    final_do_mg_l: float
+    target_do_mg_l: float
+    nitrogen_ratio_nl_l: float
+    oxygen_removed_mg_l: float
+    deoxygenation_efficiency_pct: float
+    target_reached: bool
+
+
+class TotalPackagingOxygenRequest(BaseModel):
+    """Parameters for calculating Total Packaging Oxygen (TPO)."""
+    dissolved_oxygen_wine_mg_l: float = Field(default=0.45, ge=0.05, le=10.0, description="Dissolved oxygen in wine (mg/L)")
+    headspace_volume_ml: float = Field(default=6.0, ge=1.0, le=25.0, description="Bottle headspace volume in mL")
+    bottle_volume_ml: float = Field(default=750.0, ge=187.0, le=1500.0, description="Nominal bottle volume in mL")
+    headspace_o2_pct: float = Field(default=1.8, ge=0.1, le=22.0, description="Oxygen percentage in bottle headspace")
+    wine_temperature_c: float = Field(default=18.0, ge=5.0, le=30.0, description="Wine temperature in Celsius")
+
+
+class TotalPackagingOxygenResponse(BaseModel):
+    """TPO calculation, compartmental breakdown, and SO2 depletion estimation."""
+    dissolved_oxygen_mg_l: float
+    headspace_oxygen_mg_l_wine: float
+    headspace_o2_pct: float
+    total_packaging_oxygen_tpo_mg_l: float
+    stoichiometric_free_so2_depletion_mg_l: float
+    tpo_grade: str
+    is_within_premium_spec: bool
+
+
+class ClosureShelfLifeRequest(BaseModel):
+    """Parameters for predicting bottle shelf-life and oxidation kinetics."""
+    closure_type: str = Field(default="diam_5_microagglomerated", description="Closure type key from CLOSURE_PROFILES")
+    initial_free_so2: float = Field(default=32.0, ge=5.0, le=80.0, description="Free SO2 at bottling in mg/L")
+    initial_ph: float = Field(default=3.45, ge=2.8, le=4.2, description="Wine pH")
+    initial_tpo_mg_l: float = Field(default=0.85, ge=0.1, le=6.0, description="Total Packaging Oxygen at bottling (mg/L)")
+    storage_temperature_c: float = Field(default=14.0, ge=5.0, le=35.0, description="Storage temperature in Celsius")
+    duration_months: int = Field(default=48, ge=6, le=120, description="Simulation duration in months")
+
+
+class ClosureShelfLifeResponse(BaseModel):
+    """Predictive shelf-life milestones, browning kinetics and PremOx boundary."""
+    closure_info: Dict[str, Any]
+    parameters: Dict[str, Any]
+    milestones: Dict[str, Any]
+    final_state: Dict[str, Any]
+    trajectory: Dict[str, List[Any]]
+
+
+class BottlingQCAuditRequest(BaseModel):
+    """Batch inspection samples for statistical process control (SPC) bottling line audit."""
+    lot_id: str = Field(default="LOT_ESTATE_B2026_01", description="Commercial bottling run lot identifier")
+    fill_volumes_ml: List[float] = Field(description="Net fill volume samples in mL (Nominal 750 mL)")
+    closure_depths_mm: List[float] = Field(description="Closure insertion depth samples in mm (Nominal 1.0 mm)")
+    headspace_vacuums_bar: List[float] = Field(description="Headspace vacuum samples in bar (Nominal -0.25 bar)")
+    filter_bubble_point_bar: float = Field(default=3.4, ge=1.0, le=6.0, description="0.45 um filter bubble point in bar")
+
+
+class BottlingQCAuditResponse(BaseModel):
+    """Statistical Process Control results, legal metrology compliance, and capability metrics."""
+    lot_id: str
+    sample_count: int
+    audit_tier: str
+    is_batch_approved: bool
+    fill_volume_spc: Dict[str, Any]
+    closure_insertion_spc: Dict[str, Any]
+    headspace_vacuum_spc: Dict[str, Any]
+    membrane_integrity: Dict[str, Any]
+
+
 
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
@@ -1846,6 +2010,180 @@ def create_app(
                 temperature=req.temperature,
             )
             return HaccpAuditResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ========================================================================
+    # Day 14: Tartrate, Bentonite, Membrane Filtration & Packaging Endpoints
+    # ========================================================================
+
+    @app.post(
+        "/stabilization/evaluate-tartrate",
+        response_model=TartrateEvaluationResponse,
+        summary="Evaluate potassium bitartrate saturation and minicontact conductivity drop",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def evaluate_tartrate_endpoint(req: TartrateEvaluationRequest):
+        try:
+            from src.stabilization_and_packaging import TartrateStabilizationSimulator
+            sim = TartrateStabilizationSimulator()
+            res = sim.evaluate_tartrate_stability(
+                tartaric_acid_g_l=req.tartaric_acid_g_l,
+                potassium_mg_l=req.potassium_mg_l,
+                ph=req.ph,
+                alcohol_pct=req.alcohol_pct,
+                storage_temp_c=req.storage_temp_c
+            )
+            return TartrateEvaluationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/stabilization/simulate-cold",
+        response_model=ColdStabilizationSimulationResponse,
+        summary="Simulate chilled contact crystallization kinetics of potassium bitartrate",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def simulate_cold_stabilization_endpoint(req: ColdStabilizationSimulationRequest):
+        try:
+            from src.stabilization_and_packaging import TartrateStabilizationSimulator
+            sim = TartrateStabilizationSimulator()
+            res = sim.simulate_cold_stabilization_kinetics(
+                tartaric_acid_g_l=req.tartaric_acid_g_l,
+                potassium_mg_l=req.potassium_mg_l,
+                ph=req.ph,
+                alcohol_pct=req.alcohol_pct,
+                chilling_temp_c=req.chilling_temp_c,
+                seed_crystal_g_l=req.seed_crystal_g_l,
+                duration_hours=req.duration_hours
+            )
+            return ColdStabilizationSimulationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/stabilization/optimize-bentonite",
+        response_model=BentoniteOptimizationResponse,
+        summary="Optimize bentonite fining dosage via Langmuir isotherm for protein haze prevention",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def optimize_bentonite_endpoint(req: BentoniteOptimizationRequest):
+        try:
+            from src.stabilization_and_packaging import ProteinHazeAndBentoniteOptimizer
+            opt = ProteinHazeAndBentoniteOptimizer()
+            res = opt.optimize_bentonite_dosage(
+                protein_content_mg_l=req.protein_content_mg_l,
+                ph=req.ph,
+                cultivar=req.cultivar,
+                bentonite_type=req.bentonite_type
+            )
+            return BentoniteOptimizationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/filtration/crossflow-simulate",
+        response_model=CrossflowFiltrationResponse,
+        summary="Simulate crossflow microfiltration permeate flux decay and turbidity reduction",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def simulate_crossflow_endpoint(req: CrossflowFiltrationRequest):
+        try:
+            from src.stabilization_and_packaging import CrossflowFiltrationSimulator
+            sim = CrossflowFiltrationSimulator()
+            res = sim.simulate_crossflow_run(
+                initial_turbidity_ntu=req.initial_turbidity_ntu,
+                transmembrane_pressure_bar=req.transmembrane_pressure_bar,
+                target_volume_liters=req.target_volume_liters,
+                colloidal_index=req.colloidal_index,
+                backwash_interval_hours=req.backwash_interval_hours,
+                run_duration_hours=req.run_duration_hours
+            )
+            return CrossflowFiltrationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/packaging/gas-sparging-simulate",
+        response_model=GasSpargingResponse,
+        summary="Simulate micro-bubble nitrogen sparging deoxygenation efficiency",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def simulate_sparging_endpoint(req: GasSpargingRequest):
+        try:
+            from src.stabilization_and_packaging import DissolvedGasPackagingEngine
+            eng = DissolvedGasPackagingEngine()
+            res = eng.simulate_nitrogen_sparging(
+                initial_do_mg_l=req.initial_do_mg_l,
+                target_do_mg_l=req.target_do_mg_l,
+                nitrogen_flow_ratio_nl_l=req.nitrogen_flow_ratio_nl_l,
+                temperature_c=req.temperature_c
+            )
+            return GasSpargingResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/packaging/calculate-tpo",
+        response_model=TotalPackagingOxygenResponse,
+        summary="Calculate Total Packaging Oxygen (TPO) and Free SO2 consumption hit",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def calculate_tpo_endpoint(req: TotalPackagingOxygenRequest):
+        try:
+            from src.stabilization_and_packaging import DissolvedGasPackagingEngine
+            eng = DissolvedGasPackagingEngine()
+            res = eng.calculate_total_packaging_oxygen(
+                dissolved_oxygen_wine_mg_l=req.dissolved_oxygen_wine_mg_l,
+                headspace_volume_ml=req.headspace_volume_ml,
+                bottle_volume_ml=req.bottle_volume_ml,
+                headspace_o2_pct=req.headspace_o2_pct,
+                wine_temperature_c=req.wine_temperature_c
+            )
+            return TotalPackagingOxygenResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/packaging/closure-shelf-life",
+        response_model=ClosureShelfLifeResponse,
+        summary="Forecast multi-year closure oxygen permeation, Free SO2 decay, and PremOx risk",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def closure_shelf_life_endpoint(req: ClosureShelfLifeRequest):
+        try:
+            from src.stabilization_and_packaging import ClosureShelfLifeForecaster
+            forecaster = ClosureShelfLifeForecaster()
+            res = forecaster.simulate_bottle_shelf_life(
+                closure_type=req.closure_type,
+                initial_free_so2=req.initial_free_so2,
+                initial_ph=req.initial_ph,
+                initial_tpo_mg_l=req.initial_tpo_mg_l,
+                storage_temperature_c=req.storage_temperature_c,
+                duration_months=req.duration_months
+            )
+            return ClosureShelfLifeResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/packaging/bottling-qc-audit",
+        response_model=BottlingQCAuditResponse,
+        summary="Audit bottling run batch against SPC legal metrology and filter membrane integrity",
+        tags=["Stabilization & Packaging (Day 14)"]
+    )
+    def bottling_qc_audit_endpoint(req: BottlingQCAuditRequest):
+        try:
+            from src.stabilization_and_packaging import BottlingLineQCAuditor
+            auditor = BottlingLineQCAuditor()
+            res = auditor.audit_bottling_batch(
+                lot_id=req.lot_id,
+                fill_volumes_ml=req.fill_volumes_ml,
+                closure_depths_mm=req.closure_depths_mm,
+                headspace_vacuums_bar=req.headspace_vacuums_bar,
+                filter_bubble_point_bar=req.filter_bubble_point_bar
+            )
+            return BottlingQCAuditResponse(**res)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

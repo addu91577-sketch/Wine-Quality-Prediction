@@ -1,0 +1,585 @@
+{
+  "title": "Day 14 Dissolved Gas, Closure Permeation and Bottling QC Benchmarks",
+  "closure_specifications": {
+    "natural_cork_fleur": {
+      "name": "Natural Cork (Grade Fleur)",
+      "steady_otr_mg_year": 0.22,
+      "initial_desorption_mg": 0.45,
+      "otr_variance_pct": 28.0,
+      "tca_risk_pct": 0.3,
+      "reductive_risk": "very_low",
+      "recommended_longevity_years": 15
+    },
+    "diam_5_microagglomerated": {
+      "name": "Diam 5 (Micro-agglomerated TCA-free)",
+      "steady_otr_mg_year": 0.1,
+      "initial_desorption_mg": 0.12,
+      "otr_variance_pct": 5.0,
+      "tca_risk_pct": 0.0,
+      "reductive_risk": "low",
+      "recommended_longevity_years": 8
+    },
+    "diam_10_microagglomerated": {
+      "name": "Diam 10 (Micro-agglomerated Extended Aging)",
+      "steady_otr_mg_year": 0.065,
+      "initial_desorption_mg": 0.09,
+      "otr_variance_pct": 4.5,
+      "tca_risk_pct": 0.0,
+      "reductive_risk": "low",
+      "recommended_longevity_years": 18
+    },
+    "synthetic_nomacorc_select": {
+      "name": "Nomacorc Select Green (Bio-polymer)",
+      "steady_otr_mg_year": 0.16,
+      "initial_desorption_mg": 0.18,
+      "otr_variance_pct": 7.0,
+      "tca_risk_pct": 0.0,
+      "reductive_risk": "very_low",
+      "recommended_longevity_years": 5
+    },
+    "screwcap_saran_tin": {
+      "name": "Screwcap (Saran-Tin Liner - Hermetic)",
+      "steady_otr_mg_year": 0.004,
+      "initial_desorption_mg": 0.02,
+      "otr_variance_pct": 3.0,
+      "tca_risk_pct": 0.0,
+      "reductive_risk": "high",
+      "recommended_longevity_years": 20
+    },
+    "screwcap_saranex": {
+      "name": "Screwcap (Saranex Liner - Controlled Permeability)",
+      "steady_otr_mg_year": 0.045,
+      "initial_desorption_mg": 0.04,
+      "otr_variance_pct": 4.0,
+      "tca_risk_pct": 0.0,
+      "reductive_risk": "medium",
+      "recommended_longevity_years": 10
+    }
+  },
+  "tpo_benchmarks": [
+    {
+      "dissolved_oxygen_mg_l": 1.2,
+      "headspace_oxygen_mg_l_wine": 2.61,
+      "headspace_o2_pct": 20.9,
+      "total_packaging_oxygen_tpo_mg_l": 3.81,
+      "stoichiometric_free_so2_depletion_mg_l": 15.25,
+      "tpo_grade": "SEVERE_OXIDATION_HAZARD",
+      "is_within_premium_spec": false,
+      "case_name": "Non-inerted Standard Bottling"
+    },
+    {
+      "dissolved_oxygen_mg_l": 0.45,
+      "headspace_oxygen_mg_l_wine": 0.19,
+      "headspace_o2_pct": 1.8,
+      "total_packaging_oxygen_tpo_mg_l": 0.64,
+      "stoichiometric_free_so2_depletion_mg_l": 2.57,
+      "tpo_grade": "EXCELLENT_PREMIUM",
+      "is_within_premium_spec": true,
+      "case_name": "Nitrogen Sparged + Vacuum Corker"
+    },
+    {
+      "dissolved_oxygen_mg_l": 0.28,
+      "headspace_oxygen_mg_l_wine": 0.07,
+      "headspace_o2_pct": 0.8,
+      "total_packaging_oxygen_tpo_mg_l": 0.35,
+      "stoichiometric_free_so2_depletion_mg_l": 1.41,
+      "tpo_grade": "EXCELLENT_PREMIUM",
+      "is_within_premium_spec": true,
+      "case_name": "Ultra-Low Oxygen Red Wine Packaging"
+    }
+  ],
+  "closure_shelf_life_benchmarks": {
+    "natural_cork_fleur": {
+      "closure_name": "Natural Cork (Grade Fleur)",
+      "steady_otr_mg_year": 0.22,
+      "milestones": {
+        "premox_breach_month": 43,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 14.31,
+        "molecular_so2_mg_l": 0.32,
+        "a420_browning": 0.176,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          25.21,
+          24.22,
+          23.23,
+          22.24,
+          21.24,
+          20.25,
+          19.26,
+          18.27,
+          17.28,
+          16.29,
+          15.3,
+          14.31
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.128,
+          0.132,
+          0.136,
+          0.141,
+          0.145,
+          0.15,
+          0.155,
+          0.16,
+          0.165,
+          0.171,
+          0.176
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    },
+    "diam_5_microagglomerated": {
+      "closure_name": "Diam 5 (Micro-agglomerated TCA-free)",
+      "steady_otr_mg_year": 0.1,
+      "milestones": {
+        "premox_breach_month": -1,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 18.63,
+        "molecular_so2_mg_l": 0.417,
+        "a420_browning": 0.171,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          27.18,
+          26.4,
+          25.63,
+          24.85,
+          24.07,
+          23.29,
+          22.52,
+          21.74,
+          20.96,
+          20.18,
+          19.4,
+          18.63
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.128,
+          0.131,
+          0.135,
+          0.139,
+          0.144,
+          0.148,
+          0.152,
+          0.157,
+          0.161,
+          0.166,
+          0.171
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    },
+    "diam_10_microagglomerated": {
+      "closure_name": "Diam 10 (Micro-agglomerated Extended Aging)",
+      "steady_otr_mg_year": 0.065,
+      "milestones": {
+        "premox_breach_month": -1,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 19.53,
+        "molecular_so2_mg_l": 0.437,
+        "a420_browning": 0.17,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          27.4,
+          26.69,
+          25.97,
+          25.26,
+          24.54,
+          23.83,
+          23.11,
+          22.4,
+          21.68,
+          20.96,
+          20.25,
+          19.53
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.127,
+          0.131,
+          0.135,
+          0.139,
+          0.143,
+          0.148,
+          0.152,
+          0.156,
+          0.161,
+          0.165,
+          0.17
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    },
+    "synthetic_nomacorc_select": {
+      "closure_name": "Nomacorc Select Green (Bio-polymer)",
+      "steady_otr_mg_year": 0.16,
+      "milestones": {
+        "premox_breach_month": -1,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 17.03,
+        "molecular_so2_mg_l": 0.381,
+        "a420_browning": 0.173,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          26.76,
+          25.87,
+          24.99,
+          24.1,
+          23.22,
+          22.33,
+          21.45,
+          20.56,
+          19.68,
+          18.8,
+          17.91,
+          17.03
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.128,
+          0.132,
+          0.136,
+          0.14,
+          0.144,
+          0.149,
+          0.153,
+          0.158,
+          0.163,
+          0.167,
+          0.173
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    },
+    "screwcap_saran_tin": {
+      "closure_name": "Screwcap (Saran-Tin Liner - Hermetic)",
+      "steady_otr_mg_year": 0.004,
+      "milestones": {
+        "premox_breach_month": -1,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 21.21,
+        "molecular_so2_mg_l": 0.475,
+        "a420_browning": 0.168,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          27.89,
+          27.28,
+          26.67,
+          26.06,
+          25.46,
+          24.85,
+          24.24,
+          23.64,
+          23.03,
+          22.42,
+          21.82,
+          21.21
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.127,
+          0.131,
+          0.135,
+          0.139,
+          0.143,
+          0.147,
+          0.151,
+          0.155,
+          0.16,
+          0.164,
+          0.168
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    },
+    "screwcap_saranex": {
+      "closure_name": "Screwcap (Saranex Liner - Controlled Permeability)",
+      "steady_otr_mg_year": 0.045,
+      "milestones": {
+        "premox_breach_month": -1,
+        "peak_maturity_month": 18,
+        "commercial_shelf_life_months": 48
+      },
+      "final_state": {
+        "free_so2_mg_l": 20.23,
+        "molecular_so2_mg_l": 0.453,
+        "a420_browning": 0.169,
+        "freshness_score": 59.0
+      },
+      "trajectory_summary": {
+        "month": [
+          0,
+          4,
+          8,
+          12,
+          16,
+          20,
+          24,
+          28,
+          32,
+          36,
+          40,
+          44,
+          48
+        ],
+        "free_so2_mg_l": [
+          28.6,
+          27.71,
+          27.03,
+          26.35,
+          25.67,
+          24.99,
+          24.31,
+          23.63,
+          22.95,
+          22.27,
+          21.59,
+          20.91,
+          20.23
+        ],
+        "a420_browning": [
+          0.12,
+          0.124,
+          0.127,
+          0.131,
+          0.135,
+          0.139,
+          0.143,
+          0.147,
+          0.152,
+          0.156,
+          0.16,
+          0.165,
+          0.169
+        ],
+        "freshness_score": [
+          95.0,
+          92.0,
+          89.0,
+          86.0,
+          83.0,
+          80.0,
+          77.0,
+          74.0,
+          71.0,
+          68.0,
+          65.0,
+          62.0,
+          59.0
+        ]
+      }
+    }
+  },
+  "sample_spc_bottling_audit": {
+    "lot_id": "LOT_ESTATE_CAB_B2026_01",
+    "sample_count": 25,
+    "audit_tier": "SIX_SIGMA_COMPLIANT",
+    "is_batch_approved": true,
+    "fill_volume_spc": {
+      "nominal_ml": 750.0,
+      "mean_ml": 750.11,
+      "std_ml": 1.72,
+      "lsl_ml": 738.75,
+      "usl_ml": 761.25,
+      "cp": 2.18,
+      "cpk": 2.16,
+      "defect_count": 0,
+      "defect_rate_pct": 0.0
+    },
+    "closure_insertion_spc": {
+      "mean_depth_mm": 1.06,
+      "defect_count": 0
+    },
+    "headspace_vacuum_spc": {
+      "mean_vacuum_bar": -0.276,
+      "defect_count": 0
+    },
+    "membrane_integrity": {
+      "bubble_point_bar": 3.45,
+      "specification_min_bar": 3.2,
+      "passed": true
+    }
+  }
+}

@@ -238,7 +238,7 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_malolactic_oak, tab_cellar_haccp, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_malolactic_oak, tab_cellar_haccp, tab_stabilization, tab_packaging, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
@@ -250,6 +250,8 @@ def main():
         "🎨 Sensory Organoleptic & Flavor Lexicon",
         "🍷 MLF & Oak Maturation Studio",
         "📋 Cellar Dispatch & HACCP Audit",
+        "❄️ Tartrate & Protein Stabilization",
+        "🍾 Bottling Line, Gas & Packaging Shelf-Life",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -1226,6 +1228,139 @@ def main():
             if h_res["audit_findings"]:
                 for finding in h_res["audit_findings"]:
                     st.warning(f"⚠️ {finding}")
+
+    # ------------------------------------------------------------------------
+    # TAB: Tartrate & Protein Stabilization Studio (Day 14)
+    # ------------------------------------------------------------------------
+    with tab_stabilization:
+        st.subheader("❄️ Enological Tartrate & Protein Stabilization Studio")
+        st.caption(
+            "Thermodynamic bitartrate concentration product (CP), minicontact electrical conductivity drop (Δχ), "
+            "chilled contact seeding crystallization (-4°C), and Langmuir adsorption bentonite fining optimization."
+        )
+
+        stab_col1, stab_col2 = st.columns(2)
+        with stab_col1:
+            st.write("##### 🧊 Potassium Bitartrate (KHT) Saturation Parameters")
+            stab_tartaric = st.slider("Tartaric Acid (g/L)", 2.0, 15.0, 6.8, 0.1, key="stab_tartaric")
+            stab_potassium = st.slider("Potassium Ion K⁺ (mg/L)", 300.0, 2000.0, 1100.0, 25.0, key="stab_potassium")
+            stab_ph = st.slider("Wine pH", 2.8, 4.2, 3.45, 0.05, key="stab_ph")
+            stab_alc = st.slider("Alcohol (% v/v)", 8.0, 17.0, 13.0, 0.2, key="stab_alc")
+            stab_temp = st.slider("Storage Temperature (°C)", 0.0, 30.0, 14.0, 1.0, key="stab_temp")
+
+            if st.button("Evaluate Bitartrate Thermodynamic Stability", key="btn_eval_stab"):
+                from src.stabilization_and_packaging import TartrateStabilizationSimulator
+                tsim = TartrateStabilizationSimulator()
+                seval = tsim.evaluate_tartrate_stability(
+                    tartaric_acid_g_l=stab_tartaric,
+                    potassium_mg_l=stab_potassium,
+                    ph=stab_ph,
+                    alcohol_pct=stab_alc,
+                    storage_temp_c=stab_temp
+                )
+                status_color = "🔴" if seval["stability_status"] == "UNSTABLE" else ("🟡" if seval["stability_status"] == "MODERATE_RISK" else "🟢")
+                st.metric(
+                    "Minicontact Drop (Δχ)",
+                    f"{seval['minicontact_delta_chi_us_cm']} µS/cm",
+                    f"{status_color} {seval['stability_status']}"
+                )
+                st.write(f"- **Saturation Temperature (T_sat):** `{seval['saturation_temperature_c']} °C`")
+                st.write(f"- **Concentration Product (CP):** `{seval['concentration_product_cp']:.2e} (mol/L)²`")
+                st.write(f"- **Solubility Product (K_sp @ {stab_temp}°C):** `{seval['solubility_product_ksp']:.2e} (mol/L)²`")
+                st.write(f"- **Saturation Ratio (CP / K_sp):** `{seval['saturation_ratio']:.2f}`")
+
+                if seval["action_required"]:
+                    st.warning("⚠️ Tartrate precipitation hazard detected. Chilled contact crystallization or additive stabilization advised.")
+                else:
+                    st.success("✅ Wine lot is commercially tartrate-stable at cellar temperatures.")
+
+        with stab_col2:
+            st.write("##### 🧪 Proteic Heat Haze & Bentonite Fining Optimizer")
+            pr_protein = st.slider("PR Protein Content (mg/L)", 10.0, 300.0, 110.0, 5.0, key="stab_protein")
+            b_cultivar = st.selectbox("Wine Cultivar", ["white", "red"], index=0, key="stab_b_cultivar")
+            b_type = st.selectbox("Bentonite Type", ["sodium_bentonite", "calcium_bentonite"], index=0, key="stab_b_type")
+
+            if st.button("Optimize Bentonite Dosage via Langmuir Isotherm", key="btn_opt_bentonite"):
+                from src.stabilization_and_packaging import ProteinHazeAndBentoniteOptimizer
+                bopt = ProteinHazeAndBentoniteOptimizer()
+                bres = bopt.optimize_bentonite_dosage(
+                    protein_content_mg_l=pr_protein,
+                    ph=stab_ph,
+                    cultivar=b_cultivar,
+                    bentonite_type=b_type
+                )
+                st.metric(
+                    "Recommended Bentonite Dosage",
+                    f"{bres['recommended_bentonite_g_hl']} g/hL",
+                    f"Aroma Stripping: -{bres['aroma_stripping_penalty_pct']}%"
+                )
+                st.write(f"- **Initial Heat Test Haze:** `{bres['heat_delta_ntu_initial']} ΔNTU`")
+                st.write(f"- **Post-Fining Heat Test Haze:** `{bres['heat_delta_ntu_final']} ΔNTU` (Target: <= 1.8)")
+                st.write(f"- **Residual Protein:** `{bres['residual_protein_mg_l']} mg/L`")
+                st.write(f"- **Optimization Status:** `{bres['status']}`")
+
+    # ------------------------------------------------------------------------
+    # TAB: Bottling Line, Gas & Packaging Shelf-Life Studio (Day 14)
+    # ------------------------------------------------------------------------
+    with tab_packaging:
+        st.subheader("🍾 Packaging Gas Dynamics, Membrane Filtration & Shelf-Life Studio")
+        st.caption(
+            "0.45 µm PES crossflow microfiltration Hermia kinetics, inline micro-bubble N2 sparging, "
+            "Total Packaging Oxygen (TPO), multi-closure OTR permeation, and 0-48 month PremOx shelf-life forecasting."
+        )
+
+        pack_col1, pack_col2 = st.columns(2)
+        with pack_col1:
+            st.write("##### 💨 Dissolved Gas Management & Sparging")
+            g_init_do = st.slider("Dissolved Oxygen in Wine (mg/L)", 0.2, 5.0, 1.4, 0.1, key="g_init_do")
+            g_n2_ratio = st.slider("Nitrogen Sparging Ratio (NL N2 / L wine)", 0.1, 1.5, 0.6, 0.05, key="g_n2_ratio")
+            g_hs_vol = st.slider("Headspace Volume (mL)", 2.0, 15.0, 6.0, 0.5, key="g_hs_vol")
+            g_hs_o2 = st.slider("Headspace O2 Concentration (%)", 0.5, 21.0, 1.8, 0.5, key="g_hs_o2")
+
+            from src.stabilization_and_packaging import DissolvedGasPackagingEngine
+            dge = DissolvedGasPackagingEngine()
+            sparge_eval = dge.simulate_nitrogen_sparging(g_init_do, nitrogen_flow_ratio_nl_l=g_n2_ratio)
+            tpo_eval = dge.calculate_total_packaging_oxygen(
+                dissolved_oxygen_wine_mg_l=sparge_eval["final_do_mg_l"],
+                headspace_volume_ml=g_hs_vol,
+                headspace_o2_pct=g_hs_o2
+            )
+
+            st.metric("Total Packaging Oxygen (TPO)", f"{tpo_eval['total_packaging_oxygen_tpo_mg_l']} mg/L", f"Grade: {tpo_eval['tpo_grade']}")
+            st.write(f"- **Post-Sparging DO:** `{sparge_eval['final_do_mg_l']} mg/L` (Removed: `{sparge_eval['oxygen_removed_mg_l']} mg/L`, Eff: `{sparge_eval['deoxygenation_efficiency_pct']}%`)")
+            st.write(f"- **Headspace O2 Contribution:** `{tpo_eval['headspace_oxygen_mg_l_wine']} mg/L wine`")
+            st.write(f"- **Stoichiometric Free SO2 Hit:** `-{tpo_eval['stoichiometric_free_so2_depletion_mg_l']} mg/L`")
+
+        with pack_col2:
+            st.write("##### 📦 Multi-Year Closure Aging & Shelf-Life Forecaster")
+            from src.stabilization_and_packaging import ClosureShelfLifeForecaster, CLOSURE_PROFILES
+            c_select = st.selectbox(
+                "Closure Profile",
+                list(CLOSURE_PROFILES.keys()),
+                format_func=lambda k: CLOSURE_PROFILES[k]["name"],
+                key="c_select"
+            )
+            c_so2 = st.slider("Initial Free SO2 at Bottling (mg/L)", 15.0, 50.0, 32.0, 1.0, key="c_so2")
+            c_temp = st.slider("Storage Temperature (°C)", 10.0, 30.0, 14.0, 1.0, key="c_temp")
+
+            csf = ClosureShelfLifeForecaster()
+            cres = csf.simulate_bottle_shelf_life(
+                closure_type=c_select,
+                initial_free_so2=c_so2,
+                initial_ph=3.45,
+                initial_tpo_mg_l=tpo_eval["total_packaging_oxygen_tpo_mg_l"],
+                storage_temperature_c=c_temp,
+                duration_months=48
+            )
+
+            ctraj = pd.DataFrame(cres["trajectory"]).set_index("month")
+            st.line_chart(ctraj[["free_so2_mg_l", "freshness_score"]])
+            pm = cres["milestones"]["premox_breach_month"]
+            pm_str = f"Month {pm}" if pm != -1 else "No breach in 48 months (> 4 years)"
+            st.write(f"- **PremOx Boundary Breach:** `{pm_str}`")
+            st.write(f"- **Peak Drinking Window:** `Month {cres['milestones']['peak_maturity_month']}`")
+            st.write(f"- **Final 48M Freshness Score:** `{cres['final_state']['freshness_score']} / 100`")
+            st.write(f"- **Final 48M Browning A420:** `{cres['final_state']['a420_browning']:.3f} OD`")
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring

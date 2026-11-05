@@ -44,7 +44,10 @@ Wine Quality Prediction/
 │   ├── causal_intervention_benchmarks.json # Day 12 Doubly Robust IPW causal Average Treatment Effects
 │   ├── malolactic_kinetics_benchmarks.json # Day 13 secondary malolactic fermentation bioprocess benchmarks
 │   ├── oak_maturation_benchmarks.json     # Day 13 wood phenolics extraction & color stabilization benchmarks
-│   └── cellar_dispatch_benchmarks.json    # Day 13 digital cellar master fleet triage & work orders
+│   ├── cellar_dispatch_benchmarks.json    # Day 13 digital cellar master fleet triage & work orders
+│   ├── stabilization_benchmarks.json      # Day 14 potassium bitartrate & Langmuir bentonite benchmarks
+│   ├── crossflow_filtration_benchmarks.json # Day 14 0.45 um PES membrane filtration & Hermia fouling benchmarks
+│   └── packaging_closure_benchmarks.json  # Day 14 closure OTR, TPO gas equilibria & 48M shelf-life benchmarks
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -71,7 +74,9 @@ Wine Quality Prediction/
 │   ├── Day12_Fermentation_Kinetics_Stuck_Detection_and_Sensory_Lexicon.ipynb # Executed fermentation, stuck & sensory notebook
 │   ├── generate_day12_notebook.py                   # Day 12 reproducible notebook generator
 │   ├── Day13_Malolactic_Oak_Maturation_and_Cellar_Dispatch.ipynb # Executed MLF, oak maturation & cellar dispatch notebook
-│   └── generate_day13_notebook.py                   # Day 13 reproducible notebook generator
+│   ├── generate_day13_notebook.py                   # Day 13 reproducible notebook generator
+│   ├── Day14_Tartrate_Protein_Filtration_and_Packaging.ipynb # Executed tartrate, filtration & packaging notebook
+│   └── generate_day14_notebook.py                   # Day 14 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -128,7 +133,11 @@ Wine Quality Prediction/
 │       ├── day13_malolactic_fermentation_kinetics.png # 4-panel MLF bioconversion, diacetyl & pH shift dynamics
 │       ├── day13_oak_maturation_wood_extractives.png  # Oak species phenolics, toast pyro-conversion & color stabilization
 │       ├── day13_cellar_master_dispatch_matrix.png    # Fleet risk scatter triage & automated chemical work orders
-│       └── day13_haccp_compliance_and_biogenic_risk.png # HACCP molecular SO2 envelope & biogenic amine risk contours
+│       ├── day13_haccp_compliance_and_biogenic_risk.png # HACCP molecular SO2 envelope & biogenic amine risk contours
+│       ├── day14_tartrate_and_protein_stabilization.png # Bitartrate conductivity drop & Langmuir bentonite haze curves
+│       ├── day14_crossflow_membrane_filtration.png    # Hermia flux decline, turbidity reduction & filterability index
+│       ├── day14_dissolved_gas_and_sparging.png       # Henry DO/CO2 solubility, N2 sparging & TPO compartmental breakdown
+│       └── day14_closure_permeation_and_shelf_life.png # Multi-closure OTR, 48M Free SO2 decay & PremOx thermal matrix
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -146,13 +155,15 @@ Wine Quality Prediction/
 │   ├── aging_pareto_stress.py       # First-principles bottle aging kinetics, Pareto optimizer & stress testing
 │   ├── fermentation_and_sensory.py  # Fermentation bioprocess kinetics, stuck detector, sensory radar & causal engine
 │   ├── malolactic_and_oak.py        # MLF ODE kinetics, oak extraction, cellar dispatch & HACCP auditor
+│   ├── stabilization_and_packaging.py # Bitartrate CP, Langmuir bentonite, crossflow filtration, TPO & closure shelf-life
 │   ├── day7_figures.py              # Day 7 publication figures generator
 │   ├── day8_figures.py              # Day 8 diagnostic figures generator
 │   ├── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
 │   ├── day10_figures.py             # Day 10 coupage, conformal, economics & stacking figures generator
 │   ├── day11_figures.py             # Day 11 aging kinetics, Pareto, stress testing & synergy figures generator
 │   ├── day12_figures.py             # Day 12 fermentation, stuck warning, sensory radar & causal figures generator
-│   └── day13_figures.py             # Day 13 MLF, oak extraction, cellar dispatch & HACCP figures generator
+│   ├── day13_figures.py             # Day 13 MLF, oak extraction, cellar dispatch & HACCP figures generator
+│   └── day14_figures.py             # Day 14 tartrate, filtration, gas dynamics & closure shelf-life figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
@@ -161,7 +172,8 @@ Wine Quality Prediction/
 │   ├── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
 │   ├── test_aging_pareto_and_stress.py  # Bottle aging kinetics, Pareto frontier, stress testing & API tests
 │   ├── test_fermentation_and_sensory.py # Fermentation ODEs, stuck early warning, sensory radar & causal API tests
-│   └── test_malolactic_and_oak.py       # MLF kinetics, oak species, ERPI triage, HACCP & API tests (93 total passing)
+│   ├── test_malolactic_and_oak.py       # MLF kinetics, oak species, ERPI triage, HACCP & API tests (93 passing)
+│   └── test_stabilization_and_packaging.py # Bitartrate CP, bentonite, crossflow, TPO, closure OTR & API tests (107 total passing)
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -189,6 +201,7 @@ Wine Quality Prediction/
 - [x] **Day 11: Enological Aging Kinetics, Multi-Objective Pareto Frontier Optimization & Physicochemical Stress-Testing Suite**
 - [x] **Day 12: Fermentation Bioprocess Kinetics, Stuck Fermentation Early-Warning, Sensory Organoleptic Lexicon & Causal Cellar Intervention Engine**
 - [x] **Day 13: Secondary Malolactic Fermentation (MLF) Biotransformation, Precision Oak Barrel Maturation Dynamics, Digital Cellar Master Dispatch Engine & HACCP Food Safety Auditor**
+- [x] **Day 14: Tartrate & Protein Stabilization Kinetics, Crossflow Membrane Microfiltration, Dissolved Gas Packaging Dynamics & Packaging Closure Shelf-Life Forecaster**
 
 ---
 
@@ -1832,3 +1845,179 @@ All diagnostic figures are published in `reports/figures/` and verified in `note
 
 
 
+
+
+---
+
+## ❄️ Day 14 Summary: Tartrate & Protein Stabilization Kinetics, Crossflow Microfiltration, Dissolved Gas Packaging Dynamics & Packaging Closure Shelf-Life Forecaster
+
+Day 14 expands the platform to industrial wine finishing, membrane sterile clarification, gas equilibria management, closure oxygen permeability modeling, and bottling quality assurance.
+
+```
++----------------------------------------------------------------------------------------------------+
+|                         Day 14 Stabilization, Membrane & Packaging Platform                        |
++------------------------------------+-----------------------------------+---------------------------+
+| 1. Bitartrate & Protein Stability  | 2. Crossflow Microfiltration      | 3. Packaging Gas Dynamics |
+| - Thermodynamic CP & T_sat         | - Hermia's 4 Fouling Rate Laws    | - Henry's Law DO & CO2    |
+| - Minicontact Conductivity (Δχ)    | - Permeate Flux J(t) Decay (LMH)  | - Inline N2 Micro-Sparger |
+| - Chilled Seeding Contact (-4°C)   | - Hydraulic Backwash Restoration  | - Total Packaging O2 (TPO)|
+| - Langmuir Bentonite Optimization  | - Turbidity NTU Reduction (< 0.6) | - Stoichiometric SO2 Hit  |
++------------------------------------+-----------------------------------+---------------------------+
+| 4. Closure OTR & Shelf-Life Forecaster                                 | 5. Bottling Line QA / SPC |
+| - Natural Cork Fleur, Diam 5/10, Nomacorc & Screwcaps (Saran-Tin/ex)   | - Fill Volume (750mL±1.5%)|
+| - Coupled 0-48M Free SO2 Decay & Browning Index (A420) ODEs           | - Bubble Point (> 3.2 bar)|
+| - PremOx Breach Point (< 10 mg/L) & Thermal Aging Acceleration (Arrhenius)| - Process Cp & Cpk Metrics|
++------------------------------------------------------------------------+---------------------------+
+```
+
+---
+
+### 1. Thermodynamic Potassium Bitartrate Saturation & Cold Contact Seeding
+
+Potassium bitartrate ($\text{KHT}$, $\text{KHC}_4\text{H}_4\text{O}_6$) crystallization is governed by ionic equilibrium and temperature/ethanol solubility product $K_{sp}$:
+$$\text{K}^+ + \text{HT}^- \rightleftharpoons \text{KHT}_{(s)}$$
+
+* **Concentration Product ($CP$):**
+  $$CP = [\text{K}^+] \times [\text{HT}^-]$$
+  where bitartrate mono-anion $[\text{HT}^-]$ is determined by pH-dependent tartaric acid dissociation ($pK_{a1} = 3.01, pK_{a2} = 4.37$):
+  $$[\text{HT}^-] = [\text{H}_2\text{T}]_{\text{total}} \cdot \left( 10^{pK_{a1} - \text{pH}} + 1 + 10^{\text{pH} - pK_{a2}} \right)^{-1}$$
+
+* **Solubility Product ($K_{sp}$):**
+  $$\ln(K_{sp}) = -\frac{1850.0}{T_{\text{Kelvin}}} - 0.065 \cdot \text{Ethanol}_{\% \text{ v/v}} - 1.35$$
+
+* **Minicontact Electrical Conductivity Drop ($\Delta \chi$):**
+  $$\Delta \chi = (\text{CP} - K_{sp}(0^\circ\text{C})) \times 2.5 \times 10^5 \quad (\mu\text{S/cm})$$
+  - $\Delta \chi < 30\,\mu\text{S/cm} \implies \textbf{STABLE}$ (No crystal precipitation hazard)
+  - $30 \le \Delta \chi \le 55\,\mu\text{S/cm} \implies \textbf{MODERATE RISK}$
+  - $\Delta \chi > 55\,\mu\text{S/cm} \implies \textbf{UNSTABLE}$ (High crystallization risk)
+
+* **Dynamic Cold Seeding Kinetics ($-4^\circ\text{C}$ + $4\text{ g/L}$ KHT Seed):**
+  $$\frac{d[\text{KHT}]}{dt} = -k_c \cdot (1 + \beta \cdot M_{\text{seed}}) \cdot (CP(t) - K_{sp})^\alpha$$
+  Reduces tartrate stabilization cycle time from 14–21 days down to 4–8 hours.
+
+---
+
+### 2. Thermolabile Protein Haze & Langmuir Bentonite Optimization
+
+White wines contain Pathogenesis-Related (PR) proteins (thaumatin-like proteins and chitinases) that unfold under transit/retail thermal stress ($> 30^\circ\text{C}$), precipitating into visual protein haze:
+* **Heat Stability Test Simulation:** $80^\circ\text{C}$ for 2 hours, cooling to $20^\circ\text{C}$, measuring $\Delta NTU$:
+  $$\Delta NTU \le 1.8 \implies \textbf{PROTEIN STABLE}$$
+* **Langmuir Adsorption Isotherm for Bentonite:**
+  $$q = \frac{q_{\max} \cdot K_L \cdot C_{\text{protein}}}{1 + K_L \cdot C_{\text{protein}}}$$
+  where $q_{\max} = 85.0\text{ mg protein / g bentonite}$ and $K_L = 0.045\text{ L/mg}$.
+* **Aroma Stripping Penalty:**
+  $$\text{Loss}_{\%} = 100 \cdot (1 - \exp(-0.0085 \cdot \text{Dosage}_{\text{g/hL}}))$$
+  The platform computes the exact dosage (g/hL) achieving $\Delta NTU \le 1.8$ while minimizing volatile terpene and ester loss.
+
+---
+
+### 3. Crossflow Membrane Microfiltration (0.45 µm PES) & Hermia Fouling Kinetics
+
+Models continuous membrane microfiltration under constant transmembrane pressure ($\Delta P$ TMP):
+* **Resistance-in-Series Filtration Flux:**
+  $$J(t) = \frac{\Delta P}{\mu \cdot (R_m + R_{\text{pore}}(t) + R_{\text{cake}}(t))}$$
+* **Hermia Blocking Mechanisms ($d^2 t / dV^2 = k (dt/dV)^n$):**
+  - $n = 2$: Complete pore blocking
+  - $n = 1$: Intermediate blocking
+  - $n = 1.5$: Standard internal pore constriction
+  - $n = 0$: Surface cake layer build-up
+* **Filterability Index ($FI$):**
+  $$FI = t_{400} - 2 \cdot t_{200} \quad (\text{seconds})$$
+  Evaluates membrane clogging risk ($FI < 15\text{ s}$ excellent, $> 50\text{ s}$ severe clogging risk).
+
+---
+
+### 4. Dissolved Gas Management & Total Packaging Oxygen (TPO)
+
+* **Henry's Law Equilibria for $DO$ and $CO_2$:**
+  $$C_{\text{gas}} = K_H(T) \cdot P_{\text{gas}}$$
+* **Counter-Current Micro-Bubble Nitrogen Sparging:**
+  $$\ln\left(\frac{DO_{\text{final}}}{DO_{\text{initial}}}\right) = -k_L a_{\text{eff}} \cdot \left(\frac{V_{\text{N2}}}{V_{\text{wine}}}\right)$$
+* **Total Packaging Oxygen ($TPO$):**
+  $$TPO = DO_{\text{wine}} + \frac{V_{\text{headspace}}}{V_{\text{liquid}}} \cdot \text{Headspace } O_2 \cdot \frac{MW_{O_2} \cdot 1000}{V_{\text{molar}}}$$
+  - $TPO < 0.8\text{ mg/L} \implies \textbf{EXCELLENT PREMIUM}$
+  - $TPO > 2.0\text{ mg/L} \implies \textbf{OXIDATION HAZARD}$
+* **Stoichiometric Antioxidant Consumption:**
+  $$1.0\text{ mg } O_2 \text{ in bottle consumes } \approx 4.0\text{ mg Free } SO_2$$
+
+---
+
+### 5. Multi-Closure Permeation & Predictive 48-Month Shelf-Life Forecaster
+
+Tracks bottle evolution across 6 closure profiles:
+1. **Natural Cork (Grade Fleur):** Initial desorption ($0.45\text{ mg}$), steady OTR $0.22\text{ mg/yr}$.
+2. **Diam 5 (Micro-agglomerated):** Uniform low OTR $0.10\text{ mg/yr}$, zero TCA risk.
+3. **Diam 10 (Extended Aging):** Ultra-low OTR $0.065\text{ mg/yr}$, 18-year longevity.
+4. **Nomacorc Select Green (Bio-polymer):** Controlled OTR $0.16\text{ mg/yr}$.
+5. **Screwcap Saran-Tin:** Quasi-hermetic $0.004\text{ mg/yr}$, risk of reduction if DO $< 0.3\text{ mg/L}$.
+6. **Screwcap Saranex:** Controlled OTR $0.045\text{ mg/yr}$, ideal for aromatic preservation.
+
+* **Coupled Kinetic ODEs:**
+  $$\frac{d[\text{Free } SO_2]}{dt} = -k_{ox}(T) \cdot [\text{Free } SO_2] - \frac{4 \cdot \text{OTR}}{V_{\text{bottle}}}$$
+  $$\frac{d A_{420}}{dt} = k_{\text{brown}}(T) \cdot \left( \frac{1}{1 + [\text{Free } SO_2] / 10.0} \right)$$
+* **Premature Oxidation (PremOx) Boundary:** Triggered when $[\text{Free } SO_2] < 10.0\text{ mg/L}$ and $[\text{Molecular } SO_2] < 0.35\text{ mg/L}$.
+* **Thermal Acceleration:** Arrhenius activation energy ($E_a \approx 70\text{ kJ/mol}$) captures storage shifts between $12^\circ\text{C}$ (cellar), $18^\circ\text{C}$ (standard), $24^\circ\text{C}$ (ambient), and $30^\circ\text{C}$ (heat abuse).
+
+---
+
+### 6. Bottling Line Statistical Process Control (SPC) Auditor
+
+Audits high-speed packaging runs against international legal metrology:
+* **Net Fill Volume (750 mL $\pm$ 1.5% MAV):** Evaluates $C_p$ and $C_{pk}$ capability indices ($C_{pk} \ge 1.33$ Six Sigma).
+* **Closure Insertion Depth:** Tolerance $0.5\text{--}1.8\text{ mm}$ below rim.
+* **Headspace Vacuum:** Nominal $-0.25\text{ bar}$.
+* **Membrane Integrity Bubble Point Test:** $\ge 3.20\text{ bar}$ for $0.45\,\mu\text{m}$ polyethersulfone cartridges.
+
+---
+
+### 7. Production REST API Endpoints (`src/production_service.py`)
+
+Eight microservice endpoints added to the production FastAPI engine:
+- `POST /stabilization/evaluate-tartrate`: Thermodynamic KHT saturation, $T_{sat}$, and minicontact $\Delta \chi$ drop.
+- `POST /stabilization/simulate-cold`: Dynamic contact seeding crystallization kinetics at $-4^\circ\text{C}$.
+- `POST /stabilization/optimize-bentonite`: Langmuir isotherm protein haze fining optimizer.
+- `POST /filtration/crossflow-simulate`: Hermia crossflow microfiltration flux decay and NTU clarification.
+- `POST /packaging/gas-sparging-simulate`: Sintered micro-bubble $N_2$ deoxygenation.
+- `POST /packaging/calculate-tpo`: Total Packaging Oxygen and stoichiometric Free $SO_2$ hit.
+- `POST /packaging/closure-shelf-life`: Multi-year closure OTR, Free $SO_2$ decay, and PremOx forecaster.
+- `POST /packaging/bottling-qc-audit`: Statistical Process Control (SPC) batch audit report.
+
+---
+
+### 8. Interactive Streamlit Stabilization & Packaging Studios (`src/interactive_dashboard.py`)
+
+Two interactive modules added to the web dashboard:
+* **❄️ Tartrate & Protein Stabilization Studio:** Interactive tartaric acid, potassium, pH, and temperature sliders with real-time minicontact $\Delta \chi$ evaluation, cold seeding simulator, and Langmuir bentonite dosage recommender.
+* **🍾 Bottling Line, Gas & Packaging Shelf-Life Studio:** Micro-bubble $N_2$ sparging simulator, TPO calculator, multi-closure 48-month Free $SO_2$ and browning ($A_{420}$) interactive projection charts.
+
+---
+
+### 9. Test Suite Verification & Execution (`tests/test_stabilization_and_packaging.py`)
+
+14 unit and integration tests added:
+- Thermodynamic KHT saturation and Berg & Keefer solubility products.
+- Contact process seeding acceleration verification.
+- PR protein heat haze test and Langmuir bentonite isotherm optimization.
+- Crossflow filtration flux decay, Hermia fouling, and Filterability Index ($FI$).
+- Henry's Law DO/$CO_2$ gas solubility curves.
+- Micro-bubble $N_2$ sparging deoxygenation efficiency.
+- Total Packaging Oxygen ($TPO$) compartmental calculations.
+- Multi-closure OTR curves, 48-month Free $SO_2$ depletion, and PremOx detection.
+- Bottling line SPC capability ($C_p, C_{pk}$) and membrane bubble point integrity.
+- FastAPI REST microservice integration for all 8 Day 14 endpoints.
+- **Full Test Results:** **107 passed out of 107 tests (100% pass rate).**
+
+---
+
+### 10. Generated Day 14 Figures & Jupyter Notebook
+
+All diagnostic figures are published in `reports/figures/` and verified in `notebooks/Day14_Tartrate_Protein_Filtration_and_Packaging.ipynb`:
+* [day14_tartrate_and_protein_stabilization.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day14_tartrate_and_protein_stabilization.png) — 4-panel tartrate & protein stabilization: Minicontact conductivity drop phase space, cold contact crystallization kinetics at $-4^\circ\text{C}$, Langmuir bentonite fining isotherms, and alternative stabilizer comparisons.
+* [day14_crossflow_membrane_filtration.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day14_crossflow_membrane_filtration.png) — Permeate flux decay $J(t)$ with hydraulic backwash recovery, cumulative volume and turbidity clarification, Hermia's 4 fouling laws, and Filterability Index ($FI$) bands.
+* [day14_dissolved_gas_and_sparging.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day14_dissolved_gas_and_sparging.png) — Henry's Law DO and $CO_2$ solubility curves, counter-current micro-bubble $N_2$ sparging, TPO compartmental partitioning, and rapid Free $SO_2$ depletion from packaging oxygen.
+* [day14_closure_permeation_and_shelf_life.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day14_closure_permeation_and_shelf_life.png) — Multi-closure OTR permeation curves, 48-month Free $SO_2$ depletion with PremOx boundary, spectrophotometric browning index ($A_{420}$) evolution, and Arrhenius storage temperature degradation.
+
+![Tartrate and Protein Stabilization](reports/figures/day14_tartrate_and_protein_stabilization.png)
+![Crossflow Membrane Filtration](reports/figures/day14_crossflow_membrane_filtration.png)
+![Dissolved Gas Packaging Dynamics](reports/figures/day14_dissolved_gas_and_sparging.png)
+![Packaging Closure Permeation and Shelf-Life](reports/figures/day14_closure_permeation_and_shelf_life.png)
