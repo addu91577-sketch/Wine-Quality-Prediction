@@ -1,0 +1,650 @@
+{
+  "metadata": {
+    "title": "Unified Digital Winery Twin & ESG Life Cycle Benchmarks",
+    "version": "1.0",
+    "day": 15
+  },
+  "lifecycle_simulations": {
+    "lot_bordeaux_grand_vin": {
+      "simulation_id": "TWIN_LOT_RED_20000",
+      "cultivar": "red",
+      "lot_size_bottles": 20000,
+      "stage_1_fermentation": {
+        "brix": 25.2,
+        "fermented_alcohol_pct": 14.74,
+        "residual_sugar_g_l": 1.8
+      },
+      "stage_2_maturation": {
+        "oak_profile": "french_medium_plus",
+        "oak_months": 18,
+        "ellagitannins_ppm": 28.5,
+        "vanillin_ppm": 0.85,
+        "post_mlf_ph": 3.64
+      },
+      "stage_3_stabilization": {
+        "method": "contact_chilling_seeding",
+        "bentonite_g_hl": 25.0,
+        "final_turbidity_ntu": 0.42,
+        "final_tartaric_g_l": 5.6
+      },
+      "stage_4_quality_scoring": {
+        "predicted_quality_score": 7.75,
+        "quality_tier": "Grand Vin (Super-Premium)"
+      },
+      "stage_5_cold_chain_logistics": {
+        "preset_name": "maritime_reefer_rotterdam_singapore",
+        "route_description": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+        "transit_mode": "maritime_reefer",
+        "duration_days": 28,
+        "closure_type": "technical_diam",
+        "temperature_summary": {
+          "min_c": 13.0,
+          "max_c": 15.4,
+          "mean_c": 14.2
+        },
+        "kinetic_stress_metrics": {
+          "total_tdu_hours": 690.6,
+          "equivalent_cellar_aging_months": 0.95,
+          "degree_hours_above_25c": 0.0,
+          "degree_hours_above_35c": 0.0
+        },
+        "chemical_impact": {
+          "initial_free_so2_mg_l": 34.0,
+          "final_free_so2_mg_l": 33.6,
+          "so2_loss_mg_l": 0.4,
+          "initial_a420": 0.12,
+          "final_a420": 0.123,
+          "delta_a420": 0.003,
+          "fruity_ester_retention_pct": 66.1
+        },
+        "barometric_seal_integrity": {
+          "ambient_pressure_kpa": 101.325,
+          "peak_internal_pressure_kpa": 91.42,
+          "peak_delta_p_kpa": -9.9,
+          "weep_threshold_kpa": 115.0,
+          "extrude_threshold_kpa": 160.0,
+          "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+          "vibration_rms_g": 0.04,
+          "overall_transit_risk_score": 10
+        }
+      },
+      "stage_6_terroir_authenticity": {
+        "claimed_appellation": "bordeaux_left_bank",
+        "appellation_name": "Bordeaux Left Bank (Pauillac / Margaux)",
+        "bedrock_geology": "Quaternary alluvial gravel over limestone",
+        "mahalanobis_terroir_distance": 0.13,
+        "terroir_p_value": 0.9912,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 96.7,
+        "elemental_z_scores": {
+          "lithium": 0.08,
+          "rubidium": -0.113,
+          "strontium": 0.06,
+          "barium": -0.04,
+          "manganese": 0.174,
+          "boron": 0.0,
+          "sr_87_86_ratio": 0.167
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.1,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.71,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.6,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 1.77,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7089,
+          "expected_sr_87_86": 0.7088
+        }
+      },
+      "stage_7_hedonic_and_pricing": {
+        "market_valuation": {
+          "predicted_quality": 7.75,
+          "appellation_tier": "doc_quality",
+          "estimated_market_price_usd": 113.5,
+          "confidence_interval_90_usd": [
+            93.07,
+            138.47
+          ],
+          "hedonic_components": {
+            "quality_premium_contribution_pct": 206.2,
+            "aging_premium_pct": 12.2,
+            "tier_multiplier": 1.25,
+            "volatile_acidity_penalty_pct": -2.4
+          }
+        },
+        "palate_fit_by_region": {
+          "north_america": {
+            "region_name": "North American Market (US & Canada)",
+            "palate_alignment_score": 80.5,
+            "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+            "price_elasticity": -1.25,
+            "projected_retail_usd": 28.67
+          },
+          "continental_europe": {
+            "region_name": "Continental European Market (France, Germany, Italy)",
+            "palate_alignment_score": 52.2,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -1.55,
+            "projected_retail_usd": 15.66
+          },
+          "east_asia": {
+            "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+            "palate_alignment_score": 40.5,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -0.95,
+            "projected_retail_usd": 17.21
+          },
+          "nordic_monopoly": {
+            "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+            "palate_alignment_score": 49.9,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -1.35,
+            "projected_retail_usd": 16.23
+          }
+        },
+        "optimized_pricing": {
+          "production_cost_usd": 9.4,
+          "market_reference_valuation_usd": 113.5,
+          "optimal_release_price_usd": 47.0,
+          "projected_sales_bottles": 20000,
+          "projected_gross_revenue_usd": 940000.0,
+          "projected_gross_profit_usd": 752000.0,
+          "gross_margin_pct": 80.0,
+          "pricing_recommendation": "Release at $47.00 for optimal risk-adjusted cellar gross margin of 80.0%."
+        }
+      },
+      "stage_8_esg_lca_sustainability": {
+        "scope_1_direct_g_co2e": 48.0,
+        "scope_2_electricity_g_co2e": 45.0,
+        "scope_3_supply_chain_g_co2e": 590.0,
+        "total_footprint_g_co2e_per_bottle": 683.0,
+        "glass_bottle_contribution_pct": 52.3,
+        "freight_transport_contribution_pct": 29.0,
+        "water_footprint_liters_per_liter": 2.8,
+        "sustainability_rating": "A+ (Low-Carbon Benchmark)",
+        "carbon_neutrality_offset_cost_usd": 0.024
+      }
+    },
+    "lot_napa_valley_reserve": {
+      "simulation_id": "TWIN_LOT_RED_15000",
+      "cultivar": "red",
+      "lot_size_bottles": 15000,
+      "stage_1_fermentation": {
+        "brix": 26.0,
+        "fermented_alcohol_pct": 15.2,
+        "residual_sugar_g_l": 3.2
+      },
+      "stage_2_maturation": {
+        "oak_profile": "american_heavy",
+        "oak_months": 14,
+        "ellagitannins_ppm": 19.0,
+        "vanillin_ppm": 0.5,
+        "post_mlf_ph": 3.81
+      },
+      "stage_3_stabilization": {
+        "method": "contact_chilling_seeding",
+        "bentonite_g_hl": 25.0,
+        "final_turbidity_ntu": 0.42,
+        "final_tartaric_g_l": 4.9
+      },
+      "stage_4_quality_scoring": {
+        "predicted_quality_score": 6.85,
+        "quality_tier": "Premier Cru (Premium)"
+      },
+      "stage_5_cold_chain_logistics": {
+        "preset_name": "cross_country_truck_express",
+        "route_description": "Intermodal Express Truck: California to New York (5 Days)",
+        "transit_mode": "truck_ambient",
+        "duration_days": 5,
+        "closure_type": "natural_cork_fleur",
+        "temperature_summary": {
+          "min_c": 15.0,
+          "max_c": 33.0,
+          "mean_c": 24.0
+        },
+        "kinetic_stress_metrics": {
+          "total_tdu_hours": 444.8,
+          "equivalent_cellar_aging_months": 0.61,
+          "degree_hours_above_25c": 286.8,
+          "degree_hours_above_35c": 0.0
+        },
+        "chemical_impact": {
+          "initial_free_so2_mg_l": 34.0,
+          "final_free_so2_mg_l": 33.7,
+          "so2_loss_mg_l": 0.3,
+          "initial_a420": 0.12,
+          "final_a420": 0.122,
+          "delta_a420": 0.002,
+          "fruity_ester_retention_pct": 76.6
+        },
+        "barometric_seal_integrity": {
+          "ambient_pressure_kpa": 80.0,
+          "peak_internal_pressure_kpa": 966.97,
+          "peak_delta_p_kpa": 886.97,
+          "weep_threshold_kpa": 90.0,
+          "extrude_threshold_kpa": 135.0,
+          "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+          "vibration_rms_g": 0.18,
+          "overall_transit_risk_score": 95
+        }
+      },
+      "stage_6_terroir_authenticity": {
+        "claimed_appellation": "napa_valley_rutherford",
+        "appellation_name": "Napa Valley Rutherford Bench",
+        "bedrock_geology": "Franciscan volcanic complex and Bale gravelly loam",
+        "mahalanobis_terroir_distance": 0.15,
+        "terroir_p_value": 0.9885,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 96.2,
+        "elemental_z_scores": {
+          "lithium": 0.1,
+          "rubidium": -0.114,
+          "strontium": 0.058,
+          "barium": -0.055,
+          "manganese": 0.18,
+          "boron": 0.0,
+          "sr_87_86_ratio": 0.2
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.1,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.71,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.6,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 1.77,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7066,
+          "expected_sr_87_86": 0.7065
+        }
+      },
+      "stage_7_hedonic_and_pricing": {
+        "market_valuation": {
+          "predicted_quality": 6.85,
+          "appellation_tier": "doc_quality",
+          "estimated_market_price_usd": 45.6,
+          "confidence_interval_90_usd": [
+            37.39,
+            55.63
+          ],
+          "hedonic_components": {
+            "quality_premium_contribution_pct": 118.8,
+            "aging_premium_pct": 10.8,
+            "tier_multiplier": 1.25,
+            "volatile_acidity_penalty_pct": -2.4
+          }
+        },
+        "palate_fit_by_region": {
+          "north_america": {
+            "region_name": "North American Market (US & Canada)",
+            "palate_alignment_score": 69.0,
+            "market_fit_verdict": "MODERATE_NICHE_APPEAL",
+            "price_elasticity": -1.25,
+            "projected_retail_usd": 24.57
+          },
+          "continental_europe": {
+            "region_name": "Continental European Market (France, Germany, Italy)",
+            "palate_alignment_score": 27.2,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -1.55,
+            "projected_retail_usd": 8.16
+          },
+          "east_asia": {
+            "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+            "palate_alignment_score": 20.0,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -0.95,
+            "projected_retail_usd": 8.5
+          },
+          "nordic_monopoly": {
+            "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+            "palate_alignment_score": 22.7,
+            "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+            "price_elasticity": -1.35,
+            "projected_retail_usd": 7.38
+          }
+        },
+        "optimized_pricing": {
+          "production_cost_usd": 9.4,
+          "market_reference_valuation_usd": 45.6,
+          "optimal_release_price_usd": 47.0,
+          "projected_sales_bottles": 14443,
+          "projected_gross_revenue_usd": 678821.0,
+          "projected_gross_profit_usd": 543056.8,
+          "gross_margin_pct": 80.0,
+          "pricing_recommendation": "Release at $47.00 for optimal risk-adjusted cellar gross margin of 80.0%."
+        }
+      },
+      "stage_8_esg_lca_sustainability": {
+        "scope_1_direct_g_co2e": 48.0,
+        "scope_2_electricity_g_co2e": 45.0,
+        "scope_3_supply_chain_g_co2e": 819.5,
+        "total_footprint_g_co2e_per_bottle": 912.5,
+        "glass_bottle_contribution_pct": 39.1,
+        "freight_transport_contribution_pct": 46.8,
+        "water_footprint_liters_per_liter": 2.8,
+        "sustainability_rating": "A (Eco-Superior)",
+        "carbon_neutrality_offset_cost_usd": 0.032
+      }
+    },
+    "lot_burgundy_village_air_express": {
+      "simulation_id": "TWIN_LOT_WHITE_8000",
+      "cultivar": "white",
+      "lot_size_bottles": 8000,
+      "stage_1_fermentation": {
+        "brix": 23.5,
+        "fermented_alcohol_pct": 13.75,
+        "residual_sugar_g_l": 1.8
+      },
+      "stage_2_maturation": {
+        "oak_profile": "french_light",
+        "oak_months": 8,
+        "ellagitannins_ppm": 28.5,
+        "vanillin_ppm": 0.5,
+        "post_mlf_ph": 3.41
+      },
+      "stage_3_stabilization": {
+        "method": "contact_chilling_seeding",
+        "bentonite_g_hl": 25.0,
+        "final_turbidity_ntu": 0.42,
+        "final_tartaric_g_l": 6.1
+      },
+      "stage_4_quality_scoring": {
+        "predicted_quality_score": 7.75,
+        "quality_tier": "Grand Vin (Super-Premium)"
+      },
+      "stage_5_cold_chain_logistics": {
+        "preset_name": "air_freight_cargo_london_tokyo",
+        "route_description": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+        "transit_mode": "air_cargo",
+        "duration_days": 2,
+        "closure_type": "screwcap_sarantin",
+        "temperature_summary": {
+          "min_c": 16.5,
+          "max_c": 22.5,
+          "mean_c": 19.5
+        },
+        "kinetic_stress_metrics": {
+          "total_tdu_hours": 91.3,
+          "equivalent_cellar_aging_months": 0.13,
+          "degree_hours_above_25c": 0.0,
+          "degree_hours_above_35c": 0.0
+        },
+        "chemical_impact": {
+          "initial_free_so2_mg_l": 34.0,
+          "final_free_so2_mg_l": 33.9,
+          "so2_loss_mg_l": 0.1,
+          "initial_a420": 0.12,
+          "final_a420": 0.12,
+          "delta_a420": 0.0,
+          "fruity_ester_retention_pct": 94.7
+        },
+        "barometric_seal_integrity": {
+          "ambient_pressure_kpa": 75.2,
+          "peak_internal_pressure_kpa": 150.15,
+          "peak_delta_p_kpa": 74.95,
+          "weep_threshold_kpa": 150.0,
+          "extrude_threshold_kpa": 220.0,
+          "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+          "vibration_rms_g": 0.12,
+          "overall_transit_risk_score": 10
+        }
+      },
+      "stage_6_terroir_authenticity": {
+        "claimed_appellation": "burgundy_cote_dor",
+        "appellation_name": "Burgundy C\u00f4te d'Or (C\u00f4te de Nuits / C\u00f4te de Beaune)",
+        "bedrock_geology": "Bajocian and Bathonian Jurassic marine limestone and marl",
+        "mahalanobis_terroir_distance": 0.17,
+        "terroir_p_value": 0.9859,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 95.8,
+        "elemental_z_scores": {
+          "lithium": 0.075,
+          "rubidium": -0.095,
+          "strontium": 0.072,
+          "barium": -0.04,
+          "manganese": 0.147,
+          "boron": 0.0,
+          "sr_87_86_ratio": 0.25
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.1,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.71,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.6,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 1.77,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7082,
+          "expected_sr_87_86": 0.7081
+        }
+      },
+      "stage_7_hedonic_and_pricing": {
+        "market_valuation": {
+          "predicted_quality": 7.75,
+          "appellation_tier": "doc_quality",
+          "estimated_market_price_usd": 109.1,
+          "confidence_interval_90_usd": [
+            89.46,
+            133.11
+          ],
+          "hedonic_components": {
+            "quality_premium_contribution_pct": 206.2,
+            "aging_premium_pct": 8.2,
+            "tier_multiplier": 1.25,
+            "volatile_acidity_penalty_pct": -2.4
+          }
+        },
+        "palate_fit_by_region": {
+          "north_america": {
+            "region_name": "North American Market (US & Canada)",
+            "palate_alignment_score": 61.1,
+            "market_fit_verdict": "MODERATE_NICHE_APPEAL",
+            "price_elasticity": -1.25,
+            "projected_retail_usd": 21.75
+          },
+          "continental_europe": {
+            "region_name": "Continental European Market (France, Germany, Italy)",
+            "palate_alignment_score": 76.2,
+            "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+            "price_elasticity": -1.55,
+            "projected_retail_usd": 22.86
+          },
+          "east_asia": {
+            "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+            "palate_alignment_score": 68.1,
+            "market_fit_verdict": "MODERATE_NICHE_APPEAL",
+            "price_elasticity": -0.95,
+            "projected_retail_usd": 28.94
+          },
+          "nordic_monopoly": {
+            "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+            "palate_alignment_score": 77.0,
+            "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+            "price_elasticity": -1.35,
+            "projected_retail_usd": 25.02
+          }
+        },
+        "optimized_pricing": {
+          "production_cost_usd": 9.4,
+          "market_reference_valuation_usd": 109.1,
+          "optimal_release_price_usd": 47.0,
+          "projected_sales_bottles": 8000,
+          "projected_gross_revenue_usd": 376000.0,
+          "projected_gross_profit_usd": 300800.0,
+          "gross_margin_pct": 80.0,
+          "pricing_recommendation": "Release at $47.00 for optimal risk-adjusted cellar gross margin of 80.0%."
+        }
+      },
+      "stage_8_esg_lca_sustainability": {
+        "scope_1_direct_g_co2e": 48.0,
+        "scope_2_electricity_g_co2e": 45.0,
+        "scope_3_supply_chain_g_co2e": 819.5,
+        "total_footprint_g_co2e_per_bottle": 912.5,
+        "glass_bottle_contribution_pct": 39.1,
+        "freight_transport_contribution_pct": 46.8,
+        "water_footprint_liters_per_liter": 2.8,
+        "sustainability_rating": "A (Eco-Superior)",
+        "carbon_neutrality_offset_cost_usd": 0.032
+      }
+    }
+  },
+  "esg_lca_comparisons": {
+    "glass_380g_maritime": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 502.0,
+      "total_footprint_g_co2e_per_bottle": 595.0,
+      "glass_bottle_contribution_pct": 54.3,
+      "freight_transport_contribution_pct": 24.2,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "A+ (Low-Carbon Benchmark)",
+      "carbon_neutrality_offset_cost_usd": 0.021
+    },
+    "glass_380g_truck": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 1118.0,
+      "total_footprint_g_co2e_per_bottle": 1211.0,
+      "glass_bottle_contribution_pct": 26.7,
+      "freight_transport_contribution_pct": 62.8,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "B (Industry Standard)",
+      "carbon_neutrality_offset_cost_usd": 0.042
+    },
+    "glass_380g_air_cargo": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 5558.0,
+      "total_footprint_g_co2e_per_bottle": 5651.0,
+      "glass_bottle_contribution_pct": 5.7,
+      "freight_transport_contribution_pct": 92.0,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.198
+    },
+    "glass_450g_maritime": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 561.5,
+      "total_footprint_g_co2e_per_bottle": 654.5,
+      "glass_bottle_contribution_pct": 58.4,
+      "freight_transport_contribution_pct": 22.0,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "A+ (Low-Carbon Benchmark)",
+      "carbon_neutrality_offset_cost_usd": 0.023
+    },
+    "glass_450g_truck": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 1177.5,
+      "total_footprint_g_co2e_per_bottle": 1270.5,
+      "glass_bottle_contribution_pct": 30.1,
+      "freight_transport_contribution_pct": 59.8,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "B (Industry Standard)",
+      "carbon_neutrality_offset_cost_usd": 0.044
+    },
+    "glass_450g_air_cargo": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 5617.5,
+      "total_footprint_g_co2e_per_bottle": 5710.5,
+      "glass_bottle_contribution_pct": 6.7,
+      "freight_transport_contribution_pct": 91.1,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.2
+    },
+    "glass_580g_maritime": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 672.0,
+      "total_footprint_g_co2e_per_bottle": 765.0,
+      "glass_bottle_contribution_pct": 64.4,
+      "freight_transport_contribution_pct": 18.8,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "A (Eco-Superior)",
+      "carbon_neutrality_offset_cost_usd": 0.027
+    },
+    "glass_580g_truck": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 1288.0,
+      "total_footprint_g_co2e_per_bottle": 1381.0,
+      "glass_bottle_contribution_pct": 35.7,
+      "freight_transport_contribution_pct": 55.0,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.048
+    },
+    "glass_580g_air_cargo": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 5728.0,
+      "total_footprint_g_co2e_per_bottle": 5821.0,
+      "glass_bottle_contribution_pct": 8.5,
+      "freight_transport_contribution_pct": 89.3,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.204
+    },
+    "glass_720g_maritime": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 791.0,
+      "total_footprint_g_co2e_per_bottle": 884.0,
+      "glass_bottle_contribution_pct": 69.2,
+      "freight_transport_contribution_pct": 16.3,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "A (Eco-Superior)",
+      "carbon_neutrality_offset_cost_usd": 0.031
+    },
+    "glass_720g_truck": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 1407.0,
+      "total_footprint_g_co2e_per_bottle": 1500.0,
+      "glass_bottle_contribution_pct": 40.8,
+      "freight_transport_contribution_pct": 50.7,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.052
+    },
+    "glass_720g_air_cargo": {
+      "scope_1_direct_g_co2e": 48.0,
+      "scope_2_electricity_g_co2e": 45.0,
+      "scope_3_supply_chain_g_co2e": 5847.0,
+      "total_footprint_g_co2e_per_bottle": 5940.0,
+      "glass_bottle_contribution_pct": 10.3,
+      "freight_transport_contribution_pct": 87.5,
+      "water_footprint_liters_per_liter": 2.8,
+      "sustainability_rating": "C (Carbon Intensive)",
+      "carbon_neutrality_offset_cost_usd": 0.208
+    }
+  }
+}

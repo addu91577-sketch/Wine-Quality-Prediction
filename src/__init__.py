@@ -170,6 +170,17 @@ from src.stabilization_and_packaging import (
     CLOSURE_PROFILES,
     STABILIZATION_ADDITIVES
 )
+from src.transport_terroir_hedonic_and_twin import (
+    ColdChainLogisticsSimulator,
+    IsotopicTerroirAndFraudAuditor,
+    ConsumerHedonicAndMarketPricingOptimizer,
+    UnifiedDigitalWineryTwinPlatform,
+    TERROIR_PROFILES,
+    REGIONAL_PALATE_PROFILES,
+    CLOSURE_PRESSURE_TOLERANCES,
+    P_ATM_SEA_LEVEL,
+    P_ATM_AIR_CARGO_CRUISE
+)
 
 __all__ = [
     "load_wine_data",
@@ -302,6 +313,15 @@ __all__ = [
     "ClosureShelfLifeForecaster",
     "BottlingLineQCAuditor",
     "CLOSURE_PROFILES",
-    "STABILIZATION_ADDITIVES"
+    "STABILIZATION_ADDITIVES",
+    "ColdChainLogisticsSimulator",
+    "IsotopicTerroirAndFraudAuditor",
+    "ConsumerHedonicAndMarketPricingOptimizer",
+    "UnifiedDigitalWineryTwinPlatform",
+    "TERROIR_PROFILES",
+    "REGIONAL_PALATE_PROFILES",
+    "CLOSURE_PRESSURE_TOLERANCES",
+    "P_ATM_SEA_LEVEL",
+    "P_ATM_AIR_CARGO_CRUISE"
 ]
 

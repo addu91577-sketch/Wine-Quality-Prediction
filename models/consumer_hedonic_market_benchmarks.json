@@ -1,0 +1,859 @@
+{
+  "metadata": {
+    "title": "Consumer Hedonic Econometrics & Regional Palate Benchmarks",
+    "version": "1.0",
+    "day": 15,
+    "regions": [
+      "north_america",
+      "continental_europe",
+      "east_asia",
+      "nordic_monopoly"
+    ]
+  },
+  "hedonic_pricing_curve": [
+    {
+      "predicted_quality": 4.5,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 5.07,
+      "confidence_interval_90_usd": [
+        4.16,
+        6.18
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": -21.1,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 4.5,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 7.83,
+      "confidence_interval_90_usd": [
+        6.42,
+        9.56
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": -21.1,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 4.5,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 11.52,
+      "confidence_interval_90_usd": [
+        9.45,
+        14.05
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": -21.1,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 4.5,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 23.96,
+      "confidence_interval_90_usd": [
+        19.65,
+        29.23
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": -21.1,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.0,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 6.26,
+      "confidence_interval_90_usd": [
+        5.14,
+        7.64
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 0.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.0,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 9.68,
+      "confidence_interval_90_usd": [
+        7.94,
+        11.81
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 0.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.0,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 14.23,
+      "confidence_interval_90_usd": [
+        11.67,
+        17.36
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 0.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.0,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 29.6,
+      "confidence_interval_90_usd": [
+        24.28,
+        36.12
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 0.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.5,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 7.96,
+      "confidence_interval_90_usd": [
+        6.53,
+        9.71
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 24.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.5,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 12.3,
+      "confidence_interval_90_usd": [
+        10.09,
+        15.01
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 24.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.5,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 18.09,
+      "confidence_interval_90_usd": [
+        14.84,
+        22.07
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 24.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 5.5,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 37.63,
+      "confidence_interval_90_usd": [
+        30.86,
+        45.91
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 24.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.0,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 10.75,
+      "confidence_interval_90_usd": [
+        8.81,
+        13.11
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 54.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.0,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 16.61,
+      "confidence_interval_90_usd": [
+        13.62,
+        20.26
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 54.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.0,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 24.42,
+      "confidence_interval_90_usd": [
+        20.03,
+        29.8
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 54.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.0,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 50.8,
+      "confidence_interval_90_usd": [
+        41.66,
+        61.98
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 54.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.5,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 15.4,
+      "confidence_interval_90_usd": [
+        12.63,
+        18.79
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 90.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.5,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 23.81,
+      "confidence_interval_90_usd": [
+        19.52,
+        29.04
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 90.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.5,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 35.01,
+      "confidence_interval_90_usd": [
+        28.71,
+        42.71
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 90.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 6.5,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 72.82,
+      "confidence_interval_90_usd": [
+        59.71,
+        88.84
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 90.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.0,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 23.44,
+      "confidence_interval_90_usd": [
+        19.22,
+        28.6
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 132.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.0,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 36.23,
+      "confidence_interval_90_usd": [
+        29.71,
+        44.2
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 132.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.0,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 53.28,
+      "confidence_interval_90_usd": [
+        43.69,
+        65.0
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 132.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.0,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 110.82,
+      "confidence_interval_90_usd": [
+        90.87,
+        135.2
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 132.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.5,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 37.89,
+      "confidence_interval_90_usd": [
+        31.07,
+        46.22
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 180.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.5,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 58.55,
+      "confidence_interval_90_usd": [
+        48.01,
+        71.43
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 180.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.5,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 86.1,
+      "confidence_interval_90_usd": [
+        70.61,
+        105.05
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 180.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 7.5,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 179.1,
+      "confidence_interval_90_usd": [
+        146.86,
+        218.5
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 180.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.0,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 65.01,
+      "confidence_interval_90_usd": [
+        53.31,
+        79.32
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 234.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.0,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 100.47,
+      "confidence_interval_90_usd": [
+        82.39,
+        122.58
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 234.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.0,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 147.76,
+      "confidence_interval_90_usd": [
+        121.16,
+        180.26
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 234.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.0,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 307.33,
+      "confidence_interval_90_usd": [
+        252.01,
+        374.95
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 234.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.5,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 118.46,
+      "confidence_interval_90_usd": [
+        97.14,
+        144.52
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 294.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.5,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 183.08,
+      "confidence_interval_90_usd": [
+        150.12,
+        223.35
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 294.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.5,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 269.23,
+      "confidence_interval_90_usd": [
+        220.77,
+        328.46
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 294.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 8.5,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 560.0,
+      "confidence_interval_90_usd": [
+        459.2,
+        683.2
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 294.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 9.0,
+      "appellation_tier": "table",
+      "estimated_market_price_usd": 229.2,
+      "confidence_interval_90_usd": [
+        187.94,
+        279.62
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 360.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.55,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 9.0,
+      "appellation_tier": "igt",
+      "estimated_market_price_usd": 354.21,
+      "confidence_interval_90_usd": [
+        290.46,
+        432.14
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 360.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 0.85,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 9.0,
+      "appellation_tier": "doc_quality",
+      "estimated_market_price_usd": 520.9,
+      "confidence_interval_90_usd": [
+        427.14,
+        635.5
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 360.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 1.25,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    },
+    {
+      "predicted_quality": 9.0,
+      "appellation_tier": "grand_cru",
+      "estimated_market_price_usd": 1083.48,
+      "confidence_interval_90_usd": [
+        888.45,
+        1321.84
+      ],
+      "hedonic_components": {
+        "quality_premium_contribution_pct": 360.0,
+        "aging_premium_pct": 14.1,
+        "tier_multiplier": 2.6,
+        "volatile_acidity_penalty_pct": -2.4
+      }
+    }
+  ],
+  "regional_palate_matrices": {
+    "bold_california_cabernet": {
+      "north_america": {
+        "region_name": "North American Market (US & Canada)",
+        "palate_alignment_score": 83.7,
+        "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+        "price_elasticity": -1.25,
+        "projected_retail_usd": 29.8
+      },
+      "continental_europe": {
+        "region_name": "Continental European Market (France, Germany, Italy)",
+        "palate_alignment_score": 33.3,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.55,
+        "projected_retail_usd": 10.0
+      },
+      "east_asia": {
+        "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+        "palate_alignment_score": 23.5,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -0.95,
+        "projected_retail_usd": 9.99
+      },
+      "nordic_monopoly": {
+        "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+        "palate_alignment_score": 27.4,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.35,
+        "projected_retail_usd": 8.92
+      }
+    },
+    "crisp_burgundy_pinot": {
+      "north_america": {
+        "region_name": "North American Market (US & Canada)",
+        "palate_alignment_score": 27.5,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.25,
+        "projected_retail_usd": 9.79
+      },
+      "continental_europe": {
+        "region_name": "Continental European Market (France, Germany, Italy)",
+        "palate_alignment_score": 99.0,
+        "market_fit_verdict": "EXCEPTIONAL_MARKET_FIT",
+        "price_elasticity": -1.55,
+        "projected_retail_usd": 29.7
+      },
+      "east_asia": {
+        "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+        "palate_alignment_score": 68.9,
+        "market_fit_verdict": "MODERATE_NICHE_APPEAL",
+        "price_elasticity": -0.95,
+        "projected_retail_usd": 29.28
+      },
+      "nordic_monopoly": {
+        "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+        "palate_alignment_score": 77.8,
+        "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+        "price_elasticity": -1.35,
+        "projected_retail_usd": 25.28
+      }
+    },
+    "delicate_japanese_koshu_style": {
+      "north_america": {
+        "region_name": "North American Market (US & Canada)",
+        "palate_alignment_score": 20.0,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.25,
+        "projected_retail_usd": 7.12
+      },
+      "continental_europe": {
+        "region_name": "Continental European Market (France, Germany, Italy)",
+        "palate_alignment_score": 75.4,
+        "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+        "price_elasticity": -1.55,
+        "projected_retail_usd": 22.61
+      },
+      "east_asia": {
+        "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+        "palate_alignment_score": 76.4,
+        "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+        "price_elasticity": -0.95,
+        "projected_retail_usd": 32.48
+      },
+      "nordic_monopoly": {
+        "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+        "palate_alignment_score": 76.0,
+        "market_fit_verdict": "STRONG_COMMERCIAL_FIT",
+        "price_elasticity": -1.35,
+        "projected_retail_usd": 24.7
+      }
+    },
+    "commercial_mass_market_red": {
+      "north_america": {
+        "region_name": "North American Market (US & Canada)",
+        "palate_alignment_score": 38.7,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.25,
+        "projected_retail_usd": 13.79
+      },
+      "continental_europe": {
+        "region_name": "Continental European Market (France, Germany, Italy)",
+        "palate_alignment_score": 39.8,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.55,
+        "projected_retail_usd": 11.94
+      },
+      "east_asia": {
+        "region_name": "East Asian Market (Japan, South Korea, Singapore)",
+        "palate_alignment_score": 28.5,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -0.95,
+        "projected_retail_usd": 12.12
+      },
+      "nordic_monopoly": {
+        "region_name": "Nordic Monopolies (Systembolaget, Alko, Vinmonopolet)",
+        "palate_alignment_score": 31.3,
+        "market_fit_verdict": "MISALIGNED_HIGH_RESISTANCE",
+        "price_elasticity": -1.35,
+        "projected_retail_usd": 10.18
+      }
+    }
+  },
+  "margin_optimization_scenarios": [
+    {
+      "production_cost_usd": 4.5,
+      "market_reference_valuation_usd": 12.6,
+      "optimal_release_price_usd": 7.71,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 92571.43,
+      "projected_gross_profit_usd": 38571.43,
+      "gross_margin_pct": 41.7,
+      "pricing_recommendation": "Release at $7.71 for optimal risk-adjusted cellar gross margin of 41.7%."
+    },
+    {
+      "production_cost_usd": 4.5,
+      "market_reference_valuation_usd": 12.6,
+      "optimal_release_price_usd": 17.64,
+      "projected_sales_bottles": 7879,
+      "projected_gross_revenue_usd": 138985.56,
+      "projected_gross_profit_usd": 103530.06,
+      "gross_margin_pct": 74.5,
+      "pricing_recommendation": "Release at $17.64 for optimal risk-adjusted cellar gross margin of 74.5%."
+    },
+    {
+      "production_cost_usd": 4.5,
+      "market_reference_valuation_usd": 12.6,
+      "optimal_release_price_usd": 12.6,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 151200.0,
+      "projected_gross_profit_usd": 97200.0,
+      "gross_margin_pct": 64.3,
+      "pricing_recommendation": "Release at $12.60 for optimal risk-adjusted cellar gross margin of 64.3%."
+    },
+    {
+      "production_cost_usd": 8.0,
+      "market_reference_valuation_usd": 22.4,
+      "optimal_release_price_usd": 13.71,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 164571.43,
+      "projected_gross_profit_usd": 68571.43,
+      "gross_margin_pct": 41.7,
+      "pricing_recommendation": "Release at $13.71 for optimal risk-adjusted cellar gross margin of 41.7%."
+    },
+    {
+      "production_cost_usd": 8.0,
+      "market_reference_valuation_usd": 22.4,
+      "optimal_release_price_usd": 31.36,
+      "projected_sales_bottles": 7879,
+      "projected_gross_revenue_usd": 247085.44,
+      "projected_gross_profit_usd": 184053.44,
+      "gross_margin_pct": 74.5,
+      "pricing_recommendation": "Release at $31.36 for optimal risk-adjusted cellar gross margin of 74.5%."
+    },
+    {
+      "production_cost_usd": 8.0,
+      "market_reference_valuation_usd": 22.4,
+      "optimal_release_price_usd": 22.4,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 268800.0,
+      "projected_gross_profit_usd": 172800.0,
+      "gross_margin_pct": 64.3,
+      "pricing_recommendation": "Release at $22.40 for optimal risk-adjusted cellar gross margin of 64.3%."
+    },
+    {
+      "production_cost_usd": 14.5,
+      "market_reference_valuation_usd": 40.6,
+      "optimal_release_price_usd": 24.86,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 298285.71,
+      "projected_gross_profit_usd": 124285.71,
+      "gross_margin_pct": 41.7,
+      "pricing_recommendation": "Release at $24.86 for optimal risk-adjusted cellar gross margin of 41.7%."
+    },
+    {
+      "production_cost_usd": 14.5,
+      "market_reference_valuation_usd": 40.6,
+      "optimal_release_price_usd": 56.84,
+      "projected_sales_bottles": 7879,
+      "projected_gross_revenue_usd": 447842.36,
+      "projected_gross_profit_usd": 333596.86,
+      "gross_margin_pct": 74.5,
+      "pricing_recommendation": "Release at $56.84 for optimal risk-adjusted cellar gross margin of 74.5%."
+    },
+    {
+      "production_cost_usd": 14.5,
+      "market_reference_valuation_usd": 40.6,
+      "optimal_release_price_usd": 40.6,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 487200.0,
+      "projected_gross_profit_usd": 313200.0,
+      "gross_margin_pct": 64.3,
+      "pricing_recommendation": "Release at $40.60 for optimal risk-adjusted cellar gross margin of 64.3%."
+    },
+    {
+      "production_cost_usd": 28.0,
+      "market_reference_valuation_usd": 78.4,
+      "optimal_release_price_usd": 48.0,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 576000.0,
+      "projected_gross_profit_usd": 240000.0,
+      "gross_margin_pct": 41.7,
+      "pricing_recommendation": "Release at $48.00 for optimal risk-adjusted cellar gross margin of 41.7%."
+    },
+    {
+      "production_cost_usd": 28.0,
+      "market_reference_valuation_usd": 78.4,
+      "optimal_release_price_usd": 109.76,
+      "projected_sales_bottles": 7879,
+      "projected_gross_revenue_usd": 864799.04,
+      "projected_gross_profit_usd": 644187.04,
+      "gross_margin_pct": 74.5,
+      "pricing_recommendation": "Release at $109.76 for optimal risk-adjusted cellar gross margin of 74.5%."
+    },
+    {
+      "production_cost_usd": 28.0,
+      "market_reference_valuation_usd": 78.4,
+      "optimal_release_price_usd": 78.4,
+      "projected_sales_bottles": 12000,
+      "projected_gross_revenue_usd": 940800.0,
+      "projected_gross_profit_usd": 604800.0,
+      "gross_margin_pct": 64.3,
+      "pricing_recommendation": "Release at $78.40 for optimal risk-adjusted cellar gross margin of 64.3%."
+    }
+  ]
+}

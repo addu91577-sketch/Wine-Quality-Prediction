@@ -238,7 +238,7 @@ def main():
     )
 
     # Tabs for Application Modules
-    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_malolactic_oak, tab_cellar_haccp, tab_stabilization, tab_packaging, tab_monitoring, tab_diagnostics = st.tabs([
+    tab_single, tab_batch, tab_recourse, tab_coupage, tab_conformal, tab_aging, tab_pareto, tab_fermentation, tab_sensory, tab_malolactic_oak, tab_cellar_haccp, tab_stabilization, tab_packaging, tab_logistics, tab_terroir_twin, tab_monitoring, tab_diagnostics = st.tabs([
         "🔬 Single Specimen Profiler",
         "📦 Commercial Winery Batch Scorer",
         "🧪 Prescriptive Cellar Recourse Studio",
@@ -252,6 +252,8 @@ def main():
         "📋 Cellar Dispatch & HACCP Audit",
         "❄️ Tartrate & Protein Stabilization",
         "🍾 Bottling Line, Gas & Packaging Shelf-Life",
+        "🚚 Cold-Chain Logistics & Shipping Stress",
+        "🌍 Isotopic Terroir & Digital Twin Cockpit",
         "📈 Vintage Drift & MLOps Monitoring",
         "📊 Architecture & Production Governance"
     ])
@@ -1361,6 +1363,187 @@ def main():
             st.write(f"- **Peak Drinking Window:** `Month {cres['milestones']['peak_maturity_month']}`")
             st.write(f"- **Final 48M Freshness Score:** `{cres['final_state']['freshness_score']} / 100`")
             st.write(f"- **Final 48M Browning A420:** `{cres['final_state']['a420_browning']:.3f} OD`")
+
+    # ------------------------------------------------------------------------
+    # TAB: Cold-Chain Logistics & Barometric Shipping Stress (Day 15)
+    # ------------------------------------------------------------------------
+    with tab_logistics:
+        st.subheader("🚚 Intermodal Cold-Chain Logistics, Thermal Shock & Barometric Ingress Forecaster")
+        st.caption(
+            "Simulates global intermodal container routes (maritime reefer, dry container, truck, air freight), "
+            "Arrhenius Thermal Damage Units (TDU), headspace gas expansion, and closure seal extrusion / weeping risks."
+        )
+
+        from src.transport_terroir_hedonic_and_twin import (
+            ColdChainLogisticsSimulator,
+            CLOSURE_PRESSURE_TOLERANCES,
+            P_ATM_SEA_LEVEL,
+            P_ATM_AIR_CARGO_CRUISE,
+            P_ATM_MOUNTAIN_PASS
+        )
+        log_sim = ColdChainLogisticsSimulator()
+
+        l_col1, l_col2 = st.columns([1, 1])
+        with l_col1:
+            route_sel = st.selectbox("Select Intermodal Shipping Route", list(log_sim.transit_presets.keys()),
+                                     format_func=lambda k: log_sim.transit_presets[k]["name"])
+            closure_sel = st.selectbox("Select Bottling Closure Profile", list(CLOSURE_PRESSURE_TOLERANCES.keys()))
+            so2_init = st.slider("Bottling Free SO2 (mg/L)", 10.0, 60.0, 35.0, 1.0)
+            co2_init = st.slider("Bottling Dissolved CO2 (mg/L)", 300.0, 1800.0, 850.0, 50.0)
+
+        with l_col2:
+            st.markdown("#### Route Logistics Diagnostics")
+            route_res = log_sim.evaluate_transit_scenario(
+                preset_name=route_sel,
+                closure_type=closure_sel,
+                initial_free_so2=so2_init,
+                dissolved_co2_mg_l=co2_init
+            )
+            seal = route_res["barometric_seal_integrity"]
+            temp_sum = route_res["temperature_summary"]
+            chem = route_res["chemical_impact"]
+
+            if seal["seal_status"] == "PASS_OPTIMAL_COLD_CHAIN":
+                st.success(f"✅ Status: {seal['seal_status']} (Risk Score: {seal['overall_transit_risk_score']}/100)")
+            elif seal["seal_status"] == "MODERATE_THERMAL_DEGRADATION":
+                st.warning(f"⚠️ Status: {seal['seal_status']} (Risk Score: {seal['overall_transit_risk_score']}/100)")
+            else:
+                st.error(f"🚨 Status: {seal['seal_status']} (Risk Score: {seal['overall_transit_risk_score']}/100)")
+
+            st.write(f"- **Transit Duration:** `{route_res['duration_days']} Days` | **Mode:** `{route_res['transit_mode']}`")
+            st.write(f"- **Temperature Range:** `{temp_sum['min_c']} °C` to `{temp_sum['max_c']} °C` (Mean: `{temp_sum['mean_c']} °C`)")
+            st.write(f"- **Arrhenius TDU Hours:** `{route_res['kinetic_stress_metrics']['total_tdu_hours']}` (~ `{route_res['kinetic_stress_metrics']['equivalent_cellar_aging_months']} cellar months`)")
+            st.write(f"- **Peak Differential ΔP:** `{seal['peak_delta_p_kpa']} kPa` (Weep Limit: `{seal['weep_threshold_kpa']} kPa`, Extrude Limit: `{seal['extrude_threshold_kpa']} kPa`)")
+            st.write(f"- **Free SO2 Loss:** `{chem['so2_loss_mg_l']} mg/L` (Final: `{chem['final_free_so2_mg_l']} mg/L`)")
+            st.write(f"- **Fruity Ester Retention:** `{chem['fruity_ester_retention_pct']} %`")
+
+        # Headspace Altitude & Barometric Calculator
+        st.markdown("---")
+        st.markdown("#### High-Altitude Barometric Headspace & Seal Pressure Calculator")
+        b_col1, b_col2, b_col3 = st.columns(3)
+        with b_col1:
+            t_test = st.slider("Liquid Temperature in Transit (°C)", 10.0, 45.0, 32.0, 1.0)
+        with b_col2:
+            p_test = st.selectbox("Ambient Cargo Barometric Pressure", [
+                ("Sea Level (101.3 kPa)", P_ATM_SEA_LEVEL),
+                ("High Mountain Pass (80.0 kPa)", P_ATM_MOUNTAIN_PASS),
+                ("Air Freight Cargo Hold (75.2 kPa)", P_ATM_AIR_CARGO_CRUISE)
+            ], format_func=lambda x: x[0])[1]
+        with b_col3:
+            vac_test = st.slider("Headspace Vacuum at Bottling (kPa)", 0.0, 40.0, 15.0, 5.0)
+
+        p_eval = log_sim.calculate_headspace_pressure_differential(
+            liquid_temp_c=t_test,
+            ambient_pressure_kpa=p_test,
+            dissolved_co2_mg_l=co2_init,
+            initial_headspace_vacuum_kpa=vac_test
+        )
+        st.info(
+            f"**Calculated Differential ΔP:** `{p_eval['delta_p_differential_kpa']} kPa` | "
+            f"**Internal Headspace Pressure:** `{p_eval['total_internal_pressure_kpa']} kPa` | "
+            f"**Ambient Pressure:** `{p_eval['ambient_pressure_kpa']} kPa`"
+        )
+
+    # ------------------------------------------------------------------------
+    # TAB: Isotopic Terroir & Unified Digital Winery Twin (Day 15)
+    # ------------------------------------------------------------------------
+    with tab_terroir_twin:
+        st.subheader("🌍 Isotopic Terroir Fingerprinting & Unified Digital Winery Twin Cockpit")
+        st.caption(
+            "Verifies geographical appellation (AOC/DOC) authenticity using multielemental ICP-MS mineralogy, "
+            "radiogenic strontium 87Sr/86Sr, and stable isotopes (δ13C VPDB, δ18O VSMOW), coupled with end-to-end "
+            "winery twin simulation and Scope 1/2/3 ESG carbon life cycle assessment."
+        )
+
+        from src.transport_terroir_hedonic_and_twin import (
+            IsotopicTerroirAndFraudAuditor,
+            ConsumerHedonicAndMarketPricingOptimizer,
+            UnifiedDigitalWineryTwinPlatform,
+            TERROIR_PROFILES
+        )
+        auditor = IsotopicTerroirAndFraudAuditor()
+        hed_opt = ConsumerHedonicAndMarketPricingOptimizer()
+        winery_twin = UnifiedDigitalWineryTwinPlatform()
+
+        tt_col1, tt_col2 = st.columns([1, 1])
+        with tt_col1:
+            st.markdown("#### 1. Appellation & Terroir Provenance Verification")
+            claim_app = st.selectbox("Claimed Appellation d'Origine", list(TERROIR_PROFILES.keys()),
+                                     format_func=lambda k: TERROIR_PROFILES[k]["appellation"])
+            prof_data = TERROIR_PROFILES[claim_app]
+
+            st.write(f"- **Bedrock Geology:** `{prof_data['soil_type']}`")
+            st.write(f"- **Expected ⁸⁷Sr/⁸⁶Sr Ratio:** `{prof_data['sr_87_86_ratio']:.4f}`")
+
+            # Sliders to test adulteration forensics
+            d13c_in = st.slider("Measured Carbon Isotope δ¹³C (‰ VPDB)", -29.0, -12.0, -27.2, 0.1)
+            d18o_in = st.slider("Measured Oxygen Isotope δ¹⁸O (‰ VSMOW)", -8.0, 6.0, 3.8, 0.1)
+            sr_in = st.slider("Measured ⁸⁷Sr/⁸⁶Sr Strontium Ratio", 0.7050, 0.7200, float(prof_data['sr_87_86_ratio']), 0.0002)
+
+            # Sample minerals
+            sample_mins = prof_data["minerals_ppm"].copy()
+            verif_res = auditor.verify_appellation_terroir(
+                claimed_appellation=claim_app,
+                sample_minerals=sample_mins,
+                measured_sr_ratio=sr_in,
+                measured_delta13c=d13c_in,
+                measured_delta18o=d18o_in
+            )
+
+            if verif_res["is_authentic"]:
+                st.success(f"✅ Verdict: {verif_res['verdict']} (Confidence: {verif_res['confidence_pct']}%)")
+            else:
+                st.error(f"🚨 Verdict: {verif_res['verdict']} (Confidence: {verif_res['confidence_pct']}%)")
+
+            st.write(f"- **Mahalanobis Terroir Distance:** `{verif_res['mahalanobis_terroir_distance']:.2f}` (p-value: `{verif_res['terroir_p_value']:.4f}`)")
+            st.write(f"- **C4 Chaptalization Fraction:** `{verif_res['isotopic_audits']['chaptalization']['estimated_c4_sugar_fraction_pct']}%` ({verif_res['isotopic_audits']['chaptalization']['compliance_verdict']})")
+            st.write(f"- **Water Dilution Fraction:** `{verif_res['isotopic_audits']['water_dilution']['estimated_exogenous_water_pct']}%` ({verif_res['isotopic_audits']['water_dilution']['compliance_verdict']})")
+
+        with tt_col2:
+            st.markdown("#### 2. Global Hedonic Econometrics & Regional Palate Fit")
+            palate_matrix = hed_opt.calculate_regional_palate_alignment(
+                alcohol=st.session_state.get("alcohol", 13.8),
+                ph=st.session_state.get("pH", 3.45),
+                residual_sugar=st.session_state.get("residual_sugar", 2.2),
+                volatile_acidity=st.session_state.get("volatile_acidity", 0.42),
+                sulphates=st.session_state.get("sulphates", 0.68)
+            )
+            for r_k, r_info in palate_matrix.items():
+                st.write(f"- **{r_info['region_name']}:** `{r_info['palate_alignment_score']}/100` ({r_info['market_fit_verdict']}) | Proj. Retail: `${r_info['projected_retail_usd']:.2f}`")
+
+            # Release price optimization
+            margin_opt = hed_opt.optimize_release_pricing(
+                production_cost_per_bottle_usd=8.50,
+                market_valuation_usd=28.00,
+                price_elasticity=-1.25,
+                total_bottles_inventory=15000
+            )
+            st.info(f"💡 **Cellar Release Optimizer:** {margin_opt['pricing_recommendation']}")
+
+        # Full Winery Twin Simulation Cockpit
+        st.markdown("---")
+        st.markdown("#### 3. Full 15-Stage Enterprise Digital Winery Twin & ESG Carbon Cockpit")
+        twin_col1, twin_col2 = st.columns([1, 1])
+        with twin_col1:
+            lot_bottles = st.number_input("Production Lot Size (Bottles)", 1000, 200000, 25000, 1000)
+            glass_wt = st.slider("Empty Glass Bottle Mass (grams)", 350.0, 900.0, 420.0, 10.0)
+            is_org = st.checkbox("Certified Organic Viticulture & Winemaking", value=True)
+            co2_cap = st.checkbox("Fermentation Biogenic CO2 Capture Installed", value=True)
+
+        with twin_col2:
+            lca_res = winery_twin.calculate_sustainability_lca(
+                bottle_glass_weight_g=glass_wt,
+                is_organic_certified=is_org,
+                fermentation_co2_captured=co2_cap,
+                transit_distance_km=7500.0,
+                freight_mode="maritime"
+            )
+            st.metric("Total Lifecycle Carbon per Bottle", f"{lca_res['total_footprint_g_co2e_per_bottle']} g CO₂e", delta=f"{lca_res['sustainability_rating']}")
+            st.write(f"- **Scope 1 (Direct Operations):** `{lca_res['scope_1_direct_g_co2e']} g CO₂e`")
+            st.write(f"- **Scope 2 (Electricity & Chilling):** `{lca_res['scope_2_electricity_g_co2e']} g CO₂e`")
+            st.write(f"- **Scope 3 (Glass & Packaging):** `{lca_res['scope_3_supply_chain_g_co2e']} g CO₂e` ({lca_res['glass_bottle_contribution_pct']}% of total)")
+            st.write(f"- **Water Footprint:** `{lca_res['water_footprint_liters_per_liter']} L H₂O / L Finished Wine`")
+            st.write(f"- **Carbon Neutral Offset Cost:** `${lca_res['carbon_neutrality_offset_cost_usd']:.3f} / bottle`")
 
     # ------------------------------------------------------------------------
     # TAB 4: Vintage Drift & Continuous MLOps Monitoring

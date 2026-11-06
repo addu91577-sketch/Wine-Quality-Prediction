@@ -840,6 +840,177 @@ class BottlingQCAuditResponse(BaseModel):
     membrane_integrity: Dict[str, Any]
 
 
+# ============================================================================
+# Day 15 Pydantic Schemas: Cold-Chain, Terroir, Hedonics & Winery Twin
+# ============================================================================
+
+class TransitSimulationRequest(BaseModel):
+    """Parameters for intermodal transportation stress evaluation."""
+    preset_name: str = Field(default="maritime_reefer_rotterdam_singapore", description="Transit preset key")
+    closure_type: str = Field(default="natural_cork_fleur", description="Closure type")
+    initial_free_so2: float = Field(default=34.0, ge=0.0, le=80.0, description="Initial Free SO2 in mg/L")
+    initial_a420_browning: float = Field(default=0.120, ge=0.02, le=0.80, description="Initial browning optical density A420")
+    dissolved_co2_mg_l: float = Field(default=850.0, ge=200.0, le=2500.0, description="Dissolved CO2 in mg/L")
+
+
+class TransitSimulationResponse(BaseModel):
+    """Transportation stress results including thermal damage units and closure seal risk."""
+    preset_name: str
+    route_description: str
+    transit_mode: str
+    duration_days: float
+    closure_type: str
+    temperature_summary: Dict[str, Any]
+    kinetic_stress_metrics: Dict[str, Any]
+    chemical_impact: Dict[str, Any]
+    barometric_seal_integrity: Dict[str, Any]
+
+
+class BarometricSealRequest(BaseModel):
+    """Parameters for trans-closure differential pressure assessment."""
+    liquid_temp_c: float = Field(default=28.0, ge=0.0, le=55.0, description="Liquid wine temperature in °C")
+    ambient_pressure_kpa: float = Field(default=75.2, ge=50.0, le=120.0, description="Ambient cargo pressure in kPa")
+    dissolved_co2_mg_l: float = Field(default=900.0, ge=100.0, le=2500.0, description="Dissolved CO2 in mg/L")
+    headspace_volume_ml: float = Field(default=4.5, ge=1.0, le=15.0, description="Headspace volume in mL")
+
+
+class BarometricSealResponse(BaseModel):
+    """Headspace pressure differential and seal failure risk."""
+    liquid_temp_c: float
+    ambient_pressure_kpa: float
+    effective_headspace_ml: float
+    gas_partial_pressure_kpa: float
+    co2_partial_pressure_kpa: float
+    total_internal_pressure_kpa: float
+    delta_p_differential_kpa: float
+
+
+class TerroirVerificationRequest(BaseModel):
+    """Parameters for verifying appellation terroir and provenance authenticity."""
+    claimed_appellation: str = Field(default="bordeaux_left_bank", description="Claimed AOC/DOC/AVA appellation")
+    sample_minerals: Dict[str, float] = Field(description="ICP-MS elemental concentrations (Li, Rb, Sr, Ba, Mn, B) in ppm")
+    measured_sr_ratio: float = Field(default=0.7088, ge=0.7000, le=0.7300, description="87Sr/86Sr radiogenic strontium ratio")
+    measured_delta13c: float = Field(default=-27.1, ge=-32.0, le=-10.0, description="Carbon stable isotope ratio in per mil VPDB")
+    measured_delta18o: float = Field(default=3.6, ge=-12.0, le=10.0, description="Oxygen stable isotope ratio in per mil VSMOW")
+
+
+class TerroirVerificationResponse(BaseModel):
+    """Terroir chemometric authenticity audit and fraud detection verdict."""
+    claimed_appellation: str
+    appellation_name: str
+    bedrock_geology: str
+    mahalanobis_terroir_distance: float
+    terroir_p_value: float
+    is_authentic: bool
+    verdict: str
+    confidence_pct: float
+    elemental_z_scores: Dict[str, float]
+    isotopic_audits: Dict[str, Any]
+
+
+class ChaptalizationAuditRequest(BaseModel):
+    """Parameters for detecting exogenous C4 sugar chaptalization."""
+    measured_delta13c: float = Field(default=-24.2, ge=-32.0, le=-10.0, description="Measured delta13C VPDB in per mil")
+    baseline_grape_delta13c: float = Field(default=-27.2, description="Baseline pure C3 grape delta13C in per mil")
+
+
+class ChaptalizationAuditResponse(BaseModel):
+    """Exogenous sugar fraction calculation and legal compliance verdict."""
+    measured_delta13c_permil: float
+    baseline_grape_delta13c_permil: float
+    estimated_c4_sugar_fraction_pct: float
+    is_adulterated: bool
+    compliance_verdict: str
+
+
+class HedonicValuationRequest(BaseModel):
+    """Parameters for Rosen's hedonic econometric price estimation."""
+    predicted_quality: float = Field(default=7.2, ge=3.0, le=10.0, description="Predicted wine quality score")
+    cultivar: str = Field(default="red", description="Wine cultivar (red or white)")
+    alcohol: float = Field(default=13.8, ge=8.0, le=16.0, description="Alcohol content % vol")
+    ph: float = Field(default=3.52, ge=2.8, le=4.2, description="Wine pH")
+    residual_sugar: float = Field(default=2.4, ge=0.5, le=50.0, description="Residual sugar in g/L")
+    volatile_acidity: float = Field(default=0.42, ge=0.1, le=1.8, description="Volatile acidity in g/L")
+    cellar_aging_years: float = Field(default=2.5, ge=0.0, le=30.0, description="Cellar maturation in years")
+    appellation_tier: str = Field(default="doc_quality", description="Appellation tier (table, igt, doc_quality, grand_cru)")
+
+
+class HedonicValuationResponse(BaseModel):
+    """Fair market bottle valuation and confidence interval."""
+    predicted_quality: float
+    appellation_tier: str
+    estimated_market_price_usd: float
+    confidence_interval_90_usd: List[float]
+    hedonic_components: Dict[str, Any]
+
+
+class RegionalPalateRequest(BaseModel):
+    """Parameters for evaluating cross-regional consumer palate alignment."""
+    alcohol: float = Field(default=14.0, ge=8.0, le=16.0, description="Alcohol % vol")
+    ph: float = Field(default=3.62, ge=2.8, le=4.2, description="Wine pH")
+    residual_sugar: float = Field(default=3.0, ge=0.5, le=30.0, description="Residual sugar in g/L")
+    volatile_acidity: float = Field(default=0.44, ge=0.1, le=1.5, description="Volatile acidity in g/L")
+    sulphates: float = Field(default=0.68, ge=0.2, le=2.0, description="Sulphates in g/L")
+    oak_index: float = Field(default=0.80, ge=0.0, le=1.0, description="Oak extract index (0 - 1)")
+
+
+class RegionalPalateResponse(BaseModel):
+    """Consumer alignment scores across global markets."""
+    regions: Dict[str, Any]
+
+
+class DigitalWineryTwinRequest(BaseModel):
+    """Parameters for end-to-end multi-stage digital twin simulation."""
+    cultivar: str = Field(default="red", description="Wine cultivar")
+    harvest_sugar_brix: float = Field(default=24.5, ge=18.0, le=32.0, description="Harvest must sugar in °Brix")
+    must_tartaric_acid: float = Field(default=6.8, ge=4.0, le=12.0, description="Must tartaric acid in g/L")
+    must_ph: float = Field(default=3.55, ge=2.8, le=4.0, description="Must pH")
+    oak_regime: str = Field(default="french_medium_plus", description="Oak barrel regime")
+    oak_duration_months: int = Field(default=12, ge=0, le=36, description="Oak maturation months")
+    stabilization_method: str = Field(default="contact_chilling_seeding", description="Stabilization technique")
+    closure_choice: str = Field(default="technical_diam", description="Closure type")
+    shipping_route: str = Field(default="maritime_reefer_rotterdam_singapore", description="Intermodal shipping route")
+    appellation_claimed: str = Field(default="bordeaux_left_bank", description="Claimed appellation")
+    production_lot_bottles: int = Field(default=20000, ge=500, le=500000, description="Production lot volume in bottles")
+
+
+class DigitalWineryTwinResponse(BaseModel):
+    """Holistic winery twin lifecycle simulation report."""
+    simulation_id: str
+    cultivar: str
+    lot_size_bottles: int
+    stage_1_fermentation: Dict[str, Any]
+    stage_2_maturation: Dict[str, Any]
+    stage_3_stabilization: Dict[str, Any]
+    stage_4_quality_scoring: Dict[str, Any]
+    stage_5_cold_chain_logistics: Dict[str, Any]
+    stage_6_terroir_authenticity: Dict[str, Any]
+    stage_7_hedonic_and_pricing: Dict[str, Any]
+    stage_8_esg_lca_sustainability: Dict[str, Any]
+
+
+class SustainabilityLCARequest(BaseModel):
+    """Parameters for Scope 1, 2, 3 carbon footprint and water LCA."""
+    bottle_glass_weight_g: float = Field(default=420.0, ge=320.0, le=1000.0, description="Empty glass bottle weight in grams")
+    is_organic_certified: bool = Field(default=True, description="Organic vineyard certification")
+    fermentation_co2_captured: bool = Field(default=True, description="Fermentation biogenic CO2 captured")
+    transit_distance_km: float = Field(default=6500.0, ge=50.0, le=25000.0, description="Freight shipping distance in km")
+    freight_mode: str = Field(default="maritime", description="Freight mode: maritime, truck, air_cargo")
+
+
+class SustainabilityLCAResponse(BaseModel):
+    """GHG emissions per bottle and ESG eco-rating."""
+    scope_1_direct_g_co2e: float
+    scope_2_electricity_g_co2e: float
+    scope_3_supply_chain_g_co2e: float
+    total_footprint_g_co2e_per_bottle: float
+    glass_bottle_contribution_pct: float
+    freight_transport_contribution_pct: float
+    water_footprint_liters_per_liter: float
+    sustainability_rating: str
+    carbon_neutrality_offset_cost_usd: float
+
+
 
 # ============================================================================
 # Domain Feature Engineering & Chemical Diagnostics
@@ -2184,6 +2355,190 @@ def create_app(
                 filter_bubble_point_bar=req.filter_bubble_point_bar
             )
             return BottlingQCAuditResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # ========================================================================
+    # Day 15 Endpoints: Logistics, Terroir, Hedonics & Winery Twin
+    # ========================================================================
+
+    @app.post(
+        "/logistics/simulate-transit",
+        response_model=TransitSimulationResponse,
+        summary="Simulate intermodal transportation thermal shock, TDU accumulation, and closure seal integrity",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def simulate_transit_endpoint(req: TransitSimulationRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import ColdChainLogisticsSimulator
+            sim = ColdChainLogisticsSimulator()
+            res = sim.evaluate_transit_scenario(
+                preset_name=req.preset_name,
+                closure_type=req.closure_type,
+                initial_free_so2=req.initial_free_so2,
+                initial_a420_browning=req.initial_a420_browning,
+                dissolved_co2_mg_l=req.dissolved_co2_mg_l
+            )
+            return TransitSimulationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/logistics/assess-barometric-seal",
+        response_model=BarometricSealResponse,
+        summary="Assess trans-closure differential pressure and extrusion risk under high altitude or air freight",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def assess_barometric_seal_endpoint(req: BarometricSealRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import ColdChainLogisticsSimulator
+            sim = ColdChainLogisticsSimulator()
+            res = sim.calculate_headspace_pressure_differential(
+                liquid_temp_c=req.liquid_temp_c,
+                ambient_pressure_kpa=req.ambient_pressure_kpa,
+                dissolved_co2_mg_l=req.dissolved_co2_mg_l,
+                headspace_volume_ml=req.headspace_volume_ml
+            )
+            return BarometricSealResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/authenticity/verify-terroir",
+        response_model=TerroirVerificationResponse,
+        summary="Verify wine geographical provenance authenticity using ICP-MS trace minerals and strontium ratios",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def verify_terroir_endpoint(req: TerroirVerificationRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import IsotopicTerroirAndFraudAuditor
+            auditor = IsotopicTerroirAndFraudAuditor()
+            res = auditor.verify_appellation_terroir(
+                claimed_appellation=req.claimed_appellation,
+                sample_minerals=req.sample_minerals,
+                measured_sr_ratio=req.measured_sr_ratio,
+                measured_delta13c=req.measured_delta13c,
+                measured_delta18o=req.measured_delta18o
+            )
+            return TerroirVerificationResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/authenticity/detect-chaptalization",
+        response_model=ChaptalizationAuditResponse,
+        summary="Detect exogenous C4 cane or corn sugar addition via delta13C VPDB stable isotope mass balance",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def detect_chaptalization_endpoint(req: ChaptalizationAuditRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import IsotopicTerroirAndFraudAuditor
+            auditor = IsotopicTerroirAndFraudAuditor()
+            res = auditor.calculate_chaptalization_fraction(
+                measured_delta13c=req.measured_delta13c,
+                baseline_grape_delta13c=req.baseline_grape_delta13c
+            )
+            return ChaptalizationAuditResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/market/hedonic-valuation",
+        response_model=HedonicValuationResponse,
+        summary="Estimate fair market release value ($/bottle) using Rosen hedonic pricing econometrics",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def hedonic_valuation_endpoint(req: HedonicValuationRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import ConsumerHedonicAndMarketPricingOptimizer
+            opt = ConsumerHedonicAndMarketPricingOptimizer()
+            res = opt.estimate_bottle_market_value(
+                predicted_quality=req.predicted_quality,
+                cultivar=req.cultivar,
+                alcohol=req.alcohol,
+                ph=req.ph,
+                residual_sugar=req.residual_sugar,
+                volatile_acidity=req.volatile_acidity,
+                cellar_aging_years=req.cellar_aging_years,
+                appellation_tier=req.appellation_tier
+            )
+            return HedonicValuationResponse(
+                predicted_quality=res["predicted_quality"],
+                appellation_tier=res["appellation_tier"],
+                estimated_market_price_usd=res["estimated_market_price_usd"],
+                confidence_interval_90_usd=list(res["confidence_interval_90_usd"]),
+                hedonic_components=res["hedonic_components"]
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/market/regional-palate-alignment",
+        response_model=RegionalPalateResponse,
+        summary="Calculate consumer palate alignment scores across North America, Europe, East Asia, and Nordics",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def regional_palate_endpoint(req: RegionalPalateRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import ConsumerHedonicAndMarketPricingOptimizer
+            opt = ConsumerHedonicAndMarketPricingOptimizer()
+            res = opt.calculate_regional_palate_alignment(
+                alcohol=req.alcohol,
+                ph=req.ph,
+                residual_sugar=req.residual_sugar,
+                volatile_acidity=req.volatile_acidity,
+                sulphates=req.sulphates,
+                oak_index=req.oak_index
+            )
+            return RegionalPalateResponse(regions=res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/winery-twin/simulate-end-to-end",
+        response_model=DigitalWineryTwinResponse,
+        summary="Run full 15-stage unified digital winery twin simulation from harvest must to retail release",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def winery_twin_endpoint(req: DigitalWineryTwinRequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import UnifiedDigitalWineryTwinPlatform
+            twin = UnifiedDigitalWineryTwinPlatform()
+            res = twin.simulate_end_to_end_winery_lifecycle(
+                cultivar=req.cultivar,
+                harvest_sugar_brix=req.harvest_sugar_brix,
+                must_tartaric_acid=req.must_tartaric_acid,
+                must_ph=req.must_ph,
+                oak_regime=req.oak_regime,
+                oak_duration_months=req.oak_duration_months,
+                stabilization_method=req.stabilization_method,
+                closure_choice=req.closure_choice,
+                shipping_route=req.shipping_route,
+                appellation_claimed=req.appellation_claimed,
+                production_lot_bottles=req.production_lot_bottles
+            )
+            return DigitalWineryTwinResponse(**res)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @app.post(
+        "/sustainability/lca-carbon-footprint",
+        response_model=SustainabilityLCAResponse,
+        summary="Calculate Scope 1, 2, and 3 carbon footprint (g CO2e/bottle) and water footprint",
+        tags=["Logistics & Terroir Twin (Day 15)"]
+    )
+    def sustainability_lca_endpoint(req: SustainabilityLCARequest):
+        try:
+            from src.transport_terroir_hedonic_and_twin import UnifiedDigitalWineryTwinPlatform
+            twin = UnifiedDigitalWineryTwinPlatform()
+            res = twin.calculate_sustainability_lca(
+                bottle_glass_weight_g=req.bottle_glass_weight_g,
+                is_organic_certified=req.is_organic_certified,
+                fermentation_co2_captured=req.fermentation_co2_captured,
+                transit_distance_km=req.transit_distance_km,
+                freight_mode=req.freight_mode
+            )
+            return SustainabilityLCAResponse(**res)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 

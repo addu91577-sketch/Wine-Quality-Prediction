@@ -1,0 +1,624 @@
+{
+  "metadata": {
+    "title": "Isotopic Terroir & Anti-Counterfeit Forensics Benchmarks",
+    "version": "1.0",
+    "day": 15,
+    "terroirs_registered": [
+      "bordeaux_left_bank",
+      "burgundy_cote_dor",
+      "napa_valley_rutherford",
+      "rioja_alta",
+      "douro_schist"
+    ]
+  },
+  "reference_profiles": {
+    "bordeaux_left_bank": {
+      "appellation": "Bordeaux Left Bank (Pauillac / Margaux)",
+      "soil_type": "Quaternary alluvial gravel over limestone",
+      "sr_87_86_ratio": 0.7088,
+      "sr_87_86_std": 0.0006,
+      "minerals_ppm": {
+        "lithium": 0.024,
+        "rubidium": 0.85,
+        "strontium": 0.48,
+        "barium": 0.12,
+        "manganese": 1.45,
+        "boron": 4.8
+      },
+      "mineral_stds": {
+        "lithium": 0.006,
+        "rubidium": 0.15,
+        "strontium": 0.08,
+        "barium": 0.03,
+        "manganese": 0.25,
+        "boron": 0.7
+      }
+    },
+    "burgundy_cote_dor": {
+      "appellation": "Burgundy C\u00f4te d'Or (C\u00f4te de Nuits / C\u00f4te de Beaune)",
+      "soil_type": "Bajocian and Bathonian Jurassic marine limestone and marl",
+      "sr_87_86_ratio": 0.7081,
+      "sr_87_86_std": 0.0004,
+      "minerals_ppm": {
+        "lithium": 0.015,
+        "rubidium": 0.52,
+        "strontium": 0.72,
+        "barium": 0.08,
+        "manganese": 0.88,
+        "boron": 3.6
+      },
+      "mineral_stds": {
+        "lithium": 0.004,
+        "rubidium": 0.11,
+        "strontium": 0.1,
+        "barium": 0.02,
+        "manganese": 0.18,
+        "boron": 0.55
+      }
+    },
+    "napa_valley_rutherford": {
+      "appellation": "Napa Valley Rutherford Bench",
+      "soil_type": "Franciscan volcanic complex and Bale gravelly loam",
+      "sr_87_86_ratio": 0.7065,
+      "sr_87_86_std": 0.0005,
+      "minerals_ppm": {
+        "lithium": 0.045,
+        "rubidium": 1.25,
+        "strontium": 0.35,
+        "barium": 0.22,
+        "manganese": 2.1,
+        "boron": 6.2
+      },
+      "mineral_stds": {
+        "lithium": 0.009,
+        "rubidium": 0.22,
+        "strontium": 0.06,
+        "barium": 0.04,
+        "manganese": 0.35,
+        "boron": 0.9
+      }
+    },
+    "rioja_alta": {
+      "appellation": "Rioja Alta",
+      "soil_type": "Calcareous clay over Tertiary sandstone terraces",
+      "sr_87_86_ratio": 0.7093,
+      "sr_87_86_std": 0.0005,
+      "minerals_ppm": {
+        "lithium": 0.032,
+        "rubidium": 0.74,
+        "strontium": 0.59,
+        "barium": 0.15,
+        "manganese": 1.2,
+        "boron": 4.1
+      },
+      "mineral_stds": {
+        "lithium": 0.007,
+        "rubidium": 0.14,
+        "strontium": 0.09,
+        "barium": 0.03,
+        "manganese": 0.22,
+        "boron": 0.65
+      }
+    },
+    "douro_schist": {
+      "appellation": "Douro Superior / Cima Corgo",
+      "soil_type": "Pre-Cambrian and Cambrian metamorphic schist bedrock",
+      "sr_87_86_ratio": 0.7165,
+      "sr_87_86_std": 0.0008,
+      "minerals_ppm": {
+        "lithium": 0.058,
+        "rubidium": 1.65,
+        "strontium": 0.28,
+        "barium": 0.31,
+        "manganese": 2.85,
+        "boron": 5.4
+      },
+      "mineral_stds": {
+        "lithium": 0.012,
+        "rubidium": 0.3,
+        "strontium": 0.05,
+        "barium": 0.06,
+        "manganese": 0.45,
+        "boron": 0.85
+      }
+    }
+  },
+  "sample_verifications": {
+    "bordeaux_left_bank": {
+      "authentic_test": {
+        "claimed_appellation": "bordeaux_left_bank",
+        "appellation_name": "Bordeaux Left Bank (Pauillac / Margaux)",
+        "bedrock_geology": "Quaternary alluvial gravel over limestone",
+        "mahalanobis_terroir_distance": 0.13,
+        "terroir_p_value": 0.9917,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 96.8,
+        "elemental_z_scores": {
+          "lithium": 0.083,
+          "rubidium": -0.062,
+          "strontium": -0.166,
+          "barium": -0.029,
+          "manganese": 0.053,
+          "boron": 0.07,
+          "sr_87_86_ratio": 0.167
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.2,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.0,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.7,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 0.88,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7089,
+          "expected_sr_87_86": 0.7088
+        }
+      },
+      "counterfeit_test": {
+        "claimed_appellation": "bordeaux_left_bank",
+        "appellation_name": "Bordeaux Left Bank (Pauillac / Margaux)",
+        "bedrock_geology": "Quaternary alluvial gravel over limestone",
+        "mahalanobis_terroir_distance": 2.05,
+        "terroir_p_value": 0.1224,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 70.0,
+        "elemental_z_scores": {
+          "lithium": -1.5,
+          "rubidium": -2.2,
+          "strontium": 3.0,
+          "barium": -1.333,
+          "manganese": -2.28,
+          "boron": -1.714,
+          "sr_87_86_ratio": -1.167
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.0,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 1.42,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.5,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 2.65,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7081,
+          "expected_sr_87_86": 0.7088
+        }
+      }
+    },
+    "burgundy_cote_dor": {
+      "authentic_test": {
+        "claimed_appellation": "burgundy_cote_dor",
+        "appellation_name": "Burgundy C\u00f4te d'Or (C\u00f4te de Nuits / C\u00f4te de Beaune)",
+        "bedrock_geology": "Bajocian and Bathonian Jurassic marine limestone and marl",
+        "mahalanobis_terroir_distance": 0.18,
+        "terroir_p_value": 0.9832,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 95.4,
+        "elemental_z_scores": {
+          "lithium": 0.099,
+          "rubidium": -0.01,
+          "strontium": -0.16,
+          "barium": 0.031,
+          "manganese": -0.141,
+          "boron": -0.155,
+          "sr_87_86_ratio": 0.25
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.2,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.0,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.7,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 0.88,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7082,
+          "expected_sr_87_86": 0.7081
+        }
+      },
+      "counterfeit_test": {
+        "claimed_appellation": "burgundy_cote_dor",
+        "appellation_name": "Burgundy C\u00f4te d'Or (C\u00f4te de Nuits / C\u00f4te de Beaune)",
+        "bedrock_geology": "Bajocian and Bathonian Jurassic marine limestone and marl",
+        "mahalanobis_terroir_distance": 2.57,
+        "terroir_p_value": 0.0367,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 70.0,
+        "elemental_z_scores": {
+          "lithium": 2.25,
+          "rubidium": 3.0,
+          "strontium": -2.4,
+          "barium": 2.0,
+          "manganese": 3.167,
+          "boron": 2.182,
+          "sr_87_86_ratio": 1.75
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.0,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 1.42,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.5,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 2.65,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7088,
+          "expected_sr_87_86": 0.7081
+        }
+      }
+    },
+    "napa_valley_rutherford": {
+      "authentic_test": {
+        "claimed_appellation": "napa_valley_rutherford",
+        "appellation_name": "Napa Valley Rutherford Bench",
+        "bedrock_geology": "Franciscan volcanic complex and Bale gravelly loam",
+        "mahalanobis_terroir_distance": 0.16,
+        "terroir_p_value": 0.9866,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 95.9,
+        "elemental_z_scores": {
+          "lithium": 0.006,
+          "rubidium": -0.137,
+          "strontium": -0.14,
+          "barium": 0.113,
+          "manganese": -0.035,
+          "boron": -0.191,
+          "sr_87_86_ratio": 0.2
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.2,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.0,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.7,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 0.88,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7066,
+          "expected_sr_87_86": 0.7065
+        }
+      },
+      "counterfeit_test": {
+        "claimed_appellation": "napa_valley_rutherford",
+        "appellation_name": "Napa Valley Rutherford Bench",
+        "bedrock_geology": "Franciscan volcanic complex and Bale gravelly loam",
+        "mahalanobis_terroir_distance": 3.35,
+        "terroir_p_value": 0.0037,
+        "is_authentic": false,
+        "verdict": "PROVENANCE_MISMATCH_SUSPECT_COUNTERFEIT",
+        "confidence_pct": 90.2,
+        "elemental_z_scores": {
+          "lithium": -2.333,
+          "rubidium": -1.818,
+          "strontium": 2.167,
+          "barium": -2.5,
+          "manganese": -1.857,
+          "boron": -1.556,
+          "sr_87_86_ratio": 4.6
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.0,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 1.42,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.5,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 2.65,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7088,
+          "expected_sr_87_86": 0.7065
+        }
+      }
+    },
+    "rioja_alta": {
+      "authentic_test": {
+        "claimed_appellation": "rioja_alta",
+        "appellation_name": "Rioja Alta",
+        "bedrock_geology": "Calcareous clay over Tertiary sandstone terraces",
+        "mahalanobis_terroir_distance": 0.14,
+        "terroir_p_value": 0.9906,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 96.6,
+        "elemental_z_scores": {
+          "lithium": 0.055,
+          "rubidium": 0.145,
+          "strontium": 0.021,
+          "barium": -0.063,
+          "manganese": 0.043,
+          "boron": 0.05,
+          "sr_87_86_ratio": 0.2
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.2,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.0,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.7,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 0.88,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7094,
+          "expected_sr_87_86": 0.7093
+        }
+      },
+      "counterfeit_test": {
+        "claimed_appellation": "rioja_alta",
+        "appellation_name": "Rioja Alta",
+        "bedrock_geology": "Calcareous clay over Tertiary sandstone terraces",
+        "mahalanobis_terroir_distance": 1.16,
+        "terroir_p_value": 0.5121,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 71.1,
+        "elemental_z_scores": {
+          "lithium": -1.143,
+          "rubidium": 0.786,
+          "strontium": -1.222,
+          "barium": -1.0,
+          "manganese": 1.136,
+          "boron": 1.077,
+          "sr_87_86_ratio": -1.0
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.0,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 1.42,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.5,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 2.65,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7088,
+          "expected_sr_87_86": 0.7093
+        }
+      }
+    },
+    "douro_schist": {
+      "authentic_test": {
+        "claimed_appellation": "douro_schist",
+        "appellation_name": "Douro Superior / Cima Corgo",
+        "bedrock_geology": "Pre-Cambrian and Cambrian metamorphic schist bedrock",
+        "mahalanobis_terroir_distance": 0.1,
+        "terroir_p_value": 0.9948,
+        "is_authentic": true,
+        "verdict": "VERIFIED_AUTHENTIC_TERROIR",
+        "confidence_pct": 97.4,
+        "elemental_z_scores": {
+          "lithium": 0.014,
+          "rubidium": 0.038,
+          "strontium": -0.076,
+          "barium": -0.078,
+          "manganese": 0.142,
+          "boron": -0.017,
+          "sr_87_86_ratio": 0.125
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.2,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 0.0,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.7,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 0.88,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7166,
+          "expected_sr_87_86": 0.7165
+        }
+      },
+      "counterfeit_test": {
+        "claimed_appellation": "douro_schist",
+        "appellation_name": "Douro Superior / Cima Corgo",
+        "bedrock_geology": "Pre-Cambrian and Cambrian metamorphic schist bedrock",
+        "mahalanobis_terroir_distance": 6.36,
+        "terroir_p_value": 0.0,
+        "is_authentic": false,
+        "verdict": "PROVENANCE_MISMATCH_SUSPECT_COUNTERFEIT",
+        "confidence_pct": 99.0,
+        "elemental_z_scores": {
+          "lithium": -2.833,
+          "rubidium": -2.667,
+          "strontium": 4.0,
+          "barium": -3.167,
+          "manganese": -3.111,
+          "boron": -0.706,
+          "sr_87_86_ratio": -9.625
+        },
+        "isotopic_audits": {
+          "chaptalization": {
+            "measured_delta13c_permil": -27.0,
+            "baseline_grape_delta13c_permil": -27.2,
+            "estimated_c4_sugar_fraction_pct": 1.42,
+            "is_adulterated": false,
+            "compliance_verdict": "LEGAL_AUTHENTIC"
+          },
+          "water_dilution": {
+            "measured_delta18o_permil": 3.5,
+            "expected_berry_delta18o_permil": 3.8,
+            "estimated_exogenous_water_pct": 2.65,
+            "is_diluted": false,
+            "compliance_verdict": "LEGAL_NATURAL_WATER"
+          },
+          "measured_sr_87_86": 0.7088,
+          "expected_sr_87_86": 0.7165
+        }
+      }
+    }
+  },
+  "chaptalization_calibration_curve": [
+    {
+      "measured_delta13c_permil": -27.5,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 0.0,
+      "is_adulterated": false,
+      "compliance_verdict": "LEGAL_AUTHENTIC"
+    },
+    {
+      "measured_delta13c_permil": -26.5,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 4.96,
+      "is_adulterated": false,
+      "compliance_verdict": "LEGAL_AUTHENTIC"
+    },
+    {
+      "measured_delta13c_permil": -25.5,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 12.06,
+      "is_adulterated": false,
+      "compliance_verdict": "LEGAL_AUTHENTIC"
+    },
+    {
+      "measured_delta13c_permil": -24.0,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 22.7,
+      "is_adulterated": true,
+      "compliance_verdict": "SUSPECT_MODERATE_CHAPTALIZATION"
+    },
+    {
+      "measured_delta13c_permil": -22.5,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 33.33,
+      "is_adulterated": true,
+      "compliance_verdict": "SUSPECT_MODERATE_CHAPTALIZATION"
+    },
+    {
+      "measured_delta13c_permil": -20.0,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 51.06,
+      "is_adulterated": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_C4_CHAPTALIZATION"
+    },
+    {
+      "measured_delta13c_permil": -18.0,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 65.25,
+      "is_adulterated": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_C4_CHAPTALIZATION"
+    },
+    {
+      "measured_delta13c_permil": -15.0,
+      "baseline_grape_delta13c_permil": -27.2,
+      "estimated_c4_sugar_fraction_pct": 86.52,
+      "is_adulterated": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_C4_CHAPTALIZATION"
+    }
+  ],
+  "water_dilution_calibration_curve": [
+    {
+      "measured_delta18o_permil": 4.5,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 0.0,
+      "is_diluted": false,
+      "compliance_verdict": "LEGAL_NATURAL_WATER"
+    },
+    {
+      "measured_delta18o_permil": 3.8,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 0.0,
+      "is_diluted": false,
+      "compliance_verdict": "LEGAL_NATURAL_WATER"
+    },
+    {
+      "measured_delta18o_permil": 2.5,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 11.5,
+      "is_diluted": false,
+      "compliance_verdict": "LEGAL_NATURAL_WATER"
+    },
+    {
+      "measured_delta18o_permil": 1.2,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 23.01,
+      "is_diluted": true,
+      "compliance_verdict": "SUSPECT_WATER_DILUTION"
+    },
+    {
+      "measured_delta18o_permil": 0.0,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 33.63,
+      "is_diluted": true,
+      "compliance_verdict": "SUSPECT_WATER_DILUTION"
+    },
+    {
+      "measured_delta18o_permil": -2.0,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 51.33,
+      "is_diluted": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_WATER_ADDITION"
+    },
+    {
+      "measured_delta18o_permil": -4.5,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 73.45,
+      "is_diluted": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_WATER_ADDITION"
+    },
+    {
+      "measured_delta18o_permil": -6.0,
+      "expected_berry_delta18o_permil": 3.8,
+      "estimated_exogenous_water_pct": 86.73,
+      "is_diluted": true,
+      "compliance_verdict": "SEVERE_EXOGENOUS_WATER_ADDITION"
+    }
+  ]
+}

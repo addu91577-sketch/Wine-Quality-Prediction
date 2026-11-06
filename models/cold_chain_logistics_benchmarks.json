@@ -1,0 +1,675 @@
+{
+  "metadata": {
+    "title": "Cold-Chain Intermodal Transportation Benchmarks",
+    "version": "1.0",
+    "day": 15,
+    "closure_pressure_tolerances": {
+      "natural_cork_fleur": {
+        "weep_threshold_kpa": 90.0,
+        "extrude_threshold_kpa": 135.0
+      },
+      "technical_diam": {
+        "weep_threshold_kpa": 115.0,
+        "extrude_threshold_kpa": 160.0
+      },
+      "synthetic_nomacorc": {
+        "weep_threshold_kpa": 85.0,
+        "extrude_threshold_kpa": 125.0
+      },
+      "screwcap_sarantin": {
+        "weep_threshold_kpa": 150.0,
+        "extrude_threshold_kpa": 220.0
+      },
+      "screwcap_saranex": {
+        "weep_threshold_kpa": 130.0,
+        "extrude_threshold_kpa": 190.0
+      }
+    }
+  },
+  "routes": {
+    "maritime_reefer_rotterdam_singapore": {
+      "info": {
+        "name": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+        "mode": "maritime_reefer",
+        "duration_days": 28,
+        "ambient_temp_mean_c": 14.2,
+        "ambient_temp_amplitude_c": 1.2,
+        "ambient_pressure_kpa": 101.325,
+        "vibration_rms_g": 0.04
+      },
+      "closures_evaluated": {
+        "natural_cork_fleur": {
+          "preset_name": "maritime_reefer_rotterdam_singapore",
+          "route_description": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+          "transit_mode": "maritime_reefer",
+          "duration_days": 28,
+          "closure_type": "natural_cork_fleur",
+          "temperature_summary": {
+            "min_c": 13.0,
+            "max_c": 15.4,
+            "mean_c": 14.2
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 690.6,
+            "equivalent_cellar_aging_months": 0.95,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.6,
+            "so2_loss_mg_l": 0.4,
+            "initial_a420": 0.115,
+            "final_a420": 0.118,
+            "delta_a420": 0.003,
+            "fruity_ester_retention_pct": 66.1
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 91.24,
+            "peak_delta_p_kpa": -10.09,
+            "weep_threshold_kpa": 90.0,
+            "extrude_threshold_kpa": 135.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.04,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "technical_diam": {
+          "preset_name": "maritime_reefer_rotterdam_singapore",
+          "route_description": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+          "transit_mode": "maritime_reefer",
+          "duration_days": 28,
+          "closure_type": "technical_diam",
+          "temperature_summary": {
+            "min_c": 13.0,
+            "max_c": 15.4,
+            "mean_c": 14.2
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 690.6,
+            "equivalent_cellar_aging_months": 0.95,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.6,
+            "so2_loss_mg_l": 0.4,
+            "initial_a420": 0.115,
+            "final_a420": 0.118,
+            "delta_a420": 0.003,
+            "fruity_ester_retention_pct": 66.1
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 91.24,
+            "peak_delta_p_kpa": -10.09,
+            "weep_threshold_kpa": 115.0,
+            "extrude_threshold_kpa": 160.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.04,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "synthetic_nomacorc": {
+          "preset_name": "maritime_reefer_rotterdam_singapore",
+          "route_description": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+          "transit_mode": "maritime_reefer",
+          "duration_days": 28,
+          "closure_type": "synthetic_nomacorc",
+          "temperature_summary": {
+            "min_c": 13.0,
+            "max_c": 15.4,
+            "mean_c": 14.2
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 690.6,
+            "equivalent_cellar_aging_months": 0.95,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.6,
+            "so2_loss_mg_l": 0.4,
+            "initial_a420": 0.115,
+            "final_a420": 0.118,
+            "delta_a420": 0.003,
+            "fruity_ester_retention_pct": 66.1
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 91.24,
+            "peak_delta_p_kpa": -10.09,
+            "weep_threshold_kpa": 85.0,
+            "extrude_threshold_kpa": 125.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.04,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "screwcap_sarantin": {
+          "preset_name": "maritime_reefer_rotterdam_singapore",
+          "route_description": "Maritime Reefer: Rotterdam to Singapore (28 Days)",
+          "transit_mode": "maritime_reefer",
+          "duration_days": 28,
+          "closure_type": "screwcap_sarantin",
+          "temperature_summary": {
+            "min_c": 13.0,
+            "max_c": 15.4,
+            "mean_c": 14.2
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 690.6,
+            "equivalent_cellar_aging_months": 0.95,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.6,
+            "so2_loss_mg_l": 0.4,
+            "initial_a420": 0.115,
+            "final_a420": 0.118,
+            "delta_a420": 0.003,
+            "fruity_ester_retention_pct": 66.1
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 91.24,
+            "peak_delta_p_kpa": -10.09,
+            "weep_threshold_kpa": 150.0,
+            "extrude_threshold_kpa": 220.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.04,
+            "overall_transit_risk_score": 10
+          }
+        }
+      }
+    },
+    "dry_container_deck_panama": {
+      "info": {
+        "name": "Dry Container Top Deck: Trans-Panama Canal (24 Days)",
+        "mode": "dry_container",
+        "duration_days": 24,
+        "ambient_temp_mean_c": 31.5,
+        "ambient_temp_amplitude_c": 11.5,
+        "ambient_pressure_kpa": 101.325,
+        "vibration_rms_g": 0.06
+      },
+      "closures_evaluated": {
+        "natural_cork_fleur": {
+          "preset_name": "dry_container_deck_panama",
+          "route_description": "Dry Container Top Deck: Trans-Panama Canal (24 Days)",
+          "transit_mode": "dry_container",
+          "duration_days": 24,
+          "closure_type": "natural_cork_fleur",
+          "temperature_summary": {
+            "min_c": 20.0,
+            "max_c": 43.0,
+            "mean_c": 31.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 5100.2,
+            "equivalent_cellar_aging_months": 6.99,
+            "degree_hours_above_25c": 4329.6,
+            "degree_hours_above_35c": 1197.6
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 13.9,
+            "so2_loss_mg_l": 21.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.319,
+            "delta_a420": 0.204,
+            "fruity_ester_retention_pct": 10.0
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 999.99,
+            "peak_delta_p_kpa": 898.67,
+            "weep_threshold_kpa": 90.0,
+            "extrude_threshold_kpa": 135.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.06,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "technical_diam": {
+          "preset_name": "dry_container_deck_panama",
+          "route_description": "Dry Container Top Deck: Trans-Panama Canal (24 Days)",
+          "transit_mode": "dry_container",
+          "duration_days": 24,
+          "closure_type": "technical_diam",
+          "temperature_summary": {
+            "min_c": 20.0,
+            "max_c": 43.0,
+            "mean_c": 31.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 5100.2,
+            "equivalent_cellar_aging_months": 6.99,
+            "degree_hours_above_25c": 4329.6,
+            "degree_hours_above_35c": 1197.6
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 13.9,
+            "so2_loss_mg_l": 21.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.319,
+            "delta_a420": 0.204,
+            "fruity_ester_retention_pct": 10.0
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 999.99,
+            "peak_delta_p_kpa": 898.67,
+            "weep_threshold_kpa": 115.0,
+            "extrude_threshold_kpa": 160.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.06,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "synthetic_nomacorc": {
+          "preset_name": "dry_container_deck_panama",
+          "route_description": "Dry Container Top Deck: Trans-Panama Canal (24 Days)",
+          "transit_mode": "dry_container",
+          "duration_days": 24,
+          "closure_type": "synthetic_nomacorc",
+          "temperature_summary": {
+            "min_c": 20.0,
+            "max_c": 43.0,
+            "mean_c": 31.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 5100.2,
+            "equivalent_cellar_aging_months": 6.99,
+            "degree_hours_above_25c": 4329.6,
+            "degree_hours_above_35c": 1197.6
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 13.9,
+            "so2_loss_mg_l": 21.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.319,
+            "delta_a420": 0.204,
+            "fruity_ester_retention_pct": 10.0
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 999.99,
+            "peak_delta_p_kpa": 898.67,
+            "weep_threshold_kpa": 85.0,
+            "extrude_threshold_kpa": 125.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.06,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "screwcap_sarantin": {
+          "preset_name": "dry_container_deck_panama",
+          "route_description": "Dry Container Top Deck: Trans-Panama Canal (24 Days)",
+          "transit_mode": "dry_container",
+          "duration_days": 24,
+          "closure_type": "screwcap_sarantin",
+          "temperature_summary": {
+            "min_c": 20.0,
+            "max_c": 43.0,
+            "mean_c": 31.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 5100.2,
+            "equivalent_cellar_aging_months": 6.99,
+            "degree_hours_above_25c": 4329.6,
+            "degree_hours_above_35c": 1197.6
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 13.9,
+            "so2_loss_mg_l": 21.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.319,
+            "delta_a420": 0.204,
+            "fruity_ester_retention_pct": 10.0
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 101.325,
+            "peak_internal_pressure_kpa": 999.99,
+            "peak_delta_p_kpa": 898.67,
+            "weep_threshold_kpa": 150.0,
+            "extrude_threshold_kpa": 220.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.06,
+            "overall_transit_risk_score": 95
+          }
+        }
+      }
+    },
+    "cross_country_truck_express": {
+      "info": {
+        "name": "Intermodal Express Truck: California to New York (5 Days)",
+        "mode": "truck_ambient",
+        "duration_days": 5,
+        "ambient_temp_mean_c": 24.0,
+        "ambient_temp_amplitude_c": 9.0,
+        "ambient_pressure_kpa": 80.0,
+        "vibration_rms_g": 0.18
+      },
+      "closures_evaluated": {
+        "natural_cork_fleur": {
+          "preset_name": "cross_country_truck_express",
+          "route_description": "Intermodal Express Truck: California to New York (5 Days)",
+          "transit_mode": "truck_ambient",
+          "duration_days": 5,
+          "closure_type": "natural_cork_fleur",
+          "temperature_summary": {
+            "min_c": 15.0,
+            "max_c": 33.0,
+            "mean_c": 24.0
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 444.8,
+            "equivalent_cellar_aging_months": 0.61,
+            "degree_hours_above_25c": 286.8,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.7,
+            "so2_loss_mg_l": 0.3,
+            "initial_a420": 0.115,
+            "final_a420": 0.117,
+            "delta_a420": 0.002,
+            "fruity_ester_retention_pct": 76.6
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 80.0,
+            "peak_internal_pressure_kpa": 966.68,
+            "peak_delta_p_kpa": 886.68,
+            "weep_threshold_kpa": 90.0,
+            "extrude_threshold_kpa": 135.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.18,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "technical_diam": {
+          "preset_name": "cross_country_truck_express",
+          "route_description": "Intermodal Express Truck: California to New York (5 Days)",
+          "transit_mode": "truck_ambient",
+          "duration_days": 5,
+          "closure_type": "technical_diam",
+          "temperature_summary": {
+            "min_c": 15.0,
+            "max_c": 33.0,
+            "mean_c": 24.0
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 444.8,
+            "equivalent_cellar_aging_months": 0.61,
+            "degree_hours_above_25c": 286.8,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.7,
+            "so2_loss_mg_l": 0.3,
+            "initial_a420": 0.115,
+            "final_a420": 0.117,
+            "delta_a420": 0.002,
+            "fruity_ester_retention_pct": 76.6
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 80.0,
+            "peak_internal_pressure_kpa": 966.68,
+            "peak_delta_p_kpa": 886.68,
+            "weep_threshold_kpa": 115.0,
+            "extrude_threshold_kpa": 160.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.18,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "synthetic_nomacorc": {
+          "preset_name": "cross_country_truck_express",
+          "route_description": "Intermodal Express Truck: California to New York (5 Days)",
+          "transit_mode": "truck_ambient",
+          "duration_days": 5,
+          "closure_type": "synthetic_nomacorc",
+          "temperature_summary": {
+            "min_c": 15.0,
+            "max_c": 33.0,
+            "mean_c": 24.0
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 444.8,
+            "equivalent_cellar_aging_months": 0.61,
+            "degree_hours_above_25c": 286.8,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.7,
+            "so2_loss_mg_l": 0.3,
+            "initial_a420": 0.115,
+            "final_a420": 0.117,
+            "delta_a420": 0.002,
+            "fruity_ester_retention_pct": 76.6
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 80.0,
+            "peak_internal_pressure_kpa": 966.68,
+            "peak_delta_p_kpa": 886.68,
+            "weep_threshold_kpa": 85.0,
+            "extrude_threshold_kpa": 125.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.18,
+            "overall_transit_risk_score": 95
+          }
+        },
+        "screwcap_sarantin": {
+          "preset_name": "cross_country_truck_express",
+          "route_description": "Intermodal Express Truck: California to New York (5 Days)",
+          "transit_mode": "truck_ambient",
+          "duration_days": 5,
+          "closure_type": "screwcap_sarantin",
+          "temperature_summary": {
+            "min_c": 15.0,
+            "max_c": 33.0,
+            "mean_c": 24.0
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 444.8,
+            "equivalent_cellar_aging_months": 0.61,
+            "degree_hours_above_25c": 286.8,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.7,
+            "so2_loss_mg_l": 0.3,
+            "initial_a420": 0.115,
+            "final_a420": 0.117,
+            "delta_a420": 0.002,
+            "fruity_ester_retention_pct": 76.6
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 80.0,
+            "peak_internal_pressure_kpa": 966.68,
+            "peak_delta_p_kpa": 886.68,
+            "weep_threshold_kpa": 150.0,
+            "extrude_threshold_kpa": 220.0,
+            "seal_status": "CRITICAL_FAILURE_EXTRUSION",
+            "vibration_rms_g": 0.18,
+            "overall_transit_risk_score": 95
+          }
+        }
+      }
+    },
+    "air_freight_cargo_london_tokyo": {
+      "info": {
+        "name": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+        "mode": "air_cargo",
+        "duration_days": 2,
+        "ambient_temp_mean_c": 19.5,
+        "ambient_temp_amplitude_c": 3.0,
+        "ambient_pressure_kpa": 75.2,
+        "vibration_rms_g": 0.12
+      },
+      "closures_evaluated": {
+        "natural_cork_fleur": {
+          "preset_name": "air_freight_cargo_london_tokyo",
+          "route_description": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+          "transit_mode": "air_cargo",
+          "duration_days": 2,
+          "closure_type": "natural_cork_fleur",
+          "temperature_summary": {
+            "min_c": 16.5,
+            "max_c": 22.5,
+            "mean_c": 19.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 91.3,
+            "equivalent_cellar_aging_months": 0.13,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.9,
+            "so2_loss_mg_l": 0.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.115,
+            "delta_a420": 0.0,
+            "fruity_ester_retention_pct": 94.7
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 75.2,
+            "peak_internal_pressure_kpa": 149.93,
+            "peak_delta_p_kpa": 74.73,
+            "weep_threshold_kpa": 90.0,
+            "extrude_threshold_kpa": 135.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.12,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "technical_diam": {
+          "preset_name": "air_freight_cargo_london_tokyo",
+          "route_description": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+          "transit_mode": "air_cargo",
+          "duration_days": 2,
+          "closure_type": "technical_diam",
+          "temperature_summary": {
+            "min_c": 16.5,
+            "max_c": 22.5,
+            "mean_c": 19.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 91.3,
+            "equivalent_cellar_aging_months": 0.13,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.9,
+            "so2_loss_mg_l": 0.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.115,
+            "delta_a420": 0.0,
+            "fruity_ester_retention_pct": 94.7
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 75.2,
+            "peak_internal_pressure_kpa": 149.93,
+            "peak_delta_p_kpa": 74.73,
+            "weep_threshold_kpa": 115.0,
+            "extrude_threshold_kpa": 160.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.12,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "synthetic_nomacorc": {
+          "preset_name": "air_freight_cargo_london_tokyo",
+          "route_description": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+          "transit_mode": "air_cargo",
+          "duration_days": 2,
+          "closure_type": "synthetic_nomacorc",
+          "temperature_summary": {
+            "min_c": 16.5,
+            "max_c": 22.5,
+            "mean_c": 19.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 91.3,
+            "equivalent_cellar_aging_months": 0.13,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.9,
+            "so2_loss_mg_l": 0.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.115,
+            "delta_a420": 0.0,
+            "fruity_ester_retention_pct": 94.7
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 75.2,
+            "peak_internal_pressure_kpa": 149.93,
+            "peak_delta_p_kpa": 74.73,
+            "weep_threshold_kpa": 85.0,
+            "extrude_threshold_kpa": 125.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.12,
+            "overall_transit_risk_score": 10
+          }
+        },
+        "screwcap_sarantin": {
+          "preset_name": "air_freight_cargo_london_tokyo",
+          "route_description": "Air Cargo Freight: London Heathrow to Tokyo Narita (2 Days)",
+          "transit_mode": "air_cargo",
+          "duration_days": 2,
+          "closure_type": "screwcap_sarantin",
+          "temperature_summary": {
+            "min_c": 16.5,
+            "max_c": 22.5,
+            "mean_c": 19.5
+          },
+          "kinetic_stress_metrics": {
+            "total_tdu_hours": 91.3,
+            "equivalent_cellar_aging_months": 0.13,
+            "degree_hours_above_25c": 0.0,
+            "degree_hours_above_35c": 0.0
+          },
+          "chemical_impact": {
+            "initial_free_so2_mg_l": 35.0,
+            "final_free_so2_mg_l": 34.9,
+            "so2_loss_mg_l": 0.1,
+            "initial_a420": 0.115,
+            "final_a420": 0.115,
+            "delta_a420": 0.0,
+            "fruity_ester_retention_pct": 94.7
+          },
+          "barometric_seal_integrity": {
+            "ambient_pressure_kpa": 75.2,
+            "peak_internal_pressure_kpa": 149.93,
+            "peak_delta_p_kpa": 74.73,
+            "weep_threshold_kpa": 150.0,
+            "extrude_threshold_kpa": 220.0,
+            "seal_status": "PASS_OPTIMAL_COLD_CHAIN",
+            "vibration_rms_g": 0.12,
+            "overall_transit_risk_score": 10
+          }
+        }
+      }
+    }
+  }
+}

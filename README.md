@@ -47,7 +47,11 @@ Wine Quality Prediction/
 │   ├── cellar_dispatch_benchmarks.json    # Day 13 digital cellar master fleet triage & work orders
 │   ├── stabilization_benchmarks.json      # Day 14 potassium bitartrate & Langmuir bentonite benchmarks
 │   ├── crossflow_filtration_benchmarks.json # Day 14 0.45 um PES membrane filtration & Hermia fouling benchmarks
-│   └── packaging_closure_benchmarks.json  # Day 14 closure OTR, TPO gas equilibria & 48M shelf-life benchmarks
+│   ├── packaging_closure_benchmarks.json  # Day 14 closure OTR, TPO gas equilibria & 48M shelf-life benchmarks
+│   ├── cold_chain_logistics_benchmarks.json # Day 15 intermodal logistics, Arrhenius TDU & barometric seal benchmarks
+│   ├── terroir_authenticity_benchmarks.json # Day 15 stable isotope SIRA, strontium 87Sr/86Sr & ICP-MS terroir benchmarks
+│   ├── consumer_hedonic_market_benchmarks.json # Day 15 Rosen hedonic pricing & cross-regional palate benchmarks
+│   └── digital_winery_twin_benchmarks.json  # Day 15 unified 15-stage winery twin & Scope 1/2/3 LCA benchmarks
 ├── notebooks/
 │   ├── Wine_Quality_Prediction_Master.ipynb # Executed master end-to-end project pipeline
 │   ├── generate_master_notebook.py          # Reproducible master notebook generator
@@ -76,7 +80,9 @@ Wine Quality Prediction/
 │   ├── Day13_Malolactic_Oak_Maturation_and_Cellar_Dispatch.ipynb # Executed MLF, oak maturation & cellar dispatch notebook
 │   ├── generate_day13_notebook.py                   # Day 13 reproducible notebook generator
 │   ├── Day14_Tartrate_Protein_Filtration_and_Packaging.ipynb # Executed tartrate, filtration & packaging notebook
-│   └── generate_day14_notebook.py                   # Day 14 reproducible notebook generator
+│   ├── generate_day14_notebook.py                   # Day 14 reproducible notebook generator
+│   ├── Day15_Cold_Chain_Terroir_Authenticity_and_Digital_Twin.ipynb # Executed logistics, terroir & digital twin notebook
+│   └── generate_day15_notebook.py                   # Day 15 reproducible notebook generator
 ├── reports/
 │   ├── final_model_comparison.md                    # Technical side-by-side comparison & deployment synthesis report
 │   └── figures/
@@ -137,7 +143,11 @@ Wine Quality Prediction/
 │       ├── day14_tartrate_and_protein_stabilization.png # Bitartrate conductivity drop & Langmuir bentonite haze curves
 │       ├── day14_crossflow_membrane_filtration.png    # Hermia flux decline, turbidity reduction & filterability index
 │       ├── day14_dissolved_gas_and_sparging.png       # Henry DO/CO2 solubility, N2 sparging & TPO compartmental breakdown
-│       └── day14_closure_permeation_and_shelf_life.png # Multi-closure OTR, 48M Free SO2 decay & PremOx thermal matrix
+│       ├── day14_closure_permeation_and_shelf_life.png # Multi-closure OTR, 48M Free SO2 decay & PremOx thermal matrix
+│       ├── day15_cold_chain_thermal_and_barometric_stress.png # Intermodal thermal trajectories, Arrhenius TDU & Delta P
+│       ├── day15_isotopic_terroir_and_fraud_detection.png     # SIRA delta13C/delta18O curves & bedrock strontium scatter
+│       ├── day15_consumer_hedonic_market_econometrics.png     # Rosen hedonic pricing curve & regional palate alignment
+│       └── day15_unified_digital_winery_twin_cockpit.png      # End-to-end lifecycle trajectory & Scope 1/2/3 LCA breakdown
 ├── src/
 │   ├── __init__.py                  # Package initializer exposing all module routines
 │   ├── data_loader.py               # Reusable data loading, inspection, and plotting routines
@@ -156,6 +166,9 @@ Wine Quality Prediction/
 │   ├── fermentation_and_sensory.py  # Fermentation bioprocess kinetics, stuck detector, sensory radar & causal engine
 │   ├── malolactic_and_oak.py        # MLF ODE kinetics, oak extraction, cellar dispatch & HACCP auditor
 │   ├── stabilization_and_packaging.py # Bitartrate CP, Langmuir bentonite, crossflow filtration, TPO & closure shelf-life
+│   ├── transport_terroir_hedonic_and_twin.py # Intermodal cold chain, isotopic terroir, hedonic pricing & digital twin
+│   ├── generate_day14_benchmarks.py # Day 14 serialized benchmark model artifact generator
+│   ├── generate_day15_benchmarks.py # Day 15 serialized benchmark model artifact generator
 │   ├── day7_figures.py              # Day 7 publication figures generator
 │   ├── day8_figures.py              # Day 8 diagnostic figures generator
 │   ├── day9_figures.py              # Day 9 domain adaptation & recourse figures generator
@@ -163,7 +176,8 @@ Wine Quality Prediction/
 │   ├── day11_figures.py             # Day 11 aging kinetics, Pareto, stress testing & synergy figures generator
 │   ├── day12_figures.py             # Day 12 fermentation, stuck warning, sensory radar & causal figures generator
 │   ├── day13_figures.py             # Day 13 MLF, oak extraction, cellar dispatch & HACCP figures generator
-│   └── day14_figures.py             # Day 14 tartrate, filtration, gas dynamics & closure shelf-life figures generator
+│   ├── day14_figures.py             # Day 14 tartrate, filtration, gas dynamics & closure shelf-life figures generator
+│   └── day15_figures.py             # Day 15 cold chain, terroir forensics, hedonics & digital twin figures generator
 ├── tests/
 │   ├── test_pipeline.py             # Dataset structure, splitting, and ML pipeline unit tests
 │   ├── test_production_service.py   # REST API, schema validation, threshold override & latency tests
@@ -172,8 +186,9 @@ Wine Quality Prediction/
 │   ├── test_assemblage_and_conformal.py # Coupage optimizer, conformal coverage, economics & stacking tests
 │   ├── test_aging_pareto_and_stress.py  # Bottle aging kinetics, Pareto frontier, stress testing & API tests
 │   ├── test_fermentation_and_sensory.py # Fermentation ODEs, stuck early warning, sensory radar & causal API tests
-│   ├── test_malolactic_and_oak.py       # MLF kinetics, oak species, ERPI triage, HACCP & API tests (93 passing)
-│   └── test_stabilization_and_packaging.py # Bitartrate CP, bentonite, crossflow, TPO, closure OTR & API tests (107 total passing)
+│   ├── test_malolactic_and_oak.py       # MLF kinetics, oak species, ERPI triage, HACCP & API tests
+│   ├── test_stabilization_and_packaging.py # Bitartrate CP, bentonite, crossflow, TPO, closure OTR & API tests
+│   └── test_transport_terroir_hedonic_and_twin.py # Cold-chain, isotopic SIRA, hedonic pricing & digital twin tests
 ├── conftest.py                      # Pytest sys.path setup fixture
 ├── pytest.ini                       # Pytest test execution configuration
 ├── Dockerfile                       # Multi-stage production container specification
@@ -202,6 +217,7 @@ Wine Quality Prediction/
 - [x] **Day 12: Fermentation Bioprocess Kinetics, Stuck Fermentation Early-Warning, Sensory Organoleptic Lexicon & Causal Cellar Intervention Engine**
 - [x] **Day 13: Secondary Malolactic Fermentation (MLF) Biotransformation, Precision Oak Barrel Maturation Dynamics, Digital Cellar Master Dispatch Engine & HACCP Food Safety Auditor**
 - [x] **Day 14: Tartrate & Protein Stabilization Kinetics, Crossflow Membrane Microfiltration, Dissolved Gas Packaging Dynamics & Packaging Closure Shelf-Life Forecaster**
+- [x] **Day 15: Cold-Chain Logistics Kinetics, Isotopic Terroir Fraud Detection, Consumer Hedonic Econometrics & Unified Digital Winery Twin Platform**
 
 ---
 
@@ -2021,3 +2037,121 @@ All diagnostic figures are published in `reports/figures/` and verified in `note
 ![Crossflow Membrane Filtration](reports/figures/day14_crossflow_membrane_filtration.png)
 ![Dissolved Gas Packaging Dynamics](reports/figures/day14_dissolved_gas_and_sparging.png)
 ![Packaging Closure Permeation and Shelf-Life](reports/figures/day14_closure_permeation_and_shelf_life.png)
+
+---
+
+## 🚚 Day 15 Summary: Intermodal Cold-Chain Logistics, Isotopic Terroir Fraud Detection, Consumer Hedonics & Unified Digital Winery Twin Platform
+
+Day 15 delivers the capstone enterprise release of the enological machine learning platform. It seamlessly bridges post-bottling intermodal shipping logistics, isotopic/geochemical terroir authenticity forensics, consumer hedonic econometrics, and an end-to-end 15-stage unified digital winery twin coupled with Scope 1/2/3 Life Cycle Assessment (LCA).
+
+```
++----------------------------------------------------------------------------------------------------+
+|                      Day 15 Enterprise Logistics, Terroir Forensics & Winery Twin                   |
++------------------------------------+-----------------------------------+---------------------------+
+| 1. Cold-Chain Transport Kinetics   | 2. Isotopic Terroir & Fraud Audit | 3. Consumer Hedonics & WTP|
+| - Diurnal Thermal Cycles & Spikes  | - Carbon δ13C VPDB Mass Balance   | - Rosen's Hedonic Pricing |
+| - Arrhenius Thermal Damage (TDU)   | - Oxygen δ18O VSMOW Water Audit   | - 4 Global Palate Regions |
+| - Barometric Altitude Headspace ΔP | - Bedrock 87Sr/86Sr Isotope Tracer| - Price Elasticity (ε)    |
+| - Cork Extrusion & Weeper Risks    | - ICP-MS Mahalanobis Geochemistry | - Cellar Margin Optimizer |
++------------------------------------+-----------------------------------+---------------------------+
+| 4. Unified 15-Stage Digital Winery Twin Platform                       | 5. ESG Carbon LCA Cockpit |
+| - Seamless multi-gate simulation from must intake to retail release   | - Scope 1, 2, 3 Footprint |
+| - Dynamic tracking of alcohol, pH, phenolics, SO2, turbidity & quality| - Glass Bottle Mass Impact|
+| - Cross-cultivar adaptability & prescriptive enological interventions | - Water Footprint Index   |
++------------------------------------------------------------------------+---------------------------+
+```
+
+---
+
+### 1. Intermodal Cold-Chain Logistics, Thermal Shock & Arrhenius TDU Kinetics
+
+During maritime container shipping, intermodal rail/truck transit, and air freight, bottled wine is subject to dynamic diurnal thermal cycling and ambient shock.
+* **Arrhenius Thermal Damage Units ($TDU$):**
+  Accumulated heat degradation relative to reference cellar baseline ($T_{ref} = 287.15\text{ K} / 14^\circ\text{C}$):
+  $$TDU = \int_0^t \exp\left( -\frac{E_a}{R} \left( \frac{1}{T(\tau)} - \frac{1}{T_{ref}} \right) \right) d\tau$$
+  where $E_{a,\text{ester}} = 78.5\text{ kJ/mol}$, $E_{a,SO_2} = 62.0\text{ kJ/mol}$, and $E_{a,\text{browning}} = 84.0\text{ kJ/mol}$.
+* **Headspace Gas Expansion & Trans-Closure Pressure Differential ($\Delta P$):**
+  Liquid thermal expansion compresses the headspace volume:
+  $$V_{hs}(T) = V_{hs,0} - V_{\text{wine},0} \cdot \beta_{\text{wine}} \cdot (T - T_{\text{bottling}})$$
+  Combining ideal gas compression with dissolved $CO_2$ Henry's Law degassing:
+  $$P_{hs}(T) = P_{hs,0} \cdot \frac{V_{hs,0}}{V_{hs}(T)} \cdot \frac{T}{T_{\text{bottling}}} + P_{CO_2}(T)$$
+  $$\Delta P = P_{hs}(T) - P_{\text{ambient}}$$
+  * At sea level ($P_{\text{amb}} = 101.3\text{ kPa}$), $\Delta P$ remains below safe closure retention thresholds ($< 90\text{ kPa}$).
+  * Under air cargo conditions ($P_{\text{amb}} = 75.2\text{ kPa}$) or mountain passes ($P_{\text{amb}} = 80.0\text{ kPa}$) paired with temperature spikes ($30-35^\circ\text{C}$), $\Delta P$ surges above $135\text{ kPa}$, inducing cork weeping ("weepers") or physical closure extrusion.
+
+---
+
+### 2. Isotopic Terroir Fingerprinting & Anti-Counterfeiting Forensics
+
+Detects unauthorized chaptalization, artificial water addition, and geographical provenance fraud:
+* **Carbon Stable Isotope Mass Balance ($\delta^{13}\text{C}_{VPDB}$):**
+  Distinguishes authentic C3 photosynthetic grape sugars ($\delta^{13}\text{C} \approx -27.2‰ \pm 0.85‰$) from C4 cane or maize sugars ($\delta^{13}\text{C} \approx -13.1‰$):
+  $$\delta^{13}\text{C}_{\text{measured}} = (1 - f_{C4}) \cdot \delta^{13}\text{C}_{\text{grape}} + f_{C4} \cdot \delta^{13}\text{C}_{C4}$$
+  $$f_{C4} = \frac{\delta^{13}\text{C}_{\text{measured}} - \delta^{13}\text{C}_{\text{grape}}}{\delta^{13}\text{C}_{C4} - \delta^{13}\text{C}_{\text{grape}}}$$
+  OIV compliance boundary: $\delta^{13}\text{C} \le -25.5‰$. Samples with $\delta^{13}\text{C} > -25.5‰$ are flagged for illegal chaptalization.
+* **Oxygen Stable Isotope Water Audit ($\delta^{18}\text{O}_{VSMOW}$):**
+  Grape berry water experiences natural solar evapotranspiration enrichment ($\delta^{18}\text{O} = +2.0‰ \text{ to } +6.5‰$), whereas tap/ground water dilution exhibits strongly depleted values ($\delta^{18}\text{O} \approx -7.5‰$). Values below $+1.5‰$ trigger water dilution alerts.
+* **Bedrock $^{87}\text{Sr}/^{86}\text{Sr}$ & ICP-MS Geochemical Mahalanobis Verification:**
+  Geological strontium ratios inherited unchanged from vineyard bedrock (e.g., Bordeaux Left Bank $0.7088$, Burgundy Côte d'Or $0.7081$, Douro Schist $0.7165$) combined with normalized ICP-MS trace mineral fingerprints (Li, Rb, Sr, Ba, Mn, B) are mapped into orthogonalized space to compute the Mahalanobis Terroir Distance:
+  $$D_M(\mathbf{x}) = \sqrt{(\mathbf{x} - \boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})}$$
+  providing rigorous statistical provenance certification ($p > 0.01$).
+
+---
+
+### 3. Consumer Hedonic Econometrics & Price Elasticity Optimization
+
+Translates sensory and physicochemical attributes into global market economic returns:
+* **Rosen Hedonic Price Formulation:**
+  $$\ln(P) = \beta_0 + \beta_q \cdot Q + \beta_{\text{alc}} \cdot (\text{Alcohol} - 12.0) - \beta_{\text{pH}} \cdot |\text{pH} - 3.4| - \beta_{\text{VA}} \cdot \max(0, \text{VA} - 0.4) + \beta_{\text{age}} \cdot \sqrt{\text{Years}} + \ln(\text{TierMultiplier})$$
+* **Cross-Regional Consumer Palate Alignment:**
+  Quantifies alignment scores ($0-100$) across 4 macro markets:
+  1. *North America:* Preference for rich fruit extraction, ripe alcohol ($14.0\%$), round acidity, supple vanilla oak.
+  2. *Continental Europe:* Preference for high acid tension, mineral cut, moderate alcohol ($12.8\%$), dry structural finish.
+  3. *East Asia:* Silky fine-grained phenolics, subtle wood, low perceived alcohol ($12.5\%$), gastronomic pairing versatility.
+  4. *Nordic Monopolies:* Organic purity, strict low-sulfite profile, crisp balanced acidity.
+* **Price Elasticity & Cellar Gross Margin Optimization:**
+  Applies the Lerner optimal pricing rule:
+  $$P^* = C_{\text{production}} \cdot \frac{\epsilon}{\epsilon + 1}$$
+  maximizing projected gross cellar revenues while accounting for demand elasticity ($\epsilon_{\text{commercial}} = -2.4$, $\epsilon_{\text{premium}} = -1.25$, $\epsilon_{\text{icon}} = -0.45$).
+
+---
+
+### 4. Unified 15-Stage Digital Winery Twin & ESG Carbon Life Cycle Assessment (LCA)
+
+Holistically connects the 15 developmental milestones into a single enterprise operational platform:
+* **End-to-End Gate Progression:**
+  Must Intake $\to$ Primary Fermentation Kinetics $\to$ Malolactic Decarboxylation $\to$ Oak Maturation $\to$ Tartrate/Protein Stabilization $\to$ Crossflow Microfiltration $\to$ Packaging & Gas Balance $\to$ Intermodal Logistics $\to$ Authenticity Certification $\to$ Retail Hedonic Release.
+* **Scope 1, 2, and 3 Greenhouse Gas (GHG) Life Cycle Assessment (LCA):**
+  * *Scope 1 (Direct):* Vineyard tractors, winery heating, biogenic fermentation $CO_2$ ($88\text{ g } CO_2/\text{bottle}$, mitigated by capture technology).
+  * *Scope 2 (Electricity):* Refrigeration chilling compressors, sterile membrane pumps, bottling automation ($45\text{ g } CO_2e/\text{bottle}$).
+  * *Scope 3 (Supply Chain & Freight):* Glass bottle manufacturing ($0.85\text{ kg } CO_2e/\text{kg glass}$). Transitioning from standard heavy bottles ($550\text{ g}$) to lightweight eco-glass ($390\text{ g}$) achieves an immediate $\sim 30\%$ carbon reduction.
+  * *Water Footprint:* Tracks total water intensity ($L\text{ water} / L\text{ finished wine}$), awarding sustainability eco-ratings from $A+$ to $C$.
+
+---
+
+### 5. Production REST API Endpoints (Day 15)
+
+FastAPI endpoints under tag `Logistics & Terroir Twin (Day 15)`:
+* `POST /logistics/simulate-transit` — Simulate intermodal thermal shock, TDU accumulation, and closure seal integrity.
+* `POST /logistics/assess-barometric-seal` — Assess trans-closure differential pressure $\Delta P$ under air cargo and high-altitude mountain routes.
+* `POST /authenticity/verify-terroir` — Verify geographical provenance against bedrock $^{87}\text{Sr}/^{86}\text{Sr}$ and ICP-MS mineralogy.
+* `POST /authenticity/detect-chaptalization` — Detect exogenous C4 cane/corn sugar addition via $\delta^{13}\text{C}_{VPDB}$ mass balance.
+* `POST /market/hedonic-valuation` — Estimate fair market bottle price ($/bottle) using Rosen's econometric regression.
+* `POST /market/regional-palate-alignment` — Score consumer palate fit across North America, Europe, East Asia, and Nordics.
+* `POST /winery-twin/simulate-end-to-end` — Run the full 15-stage unified digital winery twin from harvest must to retail release.
+* `POST /sustainability/lca-carbon-footprint` — Calculate Scope 1, 2, and 3 carbon emissions and water footprint per bottle.
+
+---
+
+### 6. Generated Day 15 Figures & Jupyter Notebook
+
+All diagnostic figures are published in `reports/figures/` and verified in `notebooks/Day15_Cold_Chain_Terroir_Authenticity_and_Digital_Twin.ipynb`:
+* [day15_cold_chain_thermal_and_barometric_stress.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day15_cold_chain_thermal_and_barometric_stress.png) — 4-panel logistics diagnostics: Container thermal exposure profiles, cumulative Arrhenius TDU hours & Free SO2 depletion, headspace pressure differential $\Delta P$ across sea level vs air cargo, and multi-route closure risk scores.
+* [day15_isotopic_terroir_and_fraud_detection.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day15_isotopic_terroir_and_fraud_detection.png) — Carbon $\delta^{13}\text{C}$ C4 sugar chaptalization curve, Oxygen $\delta^{18}\text{O}$ water addition curve, bedrock $^{87}\text{Sr}/^{86}\text{Sr}$ vs Rubidium scatter by terroir, and normalized ICP-MS trace mineral radar.
+* [day15_consumer_hedonic_market_econometrics.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day15_consumer_hedonic_market_econometrics.png) — Rosen hedonic pricing curve across quality tiers, cross-regional consumer palate alignment, demand price elasticity profit curves, and willingness-to-pay (WTP) vs palate fit.
+* [day15_unified_digital_winery_twin_cockpit.png](file:///C:/Users/Iba%20Zaidi/Desktop/Wine%20Quality%20Prediction/reports/figures/day15_unified_digital_winery_twin_cockpit.png) — End-to-end multi-stage physicochemical evolution, Scope 1/2/3 GHG carbon breakdown, empty glass bottle mass vs carbon savings, and winery gross margin vs carbon intensity tradeoff.
+
+![Cold-Chain Logistics Stress](reports/figures/day15_cold_chain_thermal_and_barometric_stress.png)
+![Isotopic Terroir and Fraud Detection](reports/figures/day15_isotopic_terroir_and_fraud_detection.png)
+![Consumer Hedonics and Market Econometrics](reports/figures/day15_consumer_hedonic_market_econometrics.png)
+![Unified Digital Winery Twin Cockpit](reports/figures/day15_unified_digital_winery_twin_cockpit.png)
